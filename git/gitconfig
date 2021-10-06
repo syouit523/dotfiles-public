@@ -1,0 +1,29 @@
+[core]
+  editor = vim
+  excludesFiles = ~/.gitignore_global
+[init]
+  defaultBranch = main
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true
+[merge]
+  tool = vimdiff
+[alias]
+  open = browse
+  o = browse
+  co = checkout
+  b = branch
+  cm = commit
+  pp = "pull-request --edit"
+  showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
+  openpr = "!f() { hub browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"
+[pager]
+  log = diff-highlight | less
+  show = diff-highlight | less
+  diff = diff-highlight | less
+[push]
+  default = current
+[pull]
+  rebase = true

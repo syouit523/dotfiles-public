@@ -4,7 +4,7 @@ set -e
 
 PLATFORM=$(uname); export PLATFORM
 WORKSPACE="$HOME"/workspace
-DOTPATH="$WORKSPACE"/dotfiles; export DOTPATH
+DOTPATH="$WORKSPACE"/dotfiles-public; export DOTPATH
 DOTFILES_GITHUB="https://github.com/syouit523/dotfiles.git"; export DOTFILES_GITHUB
 
 initialize () {
@@ -53,4 +53,5 @@ main () {
   fi
 }
 
-main
+# main
+deploy_dotfiles

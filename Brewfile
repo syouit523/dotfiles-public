@@ -3,6 +3,8 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "robotsandpencils/made"
+
+## CLI
 brew "awscli"
 brew "carthage"
 brew "cloc"
@@ -38,6 +40,8 @@ brew "tmux"
 brew "wget"
 brew "zsh"
 brew "robotsandpencils/made/xcodes"
+
+## Apps
 cask "sf-symbols"
 cask "kindle"
 cask "alfred"

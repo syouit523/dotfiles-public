@@ -59,5 +59,4 @@ main () {
   fi
 }
 
-# main
-deploy_dotfiles
+main

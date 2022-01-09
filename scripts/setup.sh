@@ -40,6 +40,13 @@ install_homebrew () {
   . "$DOTPATH"/scripts/homebrew.sh
 }
 
+setup_shell () {
+  # copy fish config
+  ln -sf "$DOTPATH"/.config ~/.config
+  # Hyper hyper config
+  ln -sf "$DOTPATH"/hyper ~/
+}
+
 main () {
   if [ $PLATFORM != "Darwin" ]; then
     echo "Only MacOS supported"
@@ -52,7 +59,7 @@ main () {
   install_homebrew
 
   if [ -x "$(which curl)" ] || [ -x "$(which git)" ]; then
-    download_dotfiles && deploy_dotfiles
+    download_dotfiles && deploy_dotfiles && setup_shell
   else
     echo "Please install dependencies: ('git', 'curl')"
     exit 1

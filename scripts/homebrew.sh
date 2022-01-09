@@ -15,7 +15,7 @@ DARWIN_PACKAGES="${DOTPATH}/packages/homebrew/macos.txt" # Only MacOS packages
 
 install_homebrew_packages () {
   if [ $PLATFORM = "Darwin" ]; then
-  brew bundle
+  brew bundle --file="${DOTPATH}/Brewfile"
 else
   echo "Only MacOS supported"
   exit 1

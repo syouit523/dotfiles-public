@@ -1,10 +1,10 @@
-tap "mas"
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 tap "robotsandpencils/made"
 
 ## CLI
+brew "mas"
 brew "awscli"
 brew "carthage"
 brew "cloc"

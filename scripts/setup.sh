@@ -47,12 +47,7 @@ setup_shell () {
   ln -sf "$DOTPATH"/hyper ~/
 }
 
-main () {
-  if [ $PLATFORM != "Darwin" ]; then
-    echo "Only MacOS supported"
-    exit 1
-  fi
-
+mac () {
   initialize
   make_workspace
   cd_workspace
@@ -64,6 +59,21 @@ main () {
     echo "Please install dependencies: ('git', 'curl')"
     exit 1
   fi
+}
+
+linux () {
+  make_workspace
+  cd_workspace
+}
+
+main () {
+  if [ $PLATFORM == "Darwin" ]; then
+    mac
+  else
+    linux
+  fi
+
+
 }
 
 main

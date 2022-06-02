@@ -57,8 +57,10 @@ cask "tower"
 cask "transmit"
 cask "charles"
 cask "vlc"
-mas "1Password", id: 443987910
-mas "RunCat", id: 1429033973
-mas "TweetDeck", id: 485812721
-mas "Spark", id: 1176895641
-mas "LINE", id: 539883307
+
+## optional
+#mas "1Password", id: 443987910
+#mas "RunCat", id: 1429033973
+#mas "TweetDeck", id: 485812721
+#mas "Spark", id: 1176895641
+#mas "LINE", id: 539883307

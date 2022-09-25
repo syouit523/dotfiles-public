@@ -54,7 +54,7 @@ deploy_zsh () {
 }
 
 deploy_fish () {
-    ln -sf "$1"/config/* ~/.config
+    ln -sf "$1"/config/fish/* ~/.config/fish/
 }
 
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
@@ -64,6 +64,6 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "git" ) deploy_git $DIR_FULLPATH;;
     "vim" ) deploy_vim $DIR_FULLPATH;;
     "zsh" ) deploy_zsh $DIR_FULLPATH;;
-    # "fish" ) deploy_fish $DIR_FULLPATH;;
+    "fish" ) deploy_fish $DIR_FULLPATH;;
   esac
 done

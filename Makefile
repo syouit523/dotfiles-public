@@ -9,6 +9,7 @@ MAKE_WORKSPACE   = $(SCRIPTS)/make-workspace.sh
 BREW_INSTALL   = $(SCRIPTS)/brew-install.sh
 BREW_SETUP   = $(SCRIPTS)/brew-setup.sh
 DEPLOY_CONFIGS = $(SCRIPTS)/deploy-configs.sh
+SETUP_FISH = $(SCRIPTS)/setup-fish.sh
 
 default: bootstrap
 
@@ -22,6 +23,19 @@ bootstrap b:
 	sh $(BREW_INSTALL)
 	sh $(BREW_SETUP) $(BREWFILE)
 	make deploy
+	make font
+
+.PHONY: font f
+font f:
+	git clone --filter=blob:none --sparse git@github.com:ryanoasis/nerd-fonts
+	cd nerd-fonts
+	git sparse-checkout add patched-fonts/JetBrainsMono
+	./install.sh
+	echo "Change iTerm2 font for `JetBrainsMono Nerd Font`!!"
+
+.PHONY: fish
+fish:
+	sh $(SETUP_FISH)
 
 ## ******************** Deploy dot files ********************
 .PHONY: deploy d

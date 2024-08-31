@@ -15,7 +15,7 @@ alias la "ls -A"
 alias ll "ls -l"
 alias lla "ll -A"
 alias g git
-command -qv nvim && alias vim nvim
+# command -qv nvim && alias vim nvim
 
 set -gx EDITOR nvim
 
@@ -28,14 +28,14 @@ set -g GOPATH $HOME/go
 set -gx PATH $GOPATH/bin $PATH
 
 # NVM
-function __check_rvm --on-variable PWD --description 'Do nvm stuff'
-  status --is-command-substitution; and return
+# function __check_rvm --on-variable PWD --description 'Do nvm stuff'
+#   status --is-command-substitution; and return
 
-  if test -f .nvmrc; and test -r .nvmrc;
-    nvm use
-  else
-  end
-end
+#   if test -f .nvmrc; and test -r .nvmrc;
+#     nvm use
+#   else
+#   end
+# end
 
 switch (uname)
   case Darwin

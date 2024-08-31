@@ -25,6 +25,7 @@ ifeq ($(UNAME_S), Linux)
 	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
+	make deploy
 else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder

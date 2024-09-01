@@ -3,7 +3,6 @@ tap "homebrew/cask"
 tap "homebrew/core"
 
 ## CLI
-brew "mas"
 brew "awscli"
 brew "curl"
 brew "direnv"
@@ -31,3 +30,5 @@ brew "terraform"
 brew "tmux"
 brew "wget"
 brew "zsh"
+brew "fzf"
+brew "fd"

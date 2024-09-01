@@ -6,3 +6,5 @@ export PATH="$PATH:/opt/homebrew/share/git-core/contrib/diff-highlight"
 
 ## diff-highlight for Intel Mac
 # export PATH="$PATH:/usr/local/share/git-core/contrib/diff-highlight"
+
+source <(fzf --zsh)

@@ -37,6 +37,11 @@ set -gx PATH $GOPATH/bin $PATH
 #   end
 # end
 
+# For fzf
+fzf --fish | source
+
+set -U FZF_LEGACY_KEYBINDINGS 0
+
 switch (uname)
   case Darwin
     source (dirname (status --current-filename))/config-osx.fish

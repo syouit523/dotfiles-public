@@ -13,6 +13,5 @@ fi
 # ターゲットディレクトリに移動
 cd "$TARGET_DIR" || exit
 
-# 必要な設定を実行 (例: `make` コマンド)
 echo "Setting up environment..."
 make bootstrap

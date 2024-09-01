@@ -22,18 +22,20 @@ default: bootstrap
 .PHONY: bootstrap
 bootstrap b:
 ifeq ($(UNAME_S), Linux)
-	sh $(MAKE_WORKSPACE)
+#	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
 	make deploy
+	make fish
 else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
-	sh $(MAKE_WORKSPACE)
+#	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
 	sh $(XCODE_SELECT_INSTALL)
 	make deploy
+	make fish
 	make font
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported

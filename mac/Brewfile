@@ -4,6 +4,7 @@ tap "homebrew/core"
 tap "robotsandpencils/made"
 
 ## CLI
+brew "mas"
 brew "libusbmuxd", args: ["HEAD"]
 brew "libimobiledevice", args: ["HEAD"]
 brew "ideviceinstaller"

@@ -45,7 +45,7 @@ endif
 
 .PHONY: brew_install
 brew_install:
-	sh /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 
 .PHONY: brew_setup

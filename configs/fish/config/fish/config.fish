@@ -1,3 +1,6 @@
+set CURRENT_PATH (dirname (status --current-filename))
+set SHOICHI_PATH $CURRENT_PATH/shoichi
+
 set fish_greeting ""
 
 set -gx TERM xterm-256color
@@ -9,23 +12,7 @@ set -g theme_display_user yes
 set -g theme_hide_hostname no
 set -g theme_hostname always
 
-# aliases
-alias ls "ls -p -G"
-alias la "ls -A"
-alias ll "ls -l"
-alias lla "ll -A"
-alias g git
-# command -qv nvim && alias vim nvim
-
 set -gx EDITOR nvim
-
-set -gx PATH bin $PATH
-set -gx PATH ~/bin $PATH
-set -gx PATH ~/.local/bin $PATH
-
-# Go
-set -g GOPATH $HOME/go
-set -gx PATH $GOPATH/bin $PATH
 
 # NVM
 # function __check_rvm --on-variable PWD --description 'Do nvm stuff'
@@ -37,21 +24,20 @@ set -gx PATH $GOPATH/bin $PATH
 #   end
 # end
 
-# For fzf
-fzf --fish | source
 
-set -U FZF_LEGACY_KEYBINDINGS 0
+source $SHOICHI_PATH/alias.fish
+source $SHOICHI_PATH/path.fish
 
 switch (uname)
   case Darwin
-    source (dirname (status --current-filename))/config-osx.fish
+    source $SHOICHI_PATH/config-osx.fish
   case Linux
-    source (dirname (status --current-filename))/config-linux.fish
+    source $SHOICHI_PATH/config-linux.fish
   case '*'
-    source (dirname (status --current-filename))/config-windows.fish
+    source $SHOICHI_PATH/config-windows.fish
 end
 
-set LOCAL_CONFIG (dirname (status --current-filename))/config-local.fish
+set LOCAL_CONFIG $CURRENT_PATH/config-local.fish
 if test -f $LOCAL_CONFIG
   source $LOCAL_CONFIG
 end

@@ -1,21 +1,14 @@
 #!/bin/bash
 
-# # リポジトリURLとターゲットディレクトリを設定
-# REPO_URL="https://github.com/syouit523/dotfiles-public.git"
-# TARGET_DIR="$HOME/workspace/dotfiles-public"
+if command -v zsh >/dev/null 2>&1; then
+    # set to the default shell to zsh
+    chsh -s $(which zsh)
+    zdh
+    # install oh-my-zsh
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
 
-# # リポジトリが既に存在するかチェック
-# if [ ! -d "$TARGET_DIR" ]; then
-#     echo "Cloning dotfiles repository..."
-#     git clone "$REPO_URL" "$TARGET_DIR"
-# fi
-
-# # ターゲットディレクトリに移動
-# cd "$TARGET_DIR" || exit
-
-# echo "Setting up environment..."
-# make bootstrap
-
-# install oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
+else
+    echo "zsh is not installed."
+    exit
+fi

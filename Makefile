@@ -15,6 +15,7 @@ BREW_INSTALL   = $(SCRIPTS)/brew-install.sh
 BREW_SETUP   = $(SCRIPTS)/brew-setup.sh
 DEPLOY_CONFIGS = $(SCRIPTS)/deploy-configs.sh
 SETUP_FISH = $(SCRIPTS)/setup-fish.sh
+SETUP_ZSH = $(SCRIPTS)/setup-zsh.sh
 
 default: bootstrap
 
@@ -66,6 +67,10 @@ font f:
 .PHONY: fish
 fish:
 	sh $(SETUP_FISH)
+
+.PHONY: zsh
+zsh:
+	sh $(SETUP_ZSH)
 
 ## ******************** Deploy dot files ********************
 .PHONY: deploy d

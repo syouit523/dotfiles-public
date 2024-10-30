@@ -51,6 +51,7 @@ deploy_vim () {
 
 deploy_zsh () {
     ln -sf "$1"/zshrc ~/.zshrc
+    ln -sf "$1"/shoichi/* ~/.zsh-configs/shoichi/
 }
 
 deploy_fish () {

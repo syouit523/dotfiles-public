@@ -19,15 +19,13 @@ source $ZSH/oh-my-zsh.sh
 
 #----- import other zsh settings -----#
 
-current_dir=$(pwd)
-shoichi_dir="$current_dir"/shoichi
-
-source $shoichi_dir/path.zsh
+zsh_dir="$HOME"/.zsh-configs
+shoichi_dir="$zsh_dir"/shoichi
 
 os_type=$(uname)
 case "$os_type" in
     Linux)
-        # source ~/.zsh/linux.zsh
+        source $shoichi_dir/config-linux.zsh
         ;;
     Darwin)
         source $shoichi_dir/config-osx.zsh
@@ -38,3 +36,6 @@ case "$os_type" in
         echo "Unknown OS: $os_type"
         ;;
 esac
+#source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source /home/linuxbrew/.linuxbrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+

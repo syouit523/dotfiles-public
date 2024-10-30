@@ -26,8 +26,8 @@ ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
+	make zsh
 	make deploy
-	make fish
 else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
@@ -35,9 +35,9 @@ else ifeq ($(UNAME_S), Darwin)
 	make brew_install
 	make brew_setup
 	sh $(XCODE_SELECT_INSTALL)
-	make deploy
-	make fish
+	make zsh
 	make font
+	make deploy
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported
 else

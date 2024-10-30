@@ -9,3 +9,9 @@ elif [ "$architecture" = "x86_64" ]; then
     # diff-highlight for Intel Mac
     export PATH="$PATH:/usr/local/share/git-core/contrib/diff-highlight"
 fi
+
+
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+
+source <(fzf --zsh)

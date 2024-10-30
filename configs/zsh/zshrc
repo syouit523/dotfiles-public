@@ -36,6 +36,5 @@ case "$os_type" in
         echo "Unknown OS: $os_type"
         ;;
 esac
-#source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /home/linuxbrew/.linuxbrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+source <(fzf --zsh)

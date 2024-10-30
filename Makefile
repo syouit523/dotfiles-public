@@ -28,6 +28,7 @@ ifeq ($(UNAME_S), Linux)
 	make brew_setup
 	make zsh
 	make deploy
+	make ssh-key-gen
 else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
@@ -36,8 +37,9 @@ else ifeq ($(UNAME_S), Darwin)
 	make brew_setup
 	sh $(XCODE_SELECT_INSTALL)
 	make zsh
-	make font
 	make deploy
+	make font
+	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported
 else
@@ -46,7 +48,7 @@ endif
 
 .PHONY: brew_install
 brew_install:
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+	sh $(SCRIPTS)/install-brew.sh
 
 
 .PHONY: brew_setup
@@ -71,6 +73,11 @@ fish:
 .PHONY: zsh
 zsh:
 	sh $(SETUP_ZSH)
+
+.PHONY: ssh-key-gen
+ssh-key-gen:
+	sh $(SCRIPTS)/ssh-key-gen.sh
+
 
 ## ******************** Deploy dot files ********************
 .PHONY: deploy d

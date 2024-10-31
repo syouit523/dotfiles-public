@@ -60,6 +60,11 @@ deploy_fish () {
     sudo ln -sf "$1"/config/fish/* ~/.config/fish/
 }
 
+deploy_vscode () {
+  sudo mkdir ~/Library/Application\ Support/Code/User/
+  sudo ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "deploying ${DIR_NAME}"
@@ -68,5 +73,6 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "vim" ) deploy_vim $DIR_FULLPATH;;
     "zsh" ) deploy_zsh $DIR_FULLPATH;;
     "fish" ) deploy_fish $DIR_FULLPATH;;
+    "vscode" ) deploy_vscode $DIR_FULLPATH;;
   esac
 done

@@ -3,10 +3,10 @@ tap "robotsandpencils/made"
 
 ## CLI
 brew "mas"
-brew "libusbmuxd", args: ["HEAD"]
-brew "libimobiledevice", args: ["HEAD"]
-brew "ideviceinstaller"
-brew "ios-deploy"
+#brew "libusbmuxd", args: ["HEAD"]
+#brew "libimobiledevice", args: ["HEAD"]
+#brew "ideviceinstaller"
+#brew "ios-deploy"
 brew "robotsandpencils/made/xcodes"
 
 ## Apps
@@ -21,7 +21,7 @@ cask "brave-browser"
 cask "karabiner-elements"
 cask "iterm2"
 cask "warp"
-cask "paw"
+cask "rapidapi"
 cask "tower"
 cask "transmit"
 cask "charles"

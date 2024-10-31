@@ -9,6 +9,9 @@
       },
       "homebrew/core": {
         "revision": "95e11f656040666bf6007a70dd4a7fe2dbdcd559"
+      },
+      "harelba/q": {
+        "revision": "8d1b3ecd46345bf232168d8a27b07c902543355b"
       }
     },
     "brew": {
@@ -1130,6 +1133,69 @@
               "cellar": ":any_skip_relocation",
               "url": "https://ghcr.io/v2/homebrew/core/tfenv/blobs/sha256:c66a9c7c90b14b63c471b56405ec064b081474cc85528b324bd1bcc1c1af248d",
               "sha256": "c66a9c7c90b14b63c471b56405ec064b081474cc85528b324bd1bcc1c1af248d"
+            }
+          }
+        }
+      },
+      "harelba/q/q": {
+        "version": "3.1.6",
+        "bottle": {
+          "rebuild": 0,
+          "root_url": "https://github.com/harelba/homebrew-q/releases/download/q-3.1.6",
+          "files": {
+            "big_sur": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://github.com/harelba/homebrew-q/releases/download/q-3.1.6/q-3.1.6.big_sur.bottle.tar.gz",
+              "sha256": "b1e6c7b95855725d6a42eaa51cb58bacc2812ad326d4edf78c896a89166a703a"
+            },
+            "catalina": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://github.com/harelba/homebrew-q/releases/download/q-3.1.6/q-3.1.6.catalina.bottle.tar.gz",
+              "sha256": "d20039ec31851f03e3d4241a7b86973d255b8156199c4298e560631f9c1a919b"
+            },
+            "x86_64_linux": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://github.com/harelba/homebrew-q/releases/download/q-3.1.6/q-3.1.6.x86_64_linux.bottle.tar.gz",
+              "sha256": "ccb323b44c719a1e56b88d224cb02c4ae611ecd620cd8597e903c0cd689752fa"
+            }
+          }
+        }
+      },
+      "eza": {
+        "version": "0.20.5",
+        "bottle": {
+          "rebuild": 0,
+          "root_url": "https://ghcr.io/v2/homebrew/core",
+          "files": {
+            "arm64_sequoia": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:15efd8355d49e97521a03a881b3dd3874bdfe09cc3c18e090d76959138087320",
+              "sha256": "15efd8355d49e97521a03a881b3dd3874bdfe09cc3c18e090d76959138087320"
+            },
+            "arm64_sonoma": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:a966f4de04e0f1aa92dc59b530819e629e6680ff0d57528eb8e7a0594dbf4eb3",
+              "sha256": "a966f4de04e0f1aa92dc59b530819e629e6680ff0d57528eb8e7a0594dbf4eb3"
+            },
+            "arm64_ventura": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:9b26bb7e02179898430d1cd8a9117c906979ce2b681095ae0bb5ab71a646eac1",
+              "sha256": "9b26bb7e02179898430d1cd8a9117c906979ce2b681095ae0bb5ab71a646eac1"
+            },
+            "sonoma": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:fc15164a63fb9fd6dabe0dda6b2766ed1aed4a3a5c706149109fe0aedd884815",
+              "sha256": "fc15164a63fb9fd6dabe0dda6b2766ed1aed4a3a5c706149109fe0aedd884815"
+            },
+            "ventura": {
+              "cellar": ":any",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:6b400cab876387d88fb9056f898337d24135b70c9d255bc13725218da32bbd16",
+              "sha256": "6b400cab876387d88fb9056f898337d24135b70c9d255bc13725218da32bbd16"
+            },
+            "x86_64_linux": {
+              "cellar": ":any_skip_relocation",
+              "url": "https://ghcr.io/v2/homebrew/core/eza/blobs/sha256:b6a4c9f440ef836bb384d87531a5132e76489182780afe5840190cfbe7629cd0",
+              "sha256": "b6a4c9f440ef836bb384d87531a5132e76489182780afe5840190cfbe7629cd0"
             }
           }
         }

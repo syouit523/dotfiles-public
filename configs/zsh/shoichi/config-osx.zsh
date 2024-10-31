@@ -10,8 +10,12 @@ elif [ "$architecture" = "x86_64" ]; then
     export PATH="$PATH:/usr/local/share/git-core/contrib/diff-highlight"
 fi
 
-
+# rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+#sbin
+export PATH="/usr/local/sbin:$PATH"
+
+#fzf
 source <(fzf --zsh)

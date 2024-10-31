@@ -26,6 +26,7 @@ ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
+	make font
 	make zsh
 	make deploy
 	make ssh-key-gen
@@ -38,7 +39,6 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh $(XCODE_SELECT_INSTALL)
 	make zsh
 	make deploy
-	make font
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported
@@ -60,11 +60,11 @@ endif
 
 .PHONY: font f
 font f:
-	git clone --filter=blob:none --sparse git@github.com:ryanoasis/nerd-fonts
+	git clone --depth=1 https://github.com/ryanoasis/nerd-fonts.git
 	cd nerd-fonts
-	git sparse-checkout add patched-fonts/JetBrainsMono
+# install all fonts
 	./install.sh
-	echo "Change iTerm2 font for `JetBrainsMono Nerd Font`!!"
+	echo "Set the installed fonts!!"
 
 .PHONY: fish
 fish:

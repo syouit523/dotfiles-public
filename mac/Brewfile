@@ -1,6 +1,4 @@
 tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/core"
 tap "robotsandpencils/made"
 
 ## CLI
@@ -12,6 +10,7 @@ brew "ios-deploy"
 brew "robotsandpencils/made/xcodes"
 
 ## Apps
+cask "google-japanese-ime"
 cask "sf-symbols"
 # cask "kindle"
 cask "alfred"
@@ -21,13 +20,15 @@ cask "proxyman"
 cask "brave-browser"
 cask "karabiner-elements"
 cask "iterm2"
-cask "hyper"
-cask "visual-studio-code"
+cask "warp"
 cask "paw"
 cask "tower"
 cask "transmit"
 cask "charles"
 cask "vlc"
+cask "docker"
+cask "google-chrome"
+cask "visual-studio-code"
 
 ## optional
 #mas "1Password", id: 443987910

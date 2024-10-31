@@ -35,7 +35,7 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
 	make brew_setup
-	sh $(XCODE_SELECT_INSTALL)
+#	sh $(XCODE_SELECT_INSTALL)
 	make zsh
 	make deploy
 	make font

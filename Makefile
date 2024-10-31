@@ -61,7 +61,11 @@ endif
 .PHONY: brew_update_all
 brew_update_all:
 	brew update
+ifeq ($(UNAME_S), Linux)
+	brew upgrade
+else ifeq ($(UNAME_S), Darwin)
 	brew upgrade --cask --greedy
+endif
 	brew bundle
 
 .PHONY: font f

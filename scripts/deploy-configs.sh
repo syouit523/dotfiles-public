@@ -51,6 +51,7 @@ deploy_vim () {
 
 deploy_zsh () {
     ln -sf "$1"/zshrc ~/.zshrc
+    ln -sf "$1"/p10k.zsh ~/.p10k.zsh
     mkdir -p ~/.config/zsh/shoichi/
     sudo ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
 }

@@ -51,11 +51,12 @@ deploy_vim () {
 
 deploy_zsh () {
     ln -sf "$1"/zshrc ~/.zshrc
-    ln -sf "$1"/shoichi/* ~/.zsh-configs/shoichi/
+    mkdir -p ~/.config/zsh/shoichi/
+    sudo ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
 }
 
 deploy_fish () {
-    ln -sf "$1"/config/fish/* ~/.config/fish/
+    sudo ln -sf "$1"/config/fish/* ~/.config/fish/
 }
 
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do

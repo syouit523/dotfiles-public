@@ -10,7 +10,7 @@ brew "mas"
 brew "robotsandpencils/made/xcodes"
 
 ## font
-brew font-Hack-nerd-font
+cask font-hack-nerd-font
 
 ## Apps
 cask "google-japanese-ime"

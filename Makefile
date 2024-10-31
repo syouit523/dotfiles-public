@@ -58,6 +58,12 @@ ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"
 endif
 
+.PHONY: brew_update_all
+brew_update_all:
+	brew update
+	brew upgrade --cask --greedy
+	brew bundle
+
 .PHONY: font f
 font f:
 	git clone --depth=1 https://github.com/ryanoasis/nerd-fonts.git

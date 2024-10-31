@@ -9,6 +9,9 @@ brew "mas"
 #brew "ios-deploy"
 brew "robotsandpencils/made/xcodes"
 
+## font
+brew font-Hack-nerd-font
+
 ## Apps
 cask "google-japanese-ime"
 cask "sf-symbols"

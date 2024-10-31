@@ -16,6 +16,3 @@ eval "$(rbenv init -)"
 
 #sbin
 export PATH="/usr/local/sbin:$PATH"
-
-#fzf
-source <(fzf --zsh)

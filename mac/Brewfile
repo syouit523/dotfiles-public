@@ -22,6 +22,7 @@ cask "proxyman"
 # cask "discord"
 cask "brave-browser"
 cask "karabiner-elements"
+cask "wezterm"
 cask "iterm2"
 cask "warp"
 cask "rapidapi"
@@ -32,6 +33,7 @@ cask "vlc"
 cask "docker"
 cask "google-chrome"
 cask "visual-studio-code"
+cask "cursor"
 
 ## optional
 #mas "1Password", id: 443987910

@@ -99,6 +99,7 @@ zsh_extensions:
 
 .PHONY: linux_setup
 linux_setup:
+# for GUI Linux
 	@echo "Install Flatpak\n"
 	sh $(SCRIPTS)/linux/install-flatpak.sh
 	@echo "Install Apps\n"

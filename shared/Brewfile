@@ -22,7 +22,6 @@ brew "nmap"
 brew "node"
 brew "optipng"
 brew "tcl-tk"
-brew "harelba/q/q"
 brew "ruby-build"
 brew "rbenv"
 brew "tfenv"
@@ -37,9 +36,6 @@ brew "tlrc"
 brew "thefuck"
 brew "zoxide"
 brew "tree"
-
-## font
-brew "font-hack-nerd-font"
 
 ## neovim
 brew "ripgrep"

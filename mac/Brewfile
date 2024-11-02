@@ -1,5 +1,6 @@
 tap "homebrew/bundle"
 tap "robotsandpencils/made"
+tap "harelba/q"
 
 ## CLI
 brew "mas"
@@ -8,9 +9,11 @@ brew "mas"
 #brew "ideviceinstaller"
 #brew "ios-deploy"
 brew "robotsandpencils/made/xcodes"
+brew "harelba/q/q"
 
 ## font
 cask "font-hack-nerd-font"
+brew "font-hack-nerd-font"
 
 ## Apps
 cask "google-japanese-ime"

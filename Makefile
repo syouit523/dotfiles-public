@@ -76,11 +76,11 @@ endif
 
 .PHONY: font f
 font f:
+	@echo "Installing fonts...\n"
 	git clone --depth=1 https://github.com/ryanoasis/nerd-fonts.git
-	cd nerd-fonts
 # install all fonts
-	./install.sh
-	echo "Set the installed fonts!!"
+	nerd-fonts/install.sh
+	@echo "Installed fonts!!"
 
 .PHONY: fish
 fish:

@@ -1,5 +1,4 @@
 tap "homebrew/bundle"
-tap "harelba/q"
 
 ## CLI
 brew "awscli"

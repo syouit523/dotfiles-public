@@ -41,6 +41,7 @@ else ifeq ($(UNAME_S), Darwin)
 	make zsh
 	make deploy
 	make zsh_extensions
+	make linux_setup
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported
@@ -50,11 +51,13 @@ endif
 
 .PHONY: brew_install
 brew_install:
+	@echo "Install Homebrew\n"
 	sh $(SCRIPTS)/install-brew.sh
 
 
 .PHONY: brew_setup
 brew_setup:
+	@echo "Install Brewfile\n"
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"
@@ -62,6 +65,7 @@ endif
 
 .PHONY: brew_update_all
 brew_update_all:
+	@echo "Update Homebrew\n"
 	brew update
 ifeq ($(UNAME_S), Linux)
 	brew upgrade
@@ -80,26 +84,39 @@ font f:
 
 .PHONY: fish
 fish:
+	@echo "Setup Fish\n"
 	sh $(SETUP_FISH)
 
 .PHONY: zsh
 zsh:
+	@echo "Setup Zsh\n"
 	sh $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:
+	@echo "Install Zsh Extensions\n"
 	sh $(SCRIPTS)/install-zsh-extensitions.sh
+
+.PHONY: linux_setup
+linux_setup:
+	@echo "Install Flatpak\n"
+	sh $(SCRIPTS)/linux/install-flatpak.sh
+	@echo "Install Apps\n"
+	sh $(SCRIPTS)/linux/install-apps.sh
 
 .PHONY: ssh-key-gen
 ssh-key-gen:
+	@echo "Generate SSH Key\n"
 	sh $(SCRIPTS)/ssh-key-gen.sh
 
 
 ## ******************** Deploy dot files ********************
 .PHONY: deploy d
 deploy d:
+	@echo "Deploy dot files\n"
 	sh $(DEPLOY_CONFIGS) $(ROOT)
 
 .PHONY: clean c
 clean c:
+	@echo "Clean\n"
 	echo "clean"

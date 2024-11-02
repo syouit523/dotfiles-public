@@ -31,3 +31,14 @@ brew "wget"
 brew "zsh"
 brew "fzf"
 brew "fd"
+brew "bat"
+brew "git-delta"
+brew "tlrc"
+brew "thefuck"
+brew "zoxide"
+
+## font
+brew "font-hack-nerd-font"
+
+## neovim
+brew "ripgrep"

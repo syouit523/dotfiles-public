@@ -36,6 +36,7 @@ brew "git-delta"
 brew "tlrc"
 brew "thefuck"
 brew "zoxide"
+brew "tree"
 
 ## font
 brew "font-hack-nerd-font"

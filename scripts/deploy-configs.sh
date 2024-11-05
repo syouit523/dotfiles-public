@@ -66,6 +66,7 @@ deploy_vscode () {
 }
 
 deploy_nvim () {
+  mkdir -p ~/.config/nvim/
   sudo ln -sf "$1"/* ~/.config/nvim/
 }
 

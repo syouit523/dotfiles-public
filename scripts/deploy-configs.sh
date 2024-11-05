@@ -66,8 +66,21 @@ deploy_vscode () {
 }
 
 deploy_nvim () {
-  mkdir -p ~/.config/nvim/
-  sudo ln -sf "$1"/* ~/.config/nvim/
+    mkdir -p ~/.config/nvim/
+
+  source_dir=""$1""
+  target_dir="${HOME}/.config/nvim"
+
+  # target_dir に source_dir 内のすべてのファイルのシンボリックリンクを作成
+  find "$source_dir" -type f | while read -r file; do
+    # リンク先のパスを生成
+    link_path="$target_dir/${file#$source_dir/}"
+    # 必要なディレクトリを作成
+    mkdir -p "$(dirname "$link_path")"
+  # シンボリックリンクを作成
+    [ ! -e "$link_path" ] || rm "$link_path"  # 既存のリンクを削除
+    ln -sf "$file" "$link_path"
+  done
 }
 
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do

@@ -37,7 +37,11 @@ return {
 				"emmet_ls",
 				"prismals",
 				"pyright",
-				"terraform-ls",
+				"terraformls",
+				"kotlin_language_server",
+				"swift_mesonls",
+				"jsonls", -- JSON
+				"yamlls", -- YAML
 			},
 		})
 
@@ -50,6 +54,8 @@ return {
 				"pylint", -- python linter
 				"eslint_d", -- js linter
 				"tflint", -- tflint
+				"yamlfmt", -- yaml formatter
+				"yamllint", -- yaml lintter
 			},
 		})
 	end,

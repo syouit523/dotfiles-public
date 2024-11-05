@@ -65,6 +65,10 @@ deploy_vscode () {
   sudo ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
 }
 
+deploy_nvim () {
+  sudo ln -sf "$1"/* ~/.config/nvim/
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "deploying ${DIR_NAME}"
@@ -74,5 +78,6 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "zsh" ) deploy_zsh $DIR_FULLPATH;;
     "fish" ) deploy_fish $DIR_FULLPATH;;
     "vscode" ) deploy_vscode $DIR_FULLPATH;;
+    "nvim" ) deploy_nvim $DIR_FULLPATH;;
   esac
 done

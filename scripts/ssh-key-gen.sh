@@ -25,7 +25,7 @@ else
     echo "新しいSSHキーが作成されました: $KEY_PATH"
     ## PRINT THE KEY
     echo "Please add the pub-key on Github!"
-    cat $HOME/.ssh/id_ed25519.pub
+    bat $HOME/.ssh/id_ed25519.pub
     connection_test_github
     ## change to ssh connection on this repository
     git remote set-url origin git@github.com:syouit523/dotfiles-public.git

@@ -5,6 +5,7 @@ if command -v zsh >/dev/null 2>&1; then
     chsh -s $(which zsh)
     zdh
     # install oh-my-zsh
+    rm -rf ${HOME}/.oh-my-zsh
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
     zsh -c 'source ~/.zshrc'
     # theme

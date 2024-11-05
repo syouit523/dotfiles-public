@@ -36,7 +36,7 @@ brew "tlrc"
 brew "thefuck"
 brew "zoxide"
 brew "tree"
-brew "jesseduffield/lazygit/lazygit
+brew "jesseduffield/lazygit/lazygit"
 
 ## neovim
 brew "ripgrep"

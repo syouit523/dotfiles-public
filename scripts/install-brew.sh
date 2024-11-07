@@ -8,7 +8,7 @@ if command -v brew >/dev/null 2>&1; then
     echo "Homebrew is already installed."
 else
     echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
 fi
 
 # PATH設定

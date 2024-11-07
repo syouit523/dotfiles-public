@@ -12,7 +12,8 @@ else
         if [ "$architecture" = "arm64" ]; then
         # for Apple silicon
 	    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
-     	    export PATH="$PATH:/opt/homebrew/bin/"
+     	    eval "$(/opt/homebrew/bin/brew shellenv)"
+     	    source $HOME/.zprofile
         fi
     fi
 fi

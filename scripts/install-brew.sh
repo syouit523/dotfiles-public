@@ -1,4 +1,4 @@
-
+#!/bin/zsh
 
 architecture=$(uname -m)
 

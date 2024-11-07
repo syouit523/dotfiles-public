@@ -52,7 +52,7 @@ endif
 .PHONY: brew_install
 brew_install:
 	@echo "Install Homebrew\n"
-	sh $(SCRIPTS)/install-brew.sh
+	$(SCRIPTS)/install-brew.sh
 
 .PHONY: brew_setup
 brew_setup:

@@ -54,14 +54,19 @@ brew_install:
 	@echo "Install Homebrew\n"
 #	chmod u+x $(SCRIPTS)/install-brew.sh
 #	zsh $(SCRIPTS)/install-brew.sh
-	source $(SCRIPTS)/install-brew.sh
+	sh $(SCRIPTS)/install-brew.sh
 
 .PHONY: brew_setup
 brew_setup:
 	@echo "Install Brewfile\n"
 #$(source $(HOME)/.zprofile)
-	$(eval $(shell brew shellenv))
-	$(eval $(shell /usr/local/bin/brew shellenv))
+#	$(eval $(shell brew shellenv))
+#	$(eval $(shell /usr/local/bin/brew shellenv))
+#	$(eval $(shell /usr/local/bin/brew shellenv 2>/dev/null || true))
+#	$(eval $(shell $(HOME)/.zprofile))
+	HOMEBREW_ENV := $(shell if [ -x /opt/homebrew/bin/brew ]; then /opt/homebrew/bin/brew shellenv; elif [ -x /usr/local/bin/brew ]; then /usr/local/bin/brew shellenv; fi)
+	$(eval $(HOMEBREW_ENV))
+
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

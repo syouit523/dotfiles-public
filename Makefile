@@ -51,13 +51,13 @@ endif
 
 .PHONY: brew_install
 brew_install:
+	@echo "Install Homebrew\n"
+	sh $(SCRIPTS)/install-brew.sh
 	ifeq ($(UNAME_S), Darwin)
 		echo >> /Users/syouit/.zprofile
 		echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> /Users/syouit/.zprofile
     		eval "$(/opt/homebrew/bin/brew shellenv)"
 	endif
-	@echo "Install Homebrew\n"
-	sh $(SCRIPTS)/install-brew.sh
 
 
 .PHONY: brew_setup

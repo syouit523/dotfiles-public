@@ -65,7 +65,7 @@ brew_setup:
 #	$(eval $(shell /usr/local/bin/brew shellenv 2>/dev/null || true))
 #	$(eval $(shell $(HOME)/.zprofile))
 	HOMEBREW_ENV := $(shell if [ -x /opt/homebrew/bin/brew ]; then /opt/homebrew/bin/brew shellenv; elif [ -x /usr/local/bin/brew ]; then /usr/local/bin/brew shellenv; fi)
-	$(eval $(HOMEBREW_ENV))
+	$(HOMEBREW_ENV)
 
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)

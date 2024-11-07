@@ -51,10 +51,14 @@ endif
 
 .PHONY: brew_install
 brew_install:
-	@echo "Install Homebrew\n"
+#	@echo "Install Homebrew\n"
 #	chmod u+x $(SCRIPTS)/install-brew.sh
 #	zsh $(SCRIPTS)/install-brew.sh
-	sh $(SCRIPTS)/install-brew.sh
+#	sh $(SCRIPTS)/install-brew.sh
+
+	@echo "Running Homebrew installation script..."
+	chmod +x $(SCRIPTS)/install-brew.sh
+	zsh $(SCRIPTS)/install-brew.sh
 
 .PHONY: brew_setup
 brew_setup:
@@ -64,8 +68,8 @@ brew_setup:
 #	$(eval $(shell /usr/local/bin/brew shellenv))
 #	$(eval $(shell /usr/local/bin/brew shellenv 2>/dev/null || true))
 #	$(eval $(shell $(HOME)/.zprofile))
-	HOMEBREW_ENV := $(shell if [ -x /opt/homebrew/bin/brew ]; then /opt/homebrew/bin/brew shellenv; elif [ -x /usr/local/bin/brew ]; then /usr/local/bin/brew shellenv; fi)
-	$(HOMEBREW_ENV)
+	@echo "Setting up Brewfile packages..."
+	$(eval $(shell /opt/homebrew/bin/brew shellenv))
 
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)

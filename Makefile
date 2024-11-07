@@ -52,13 +52,16 @@ endif
 .PHONY: brew_install
 brew_install:
 	@echo "Install Homebrew\n"
-	chmod u+x $(SCRIPTS)/install-brew.sh
-	zsh $(SCRIPTS)/install-brew.sh
+#	chmod u+x $(SCRIPTS)/install-brew.sh
+#	zsh $(SCRIPTS)/install-brew.sh
+	source $(SCRIPTS)/install-brew.sh
 
 .PHONY: brew_setup
 brew_setup:
 	@echo "Install Brewfile\n"
-	$(eval $(shell brew shellenv)) # Set the path for Homebrew
+#$(source $(HOME)/.zprofile)
+	$(eval $(shell brew shellenv))
+	$(eval $(shell /usr/local/bin/brew shellenv))
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

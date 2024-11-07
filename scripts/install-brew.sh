@@ -20,7 +20,7 @@ else
             echo 'eval "$(/usr/local/bin/brew shellenv)"' >> $HOME/.zprofile
             eval "$(/usr/local/bin/brew shellenv)"
         fi
-        source $HOME/.zprofile
+        # source $HOME/.zprofile
     fi
 fi
 

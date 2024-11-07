@@ -67,10 +67,12 @@ brew_setup:
 # 一時的にHomebrewのPATHを設定
 ifeq ($(ARCHITECTURE), arm64)
 	eval "$$(/opt/homebrew/bin/brew shellenv)"; \
+	brew bundle --file="$(SHARED)/Brewfile"
 else
 	eval "$$(/usr/local/bin/brew shellenv)"; \
-endif
 	brew bundle --file="$(SHARED)/Brewfile"
+endif
+
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"
 endif

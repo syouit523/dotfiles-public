@@ -64,17 +64,20 @@ brew_install:
 .PHONY: brew_setup
 brew_setup:
 	@echo "Setting up Brewfile packages..."
+
+ifeq ($(UNAME_S), Darwin)
 # 一時的にHomebrewのPATHを設定
 ifeq ($(ARCHITECTURE), arm64)
 	eval "$$(/opt/homebrew/bin/brew shellenv)"; \
-	brew bundle --file="$(SHARED)/Brewfile"
+	brew bundle --file="$(SHARED)/Brewfile"; \
+	brew bundle --file="$(MAC)/Brewfile"
 else
 	eval "$$(/usr/local/bin/brew shellenv)"; \
-	brew bundle --file="$(SHARED)/Brewfile"
-endif
-
-ifeq ($(UNAME_S), Darwin)
+	brew bundle --file="$(SHARED)/Brewfile"; \
 	brew bundle --file="$(MAC)/Brewfile"
+endif
+else ifeq ($(UNAME_S), Linux)
+	brew bundle --file="$(SHARED)/Brewfile"
 endif
 
 .PHONY: brew_update_all

@@ -62,15 +62,9 @@ brew_install:
 
 .PHONY: brew_setup
 brew_setup:
-	@echo "Install Brewfile\n"
-#$(source $(HOME)/.zprofile)
-#	$(eval $(shell brew shellenv))
-#	$(eval $(shell /usr/local/bin/brew shellenv))
-#	$(eval $(shell /usr/local/bin/brew shellenv 2>/dev/null || true))
-#	$(eval $(shell $(HOME)/.zprofile))
 	@echo "Setting up Brewfile packages..."
-	$(eval $(shell /opt/homebrew/bin/brew shellenv))
-
+# 一時的にHomebrewのPATHを設定
+	eval "$$($(SCRIPTS)/install-brew.sh --print-path)"; \
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

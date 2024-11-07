@@ -3,12 +3,20 @@
 # Apple SiliconのHomebrewパス
 BREW_PATH="/opt/homebrew/bin/brew"
 
+# `--print-path` オプションが指定されている場合は、HomebrewのPATH設定を出力して終了
+if [[ "$1" == "--print-path" ]]; then
+    if [[ -x $BREW_PATH ]]; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+    fi
+    exit 0
+fi
+
 # Homebrewのインストール確認
 if command -v brew >/dev/null 2>&1; then
     echo "Homebrew is already installed."
 else
     echo "Installing Homebrew..."
-    sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
 # PATH設定
@@ -19,6 +27,26 @@ if [[ -x $BREW_PATH ]]; then
 else
     echo "Error: Homebrew installation path not found."
 fi
+
+# Apple SiliconのHomebrewパス
+# BREW_PATH="/opt/homebrew/bin/brew"
+
+# # Homebrewのインストール確認
+# if command -v brew >/dev/null 2>&1; then
+#     echo "Homebrew is already installed."
+# else
+#     echo "Installing Homebrew..."
+#     sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+# fi
+
+# # PATH設定
+# if [[ -x $BREW_PATH ]]; then
+#     echo "Configuring Homebrew PATH..."
+#     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+#     eval "$(/opt/homebrew/bin/brew shellenv)"
+# else
+#     echo "Error: Homebrew installation path not found."
+# fi
 
 # architecture=$(uname -m)
 

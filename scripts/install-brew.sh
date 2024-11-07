@@ -13,6 +13,7 @@ else
         # for Apple silicon
 	    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
      	    eval "$(/opt/homebrew/bin/brew shellenv)"
+	    export PATH="$PATH:/opt/homebrew/bin/brew/"
 	    #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
 	    #eval "$(/opt/homebrew/bin/brew shellenv)"
      	    source $HOME/.zprofile

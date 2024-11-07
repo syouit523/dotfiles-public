@@ -8,6 +8,7 @@ SCRIPTS  = $(ROOT)/scripts
 SHARED = $(ROOT)/shared
 MAC = $(ROOT)/mac
 LINUX = $(ROOT)/linux
+ARCHITECTURE=$(uname -m)
 # BREWFILE = $(ROOT)/Brewfile
 XCODE_SELECT_INSTALL    = $(MAC)/scripts/xcode-select-install.sh
 MAKE_WORKSPACE   = $(SCRIPTS)/make-workspace.sh
@@ -64,7 +65,11 @@ brew_install:
 brew_setup:
 	@echo "Setting up Brewfile packages..."
 # 一時的にHomebrewのPATHを設定
-	eval $(shell /opt/homebrew/bin/brew shellenv)
+ifeq ($(ARCHITECTURE), arm64)
+	eval "$$(/opt/homebrew/bin/brew shellenv)"; \
+else
+	eval "$$(/usr/local/bin/brew shellenv)"; \
+endif
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

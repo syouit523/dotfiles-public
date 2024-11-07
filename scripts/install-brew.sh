@@ -13,9 +13,6 @@ else
         # for Apple silicon
 	    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
 	    eval "$(/opt/homebrew/bin/brew shellenv)"
-        elif [ "$architecture" = "x86_64" ]; then
-        # for Intel Mac
-        # TODO
         fi
     fi
 fi

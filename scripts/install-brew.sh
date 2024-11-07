@@ -12,7 +12,7 @@ else
         if [ "$architecture" = "arm64" ]; then
         # for Apple silicon
 	    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
-     	    eval "$(/opt/homebrew/bin/brew shellenv)"
+     	    echo eval "$(/opt/homebrew/bin/brew shellenv)"
 	    #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
 	    #eval "$(/opt/homebrew/bin/brew shellenv)"
      	    source $HOME/.zprofile

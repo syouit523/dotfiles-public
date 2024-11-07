@@ -10,6 +10,7 @@ if command -v brew >/dev/null 2>&1; then
 else
     sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
     if [ "$(uname)" = 'Darwin' ]; then
+        echo >> $HOME/.zprofile
         if [ "$architecture" = "arm64" ]; then
             # Set the path for Apple Silicon
             echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
@@ -19,6 +20,7 @@ else
             echo 'eval "$(/usr/local/bin/brew shellenv)"' >> $HOME/.zprofile
             eval "$(/usr/local/bin/brew shellenv)"
         fi
+        source $HOME/.zprofile
     fi
 fi
 

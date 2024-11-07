@@ -15,7 +15,7 @@ else
      	    eval "$(/opt/homebrew/bin/brew shellenv)"
 	    #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
 	    #eval "$(/opt/homebrew/bin/brew shellenv)"
-     	    #source $HOME/.zprofile
+     	    source $HOME/.zprofile
         fi
     fi
 fi

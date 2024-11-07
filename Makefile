@@ -64,7 +64,7 @@ brew_install:
 brew_setup:
 	@echo "Setting up Brewfile packages..."
 # 一時的にHomebrewのPATHを設定
-	$(eval $(shell /opt/homebrew/bin/brew shellenv))
+	eval $(shell /opt/homebrew/bin/brew shellenv)
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

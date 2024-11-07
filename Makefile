@@ -58,6 +58,7 @@ brew_install:
 .PHONY: brew_setup
 brew_setup:
 	@echo "Install Brewfile\n"
+	$(eval $(shell brew shellenv)) # Set the path for Homebrew
 	brew bundle --file="$(SHARED)/Brewfile"
 ifeq ($(UNAME_S), Darwin)
 	brew bundle --file="$(MAC)/Brewfile"

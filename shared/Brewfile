@@ -37,6 +37,7 @@ brew "thefuck"
 brew "zoxide"
 brew "tree"
 brew "jesseduffield/lazygit/lazygit"
+brew "gh"
 
 ## neovim
 brew "ripgrep"

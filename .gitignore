@@ -3,5 +3,6 @@
 nerd-fonts/
 shared/Brewfile.lock.json
 mac/Brewfile.lock.json
+mac/mac-app/Brewfile.lock.json
 fzf-git.sh
 configs/nvim/lazy-lock.json

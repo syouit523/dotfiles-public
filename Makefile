@@ -81,7 +81,7 @@ else ifeq ($(UNAME_S), Linux)
 endif
 
 .PHONY: brew_mac_app
-mac_app:
+brew_mac_app:
 	@echo "Installing Mac apps from AppStore..."
 	- brew bundle --file="$(MAC)/mac-app/Brewfile"
 

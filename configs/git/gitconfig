@@ -1,5 +1,5 @@
 [core]
-  editor = vim
+  editor = nvim
   excludesFiles = ~/.gitignore_global
   pager = delta
 [interactive]

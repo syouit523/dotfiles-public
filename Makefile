@@ -1,8 +1,6 @@
 ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 ## ******************** Script Environment ********************
-
-
 UNAME_S := $(shell uname -s)
 SCRIPTS  = $(ROOT)/scripts
 SHARED = $(ROOT)/shared
@@ -26,6 +24,7 @@ bootstrap b:
 ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
+	make reload_zshrc
 	make brew_setup
 	make font
 	make zsh
@@ -38,6 +37,7 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh killall Finder
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
+	make reload_zshrc
 	make brew_setup
 #	sh $(XCODE_SELECT_INSTALL)
 	make zsh
@@ -128,6 +128,15 @@ ssh-key-gen:
 	@echo "Generate SSH Key\n"
 	sh $(SCRIPTS)/ssh-key-gen.sh
 
+.PHONY: reload_zshrc
+reload_zshrc:
+	@if command -v zsh >/dev/null 2>&1; then \
+		ZSH_SHELL=/bin/zsh; \
+		echo "Reloading .zshrc using $$ZSH_SHELL"; \
+		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+	else \
+		echo "Zsh is not installed. Skipping .zshrc reload."; \
+	fi
 
 ## ******************** Deploy dot files ********************
 .PHONY: deploy d

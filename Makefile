@@ -80,6 +80,11 @@ else ifeq ($(UNAME_S), Linux)
 	- brew bundle --file="$(SHARED)/Brewfile"
 endif
 
+.PHONY: brew_mac_app
+mac_app:
+	@echo "Installing Mac apps from AppStore..."
+	- brew bundle --file="$(MAC)/mac-app/Brewfile"
+
 .PHONY: brew_update_all
 brew_update_all:
 	@echo "Update Homebrew\n"

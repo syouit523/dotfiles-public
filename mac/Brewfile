@@ -3,7 +3,6 @@ tap "robotsandpencils/made"
 tap "harelba/q"
 
 ## CLI
-brew "mas"
 #brew "libusbmuxd", args: ["HEAD"]
 #brew "libimobiledevice", args: ["HEAD"]
 #brew "ideviceinstaller"
@@ -37,9 +36,3 @@ cask "google-chrome"
 cask "visual-studio-code"
 cask "cursor"
 
-## optional
-#mas "1Password", id: 443987910
-#mas "RunCat", id: 1429033973
-#mas "TweetDeck", id: 485812721
-#mas "Spark", id: 1176895641
-#mas "LINE", id: 539883307

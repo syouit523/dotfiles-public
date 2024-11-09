@@ -1,5 +1,7 @@
 #!/bin/bash
 
+zsh -c 'source ~/.zshrc'
+
 # fzf-git
 git clone --depth=1 https://github.com/junegunn/fzf-git.sh.git $HOME/.config/zsh/fzf-git
 

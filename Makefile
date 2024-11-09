@@ -24,11 +24,12 @@ bootstrap b:
 ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
+	make deploy
 	make reload_zshrc
 	make brew_setup
 	make font
 	make zsh
-	make deploy
+#	make deploy
 	make zsh_extensions
 	make linux_setup
 	make ssh-key-gen
@@ -37,11 +38,12 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh killall Finder
 #	sh $(MAKE_WORKSPACE)
 	make brew_install
+	make deploy
 	make reload_zshrc
 	make brew_setup
 #	sh $(XCODE_SELECT_INSTALL)
 	make zsh
-	make deploy
+#	make deploy
 	make zsh_extensions
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)

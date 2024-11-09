@@ -130,8 +130,8 @@ ssh-key-gen:
 
 .PHONY: reload_zshrc
 reload_zshrc:
-	@if command -v zsh >/dev/null 2>&1; then \
-		ZSH_SHELL=/bin/zsh; \
+	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
+		ZSH_SHELL=$(shell which zsh); \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
 		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
 	else \

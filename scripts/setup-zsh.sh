@@ -2,6 +2,14 @@
 
 if command -v zsh >/dev/null 2>&1; then
     # set to the default shell to zsh
+    if [ "$(uname)" == 'Darwin' ]; then
+      sudo sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac
+      if [ "$(uname -m)" == x86_64 ]; then
+        sudo sh -c 'echo "/usr/local/bin/zsh" >> /etc/shells' # add zsh path of homebrew
+      elif [ "$(uname -m)" == arm64 ]; then
+        sudo sh -c 'echo "/opt/homebrew/bin/zsh" >> /etc/shells' # add zsh path of homebrew
+      fi
+    fi
     chsh -s $(which zsh)
     zdh
 

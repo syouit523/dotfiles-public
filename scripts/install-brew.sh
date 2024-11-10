@@ -1,93 +1,34 @@
 #!/bin/zsh
 
-# Apple SiliconのHomebrewパス
-# BREW_PATH="/opt/homebrew/bin/brew"
 
-# `--print-path` オプションが指定されている場合は、HomebrewのPATH設定を出力して終了
-# if [[ "$1" == "--print-path" ]]; then
-#     if [[ -x $BREW_PATH ]]; then
-#         echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
-#     fi
-#     exit 0
-# fi
-
-# # Homebrewのインストール確認
-# if command -v brew >/dev/null 2>&1; then
-#     echo "Homebrew is already installed."
-# else
-#     echo "Installing Homebrew..."
-#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-# fi
-
-# # PATH設定
-# if [[ -x $BREW_PATH ]]; then
-#     echo "Configuring Homebrew PATH..."
-#     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-#     eval "$(/opt/homebrew/bin/brew shellenv)"
-# else
-#     echo "Error: Homebrew installation path not found."
-# fi
-
-# Apple SiliconのHomebrewパス
-# BREW_PATH="/opt/homebrew/bin/brew"
-
-# # Homebrewのインストール確認
-# if command -v brew >/dev/null 2>&1; then
-#     echo "Homebrew is already installed."
-# else
-#     echo "Installing Homebrew..."
-#     sudo curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
-# fi
-
-# # PATH設定
-# if [[ -x $BREW_PATH ]]; then
-#     echo "Configuring Homebrew PATH..."
-#     echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
-#     eval "$(/opt/homebrew/bin/brew shellenv)"
-# else
-#     echo "Error: Homebrew installation path not found."
-# fi
-
-architecture=$(uname -m)
 
 if command -v brew >/dev/null 2>&1; then
     echo "brew is already installed."
     echo "skip installing brew"
 else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    if [ "$(uname)" = 'Darwin' ]; then
-        echo >> $HOME/.zprofile
-        if [ "$architecture" = "arm64" ]; then
-            # Set the path for Apple Silicon
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
-        else
-            # Set the path for Intel Mac
-            echo 'eval "$(/usr/local/bin/brew shellenv)"' >> $HOME/.zprofile
-            eval "$(/usr/local/bin/brew shellenv)"
-        fi
-        source $HOME/.zprofile
-    fi
+    # シェルの種類を判別
+    SHELL_NAME=$(basename "$SHELL")
+    # シェルごとの設定ファイルを決定
+    case "$SHELL_NAME" in
+        bash)
+            CONFIG_FILE="$HOME/.bash_profile"
+        ;;
+        zsh)
+            CONFIG_FILE="$HOME/.zshrc"
+        ;;
+        fish)
+            CONFIG_FILE="$HOME/.config/fish/config.fish"
+        ;;
+        *)
+            echo "未対応のシェル: $SHELL_NAME"
+            exit 1
+        ;;
+    esac
+    # 環境変数を設定
+    echo "eval \$($(brew --prefix)/bin/brew shellenv)" >> "$CONFIG_FILE"
+    eval "$($(brew --prefix)/bin/brew shellenv)"
+
+    echo "Homebrewのインストールが完了しました。"
+    echo "環境変数を $CONFIG_FILE に追加しました。"
 fi
-
-
-# architecture=$(uname -m)
-
-# if command -v brew >/dev/null 2>&1; then
-#     echo "brew is already installed."
-#     echo "skip installing brew"
-# else
-#     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-#     if [ "$(uname)" = 'Darwin' ]; then
-# 	    echo >> $HOME/.zprofile
-#         if [ "$architecture" = "arm64" ]; then
-#         # for Apple silicon
-# 	    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
-#      	    eval "$(/opt/homebrew/bin/brew shellenv)"
-# 	    export PATH="$PATH:/opt/homebrew/bin/brew/"
-# 	    #(echo; echo 'eval "$(/opt/homebrew/bin/brew shellenv)"') >> $HOME/.zprofile
-# 	    #eval "$(/opt/homebrew/bin/brew shellenv)"
-#      	    source $HOME/.zprofile
-#         fi
-#     fi
-# fi

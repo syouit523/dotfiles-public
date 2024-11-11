@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# $1: Operation mode (link, unlink, delete)
+# $1: Operation mode (link, copy, delete)
 # $2: Root dir
 MODE=$1
 ROOT_DIR=$2
@@ -8,7 +8,7 @@ WORKSPACE="${HOME}/workspace"
 CONFIGS="${ROOT_DIR}/configs"
 
 if [[ -z "$MODE" || -z "$ROOT_DIR" ]]; then
-  echo "Usage: $0 {link|unlink|delete} /path/to/root_dir"
+  echo "Usage: $0 {link|copy|delete} /path/to/root_dir"
   exit 1
 fi
 
@@ -16,7 +16,7 @@ deploy_git () {
   case "$MODE" in
     link)
     ln -sf "$1"/gitignore_global ~/.gitignore_global
-    cp "$1"/gitconfig ~/.gitconfig # copy it since modify user config after
+    cp --remove-destination "$1"/gitconfig ~/.gitconfig # copy it since modify user config after
     ## SET USER CONFIG INTO COMPANY DIR
     echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
     read flag
@@ -45,8 +45,8 @@ EOS
 EOS
     fi
       ;;
-    unlink)
-      cp --remove-destination ~/.gitignore_global ~/.gitignore_global
+    copy)
+      cp --remove-destination "$1"/gitignore_global ${HOME}/.gitignore_global
       # not linked .gitconfig
       ;;
     delete)
@@ -62,9 +62,9 @@ deploy_vim () {
       ln -sf "$1"/gvimrc ~/.gvimrc
       ln -sf "$1"/vimrc ~/.vimrc
       ;;
-    unlink)
-      cp --remove-destination ~/.gvimrc ~/.gvimrc
-      cp --remove-destination ~/.vimrc ~/.vimrc
+    copy)
+      cp --remove-destination "$1"/gvimrc ~/.gvimrc
+      cp --remove-destination "$1"/vimrc ~/.vimrc
       ;;
     delete)
       rm -f ~/.gvimrc
@@ -81,10 +81,10 @@ deploy_zsh () {
       mkdir -p ~/.config/zsh/shoichi/
       sudo -n ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
     ;;
-    unlink)
-      cp --remove-destination ~/.zshrc ~/.zshrc
-      cp --remove-destination ~/.p10k.zsh ~/.p10k.zsh
-      cp -r --remove-destination ~/.config/zsh/shoichi/ ~/.config/zsh/shoichi/
+    copy)
+      cp --remove-destination "$1"/zshrc ~/.zshrc
+      cp --remove-destination "$1"/p10k.zsh ~/.p10k.zsh
+      cp -r --remove-destination "$1"/shoichi/ ~/.config/zsh/shoichi/
       ;;
     delete)
       rm -f ~/.zshrc
@@ -95,12 +95,13 @@ deploy_zsh () {
 }
 
 deploy_fish () {
+  mkdir -p ~/.config/fish
   case "$MODE" in
     link)
       sudo -n ln -sf "$1"/config/fish/* ~/.config/fish/
       ;;
-    unlink)
-      cp --remove-destination ~/.config/fish/* ~/.config/fish/
+    copy)
+      cp -r --remove-destination "$1"/config/fish/ ~/.config/fish/
       ;;
     delete)
       rm -rf ~/.config/fish/
@@ -114,8 +115,8 @@ deploy_vscode () {
       sudo -n mkdir ~/Library/Application\ Support/Code/User/
       sudo -n ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
       ;;
-    unlink)
-      sudo -n cp --remove-destination ~/Library/Application Support/Code/User/settings.json
+    copy)
+      sudo -n cp --remove-destination "$1"/settings.json ~/Library/Application\ Support/Code/User/settings.json
       ;;
     delete)
       sudo rm -rf ~/Library/Application Support/Code/User/settings.json
@@ -125,10 +126,10 @@ deploy_vscode () {
 
 deploy_nvim () {
   target_dir="${HOME}/.config/nvim"
+  source_dir=""$1""
   case "$MODE" in
     link)
       mkdir -p ~/.config/nvim/
-      source_dir=""$1""
 
       # target_dir に source_dir 内のすべてのファイルのシンボリックリンクを作成
       find "$source_dir" -type f | while read -r file; do
@@ -141,10 +142,15 @@ deploy_nvim () {
         ln -sf "$file" "$link_path"
       done
       ;;
-    unlink)
-      # target_dir にあるシンボリックリンクを削除
-      find "$target_dir" -type l | while read -r symlink; do
-        cp --remove-destination "$symlink" "$symlink"
+    copy)
+      find "$source_dir" -type f | while read -r file; do
+        # リンク先のパスを生成
+        link_path="$target_dir/${file#$source_dir/}"
+        # 必要なディレクトリを作成
+        mkdir -p "$(dirname "$link_path")"
+        # シンボリックリンクを作成
+        [ ! -e "$link_path" ] || rm "$link_path"  # 既存のリンクを削除
+        cp --remove-destination "$file" "$link_path"
       done
       ;;
     delete)

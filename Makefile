@@ -14,13 +14,22 @@ SETUP_ZSH = $(SCRIPTS)/setup-zsh.sh
 
 default: bootstrap
 
+PHONY: check-sudo
+check-sudo:
+	@if sudo -n true 2>/dev/null; then \
+		echo "Sudo is not required. Skipping."; \
+	else \
+		echo "Starting sudo loop..."; \
+		sudo -v; \
+		while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
+	fi
+
 ## ******************** Setup ********************
 .PHONY: bootstrap
 bootstrap b:
 ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
-	sudo -v
-  while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
+	make check-sudo
 	make brew_install
 	make link
 	make reload_zshrc
@@ -35,8 +44,7 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
 #	sh $(MAKE_WORKSPACE)
-	sudo -v
-	while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
+	make check-sudo
 	make brew_install
 	make link
 	make reload_zshrc
@@ -131,17 +139,20 @@ reload_zshrc:
 ## ******************** dot files ********************
 .PHONY: link l
 link l:
+	make check-sudo
 	@echo "Link dot files\n"
 	sh $(DEPLOY_CONFIGS) link $(ROOT)
 	sh $(SCRIPTS)/setup-gitconfig.sh
 
-.PHONY: unlink
-unlink:
-	@echo "Unlink dot files\n"
-	sh $(DEPLOY_CONFIGS) unlink $(ROOT)
+.PHONY: copy
+copy:
+	make check-sudo
+	@echo "Copy dot files\n"
+	sh $(DEPLOY_CONFIGS) copy $(ROOT)
 
 .PHONY: delete
 delete:
+	make check-sudo
 	@echo "Delete dot files\n"
 	sh $(DEPLOY_CONFIGS) delete $(ROOT)
 

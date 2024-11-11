@@ -24,7 +24,7 @@ mode_file() {
       cp --remove-destination "$source_file" "$target_file"
       ;;
     delete)
-      unlink "$target_file"
+      sudo -n rm -rf "$target_file"
       ;;
   esac
 }

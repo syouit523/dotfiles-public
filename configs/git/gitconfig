@@ -16,9 +16,14 @@
 [alias]
   open = browse
   o = browse
-  co = checkout
+  ch = checkout
   b = branch
+  d = diff
   cm = commit
+  ph = push
+  pl = pull
+  st = status
+  pr-make = "!f() { gh pr create -w }; f"
   pp = "pull-request --edit"
   showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
   openpr = "!f() { hub browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"

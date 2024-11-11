@@ -53,16 +53,16 @@ deploy_zsh () {
     ln -sf "$1"/zshrc ~/.zshrc
     ln -sf "$1"/p10k.zsh ~/.p10k.zsh
     mkdir -p ~/.config/zsh/shoichi/
-    sudo ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
+    sudo -n ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
 }
 
 deploy_fish () {
-    sudo ln -sf "$1"/config/fish/* ~/.config/fish/
+    sudo -n ln -sf "$1"/config/fish/* ~/.config/fish/
 }
 
 deploy_vscode () {
-  sudo mkdir ~/Library/Application\ Support/Code/User/
-  sudo ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
+  sudo -n mkdir ~/Library/Application\ Support/Code/User/
+  sudo -n ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
 }
 
 deploy_nvim () {

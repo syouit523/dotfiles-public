@@ -19,6 +19,8 @@ default: bootstrap
 bootstrap b:
 ifeq ($(UNAME_S), Linux)
 #	sh $(MAKE_WORKSPACE)
+	sudo -v
+  while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
 	make brew_install
 	make deploy
 	make reload_zshrc
@@ -33,6 +35,8 @@ else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
 #	sh $(MAKE_WORKSPACE)
+	sudo -v
+	while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
 	make brew_install
 	make deploy
 	make reload_zshrc

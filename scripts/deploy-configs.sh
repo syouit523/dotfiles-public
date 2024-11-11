@@ -7,28 +7,20 @@ CONFIGS=${1}/configs
 deploy_git () {
     ln -sf "$1"/gitignore_global ~/.gitignore_global
     cp "$1"/gitconfig ~/.gitconfig
-    ### SET USER CONFIG
-    echo "INPUT YOUR E-MAIL: "
-    read mail
-    echo "INPUT YOUR NAME: "
-    read name
-    cat - << EOS >> ~/.gitconfig
-
-[user]
-  email = ${mail}
-  name = ${name}
-EOS
     ## SET USER CONFIG INTO COMPANY DIR
     echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
     read flag
-    if [ $flag = "y" ]; then
-        echo "INPUT DIR NAME INTO WORKSPACE: "
-        read dir
+    if [[ $flag = "y" || $flag = "Y" ]]; then
+        echo "INPUT THE COMPANY NAME: "
+        read company
+        echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
         echo "INPUT YOUR COMPANY E-MAIL: "
         read mail_company
         echo "INPUT YOUR NAME: "
         read name_company
-        COMPANY_CONFIG="${WORKSPACE}/${dir}/.${dir}.gitconfig"
+
+        COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
+        mkdir -p $WORKSPACE/${company}
         cat - << EOS >> ${COMPANY_CONFIG}
 [user]
   email = ${mail_company}
@@ -38,7 +30,7 @@ EOS
         cat - << EOS >> ~/.gitconfig
 
 #external
-[includeIf "gitdir:${WORKSPACE}/${dir}/"]
+[includeIf "gitdir:${WORKSPACE}/${company}/"]
   path = ${COMPANY_CONFIG}
 EOS
     fi

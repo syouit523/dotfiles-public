@@ -133,6 +133,7 @@ reload_zshrc:
 deploy d:
 	@echo "Deploy dot files\n"
 	sh $(DEPLOY_CONFIGS) $(ROOT)
+	sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: clean c
 clean c:

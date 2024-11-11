@@ -22,7 +22,7 @@ ifeq ($(UNAME_S), Linux)
 	sudo -v
   while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
 	make brew_install
-	make deploy
+	make link
 	make reload_zshrc
 	make brew_setup
 	make font
@@ -38,7 +38,7 @@ else ifeq ($(UNAME_S), Darwin)
 	sudo -v
 	while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null &
 	make brew_install
-	make deploy
+	make link
 	make reload_zshrc
 	make brew_setup
 #	sh $(XCODE_SELECT_INSTALL)
@@ -128,12 +128,22 @@ reload_zshrc:
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi
 
-## ******************** Deploy dot files ********************
-.PHONY: deploy d
-deploy d:
-	@echo "Deploy dot files\n"
-	sh $(DEPLOY_CONFIGS) $(ROOT)
+## ******************** dot files ********************
+.PHONY: link l
+link l:
+	@echo "Link dot files\n"
+	sh $(DEPLOY_CONFIGS) link $(ROOT)
 	sh $(SCRIPTS)/setup-gitconfig.sh
+
+.PHONY: unlink
+unlink:
+	@echo "Unlink dot files\n"
+	sh $(DEPLOY_CONFIGS) unlink $(ROOT)
+
+.PHONY: delete
+delete:
+	@echo "Delete dot files\n"
+	sh $(DEPLOY_CONFIGS) delete $(ROOT)
 
 .PHONY: clean c
 clean c:

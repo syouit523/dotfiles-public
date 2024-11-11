@@ -46,7 +46,7 @@ EOS
     fi
       ;;
     unlink)
-      unlink ~/.gitignore_global
+      cp --remove-destination ~/.gitignore_global ~/.gitignore_global
       # not linked .gitconfig
       ;;
     delete)
@@ -63,8 +63,8 @@ deploy_vim () {
       ln -sf "$1"/vimrc ~/.vimrc
       ;;
     unlink)
-      unlink ~/.gvimrc
-      unlink ~/.vimrc
+      cp --remove-destination ~/.gvimrc ~/.gvimrc
+      cp --remove-destination ~/.vimrc ~/.vimrc
       ;;
     delete)
       rm -f ~/.gvimrc
@@ -82,9 +82,9 @@ deploy_zsh () {
       sudo -n ln -sf "$1"/shoichi/* ~/.config/zsh/shoichi/
     ;;
     unlink)
-      unlink ~/.zshrc
-      unlink ~/.p10k.zsh
-      unlink ~/.config/zsh/shoichi/
+      cp --remove-destination ~/.zshrc ~/.zshrc
+      cp --remove-destination ~/.p10k.zsh ~/.p10k.zsh
+      cp -r --remove-destination ~/.config/zsh/shoichi/ ~/.config/zsh/shoichi/
       ;;
     delete)
       rm -f ~/.zshrc
@@ -100,7 +100,7 @@ deploy_fish () {
       sudo -n ln -sf "$1"/config/fish/* ~/.config/fish/
       ;;
     unlink)
-      unlink ~/.config/fish/
+      cp --remove-destination ~/.config/fish/* ~/.config/fish/
       ;;
     delete)
       rm -rf ~/.config/fish/
@@ -115,7 +115,7 @@ deploy_vscode () {
       sudo -n ln -sf "$1"/settings.json ~/Library/Application\ Support/Code/User/
       ;;
     unlink)
-      sudo -n unlink ~/Library/Application Support/Code/User/settings.json
+      sudo -n cp --remove-destination ~/Library/Application Support/Code/User/settings.json
       ;;
     delete)
       sudo rm -rf ~/Library/Application Support/Code/User/settings.json
@@ -144,7 +144,7 @@ deploy_nvim () {
     unlink)
       # target_dir にあるシンボリックリンクを削除
       find "$target_dir" -type l | while read -r symlink; do
-        unlink "$symlink"
+        cp --remove-destination "$symlink" "$symlink"
       done
       ;;
     delete)

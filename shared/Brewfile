@@ -38,6 +38,7 @@ brew "zoxide"
 brew "tree"
 brew "jesseduffield/lazygit/lazygit"
 brew "gh"
+brew "coreutils" # cp command from GNU
 
 ## neovim
 brew "ripgrep"

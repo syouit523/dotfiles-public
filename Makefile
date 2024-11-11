@@ -2,12 +2,8 @@ ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 ## ******************** Script Environment ********************
 UNAME_S := $(shell uname -s)
-SCRIPTS  = $(ROOT)/scripts
-SHARED = $(ROOT)/shared
+SCRIPTS  := $(ROOT)/scripts
 MAC = $(ROOT)/mac
-LINUX = $(ROOT)/linux
-ARCHITECTURE=$(shell uname -m)
-# BREWFILE = $(ROOT)/Brewfile
 XCODE_SELECT_INSTALL    = $(MAC)/scripts/xcode-select-install.sh
 MAKE_WORKSPACE   = $(SCRIPTS)/make-workspace.sh
 BREW_INSTALL   = $(SCRIPTS)/brew-install.sh
@@ -66,21 +62,9 @@ brew_install:
 .PHONY: brew_setup
 brew_setup:
 	@echo "Setting up Brewfile packages..."
-
-ifeq ($(UNAME_S), Darwin)
-# 一時的にHomebrewのPATHを設定
-ifeq ($(ARCHITECTURE), arm64)
-	- eval "$$(/opt/homebrew/bin/brew shellenv)"; \
-	brew bundle --file="$(SHARED)/Brewfile"; \
-	brew bundle --file="$(MAC)/Brewfile"
-else
-	- eval "$$(/usr/local/bin/brew shellenv)"; \
-	brew bundle --file="$(SHARED)/Brewfile"; \
-	brew bundle --file="$(MAC)/Brewfile"
-endif
-else ifeq ($(UNAME_S), Linux)
-	- brew bundle --file="$(SHARED)/Brewfile"
-endif
+	@INSTALL_SHELL="$(SCRIPTS)/install-brew-bundle.sh"; \
+	chmod +x "$$INSTALL_SHELL"; \
+	"$$INSTALL_SHELL"
 
 .PHONY: brew_mac_app
 brew_mac_app:

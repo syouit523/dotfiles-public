@@ -33,9 +33,16 @@ mode_file() {
 mode_directory() {
     local source_dir="$1"
     local target_dir="$2"
-    find "$source_dir" -type f | while read -r file; do
-        local relative_path="${file#$source_dir/}"
-        mode_file "$file" "$target_dir/$relative_path"
+    find "$source_dir" -mindepth 1 | while read -r path; do
+        local relative_path="${path#$source_dir/}"
+        local target_path="$target_dir/$relative_path"
+        #echo "$source_dir"
+        #echo "$target_dir"
+        #echo "$path"
+        #echo "$target_dir/$relative_path"
+
+
+        mode_file "$path" "$target_dir/$relative_path"
     done
 }
 

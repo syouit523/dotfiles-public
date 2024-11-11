@@ -38,6 +38,7 @@ case "$os_type" in
 esac
 
 source $shoichi_dir/command-extensions.zsh
+source $shoichi_dir/alias.zsh
 
 # for warp terminal settings
 ## change the font to Meslo Nerd Font

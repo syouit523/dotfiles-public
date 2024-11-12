@@ -149,6 +149,7 @@ copy:
 	make check-sudo
 	@echo "Copy dot files\n"
 	sh $(DEPLOY_CONFIGS) copy $(ROOT)
+	sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: delete
 delete:

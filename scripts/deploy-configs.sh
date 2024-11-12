@@ -48,34 +48,44 @@ mode_directory() {
 
 deploy_git () {
     mode_file "$1/gitignore_global" "${HOME}/.gitignore_global"
-    cp --remove-destination "$1"/gitconfig ~/.gitconfig # copy it since modify user config after
-    ## SET USER CONFIG INTO COMPANY DIR
-    echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
-    read flag
-    if [[ $flag = "y" || $flag = "Y" ]]; then
-        echo "INPUT THE COMPANY NAME: "
-        read company
-        echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
-        echo "INPUT YOUR COMPANY E-MAIL: "
-        read mail_company
-        echo "INPUT YOUR NAME: "
-        read name_company
+    case "$MODE" in
+    link|copy)
+        cp --remove-destination "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
+        ## SET USER CONFIG INTO COMPANY DIR
+        echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
+        read -r flag
+        if [[ "$flag" == "y" || "$flag" == "Y" ]]; then
+            echo "INPUT THE COMPANY NAME: "
+            read -r company
+            echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
+            echo "INPUT YOUR COMPANY E-MAIL: "
+            read -r mail_company
+            echo "INPUT YOUR NAME: "
+            read -r name_company
 
-        COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
-        mkdir -p $WORKSPACE/${company}
-        cat - << EOS >> ${COMPANY_CONFIG}
+            COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
+            mkdir -p "$WORKSPACE/${company}"
+            cat << EOS >> "${COMPANY_CONFIG}"
 [user]
   email = ${mail_company}
   name = ${name_company}
 EOS
-        ### UPDATE UER CONFIG
-        cat - << EOS >> ~/.gitconfig
+            ### UPDATE USER CONFIG
+            cat << EOS >> ~/.gitconfig
 
 #external
 [includeIf "gitdir:${WORKSPACE}/${company}/"]
   path = ${COMPANY_CONFIG}
 EOS
-    fi
+        fi
+        ;;
+    delete)
+        sudo -n rm -rf ~/.gitconfig
+        ;;
+    *)
+        echo "Invalid mode: $MODE"
+        ;;
+    esac
 }
 
 deploy_vim () {
@@ -96,7 +106,6 @@ deploy_fish () {
 
 deploy_vscode () {
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
-      sudo -n mkdir "$vscode_dir"
       sudo -n mode_file "{$1}/settings.json" "$vscode_dir/settings.json"
 }
 

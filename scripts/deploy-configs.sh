@@ -21,19 +21,16 @@ mode_file() {
 
    case "$MODE" in
     link)
-      mkdir -p "$target_dir"
       if [[ ! -e "$target_file" ]]; then
         ln -sf "$source_file" "$target_file"
       elif [[ -L "$target_file" ]]; then
         if [[ "$(readlink -f "$target_file")" == "$(realpath "$source_file")" ]]; then
           echo "already linked: $target_file"
         else
-          # 既存ファイルをバックアップしてからリンク作成
           [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
           ln -sf "$source_file" "$target_file"
         fi
       else
-        # 既存ファイルをバックアップしてからリンク作成
         [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
         ln -sf "$source_file" "$target_file"
       fi
@@ -46,7 +43,6 @@ mode_file() {
       ;;
     delete)
       if [[ -e "$target_file" ]]; then
-        echo "delete: $target_file"
         rm -f "$target_file"
         if [[ -f "$backup_path" ]]; then
           # バックアップファイルが存在する場合は復元
@@ -64,9 +60,27 @@ mode_file() {
 mode_directory() {
     local source_dir="$1"
     local target_dir="$2"
-    find "$source_dir" -mindepth 1 -type f | while read -r source_path; do
-        local relative_path="${source_path#$source_dir/}"
-        local target_path="$target_dir/$relative_path"
+    
+    # パスを正規化
+    source_dir="$(realpath "$source_dir")"
+    target_dir="$(realpath "$target_dir")"
+    
+    #echo "Processing directory:"
+    #echo "  Source: $source_dir"
+    #echo "  Target: $target_dir"
+    
+    # すべてのファイルを再帰的に処理
+    find "$source_dir" -type f | while read -r source_path; do
+        # 相対パスを計算
+        local rel_path="${source_path#$source_dir/}"
+        local target_path="$target_dir/$rel_path"
+        
+        # ターゲットディレクトリを作成
+        mkdir -p "$(dirname "$target_path")"
+        
+        #echo "Linking:"
+        #echo "  From: $source_path"
+        #echo "  To: $target_path"
         
         mode_file "$source_path" "$target_path"
     done

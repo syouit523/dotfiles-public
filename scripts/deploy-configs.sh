@@ -61,13 +61,16 @@ mode_directory() {
     local source_dir="$1"
     local target_dir="$2"
     
-    # パスを正規化
+    # ターゲットディレクトリが存在しない場合は作成
+    mkdir -p "$target_dir"
+    
+    # パスを正規化（realpathの前にディレクトリが存在することを確認）
     source_dir="$(realpath "$source_dir")"
     target_dir="$(realpath "$target_dir")"
     
-    #echo "Processing directory:"
-    #echo "  Source: $source_dir"
-    #echo "  Target: $target_dir"
+    echo "Processing directory:"
+    echo "  Source: $source_dir"
+    echo "  Target: $target_dir"
     
     # すべてのファイルを再帰的に処理
     find "$source_dir" -type f | while read -r source_path; do
@@ -78,9 +81,9 @@ mode_directory() {
         # ターゲットディレクトリを作成
         mkdir -p "$(dirname "$target_path")"
         
-        #echo "Linking:"
-        #echo "  From: $source_path"
-        #echo "  To: $target_path"
+        echo "Linking:"
+        echo "  From: $source_path"
+        echo "  To: $target_path"
         
         mode_file "$source_path" "$target_path"
     done

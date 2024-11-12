@@ -16,18 +16,40 @@ mode_file() {
   local source_file="$1"
   local target_file="$2"
   local backup_suffix=".backup"
-  mkdir -p "$(dirname "$target_file")"
-  case "$MODE" in
+   case "$MODE" in
     link)
-      ln -s -b --suffix="$backup_suffix" "$source_file" "$target_file"
+      mkdir -p "$(dirname "$target_file")"
+      if [[ ! -e "$target_file" ]]; then
+        # ターゲットファイルが存在しない場合、リンクを作成
+        ln -sf "$source_file" "$target_file"
+      elif [[ -L "$target_file" ]]; then
+        # ターゲットがシンボリックリンクの場合のみ、readlinkを使用
+        if [[ "$(readlink -f "$target_file")" == "$(realpath "$source_file")" ]]; then
+          echo "already linked: $target_file"
+        else
+          ln -sf -b --suffix="${backup_suffix}" "$source_file" "$target_file"
+        fi
+      else
+        # ターゲットファイルが存在する場合、バックアップを作成してリンク
+        ln -sf -b --suffix="${backup_suffix}" "$source_file" "$target_file"
+      fi
       ;;
     copy)
-      cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
+      mkdir -p "$(dirname "$target_file")"
+      if [[ -e "${target_file}${backup_suffix}" ]]; then
+        # backup file is already exists
+        cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
+      else
+        # copy source file to target file and create backup file
+        cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
+      fi
       ;;
     delete)
+      echo "delete: $target_file"
       sudo -n rm -rf "$target_file"
-      if [[ -f "$target_file$backup_suffix" ]]; then
-        sudo -n mv "$target_file$backup_suffix" "$target_file"
+      if [[ -f "${target_file}${backup_suffix}" ]]; then
+        # restore backup file
+        sudo -n mv "${target_file}${backup_suffix}" "$target_file"
       fi
       ;;
   esac
@@ -37,16 +59,11 @@ mode_file() {
 mode_directory() {
     local source_dir="$1"
     local target_dir="$2"
-    find "$source_dir" -mindepth 1 | while read -r path; do
-        local relative_path="${path#$source_dir/}"
+    find "$source_dir" -mindepth 1 -type f | while read -r source_path; do
+        local relative_path="${source_path#$source_dir/}"
         local target_path="$target_dir/$relative_path"
-        #echo "$source_dir"
-        #echo "$target_dir"
-        #echo "$path"
-        #echo "$target_dir/$relative_path"
-
-
-        mode_file "$path" "$target_dir/$relative_path"
+        
+        mode_file "$source_path" "$target_path"
     done
 }
 
@@ -110,7 +127,7 @@ deploy_fish () {
 
 deploy_vscode () {
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
-      sudo -n mode_file "{$1}/settings.json" "$vscode_dir/settings.json"
+      sudo -n mode_file "$1/settings.json" "$vscode_dir/settings.json"
 }
 
 deploy_nvim () {

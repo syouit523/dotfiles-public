@@ -98,12 +98,12 @@ fish:
 .PHONY: zsh
 zsh:
 	@echo "Setup Zsh\n"
-	sudo $(SETUP_ZSH)
+	sudo -n sh $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
-	sudo $(SCRIPTS)/install-zsh-extensitions.sh
+	sudo -n $(SCRIPTS)/install-zsh-extensitions.sh
 
 .PHONY: linux_setup
 linux_setup:
@@ -123,7 +123,7 @@ reload_zshrc:
 	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
 		ZSH_SHELL=$(shell which zsh); \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
-		sudo $$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+		sudo -n $$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi
@@ -133,15 +133,15 @@ reload_zshrc:
 link l:
 	make check-sudo
 	@echo "Link dot files\n"
-	sudo sh $(DEPLOY_CONFIGS) link $(ROOT)
-	sudo sh $(SCRIPTS)/setup-gitconfig.sh
+	sudo -n sh $(DEPLOY_CONFIGS) link $(ROOT)
+	sudo -n sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: copy
 copy:
 	make check-sudo
 	@echo "Copy dot files\n"
-	sudo sh $(DEPLOY_CONFIGS) copy $(ROOT)
-	sudo sh $(SCRIPTS)/setup-gitconfig.sh
+	sudo -n sh $(DEPLOY_CONFIGS) copy $(ROOT)
+	sudo -n sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: delete
 delete:

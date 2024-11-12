@@ -124,7 +124,7 @@ reload_zshrc:
 	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
 		ZSH_SHELL=$(shell which zsh); \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
-		sudo -n $$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi

@@ -28,31 +28,26 @@ check-sudo:
 .PHONY: bootstrap
 bootstrap b:
 ifeq ($(UNAME_S), Linux)
-#	sh $(MAKE_WORKSPACE)
 	make check-sudo
 	make brew_install
-	make link
-	make reload_zshrc
 	make brew_setup
 	make font
 	make zsh
-#	make deploy
 	make zsh_extensions
+	make link
+	make reload_zshrc
 	make linux_setup
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Darwin)
 #	sh defaults write com.apple.finder AppleShowAllFiles TRUE
 #	sh killall Finder
-#	sh $(MAKE_WORKSPACE)
 	make check-sudo
 	make brew_install
-	make link
-	make reload_zshrc
 	make brew_setup
-#	sh $(XCODE_SELECT_INSTALL)
 	make zsh
-#	make deploy
+	make link
 	make zsh_extensions
+	make reload_zshrc
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)
 	@echo Windows is not supported
@@ -62,11 +57,6 @@ endif
 
 .PHONY: brew_install
 brew_install:
-#	@echo "Install Homebrew\n"
-#	chmod u+x $(SCRIPTS)/install-brew.sh
-#	zsh $(SCRIPTS)/install-brew.sh
-#	sh $(SCRIPTS)/install-brew.sh
-
 	@echo "Running Homebrew installation script..."
 	chmod +x $(SCRIPTS)/install-brew.sh
 	zsh $(SCRIPTS)/install-brew.sh
@@ -157,7 +147,22 @@ delete:
 	@echo "Delete dot files\n"
 	sh $(DEPLOY_CONFIGS) delete $(ROOT)
 
+# ******************** clean ********************
+
 .PHONY: clean c
 clean c:
 	@echo "Clean\n"
-	echo "clean"
+	make check-sudo
+	make uninstall-brew
+	make delete
+	make change-default-shell
+
+.PHONY: uninstall-brew
+uninstall-brew:
+	@echo "Uninstall Homebrew\n"
+	sh $(SCRIPTS)/uninstall-brew.sh
+
+.PHONY: change-default-shell
+change-default-shell:
+	@echo "Change default shell\n"
+	sh $(SCRIPTS)/change-default-shell.sh

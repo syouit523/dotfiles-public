@@ -104,7 +104,7 @@ zsh:
 .PHONY: zsh_extensions
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
-	sudo -n $(SCRIPTS)/install-zsh-extensitions.sh
+	sudo -n sh $(SCRIPTS)/install-zsh-extensitions.sh
 
 .PHONY: linux_setup
 linux_setup:

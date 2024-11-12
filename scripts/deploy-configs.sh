@@ -15,16 +15,43 @@ fi
 mode_file() {
   local source_file="$1"
   local target_file="$2"
-  mkdir -p "$(dirname "$target_file")"
-  case "$MODE" in
+  local backup_suffix=".backup"
+  local target_dir="$(dirname "$target_file")"
+  local backup_path="${target_dir}/$(basename "$target_file")${backup_suffix}"
+
+   case "$MODE" in
     link)
-      ln -sf "$source_file" "$target_file"
+      if [[ ! -e "$target_file" ]]; then
+        ln -sf "$source_file" "$target_file"
+      elif [[ -L "$target_file" ]]; then
+        if [[ "$(readlink -f "$target_file")" == "$(realpath "$source_file")" ]]; then
+          echo "already linked: $target_file"
+        else
+          [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+          ln -sf "$source_file" "$target_file"
+        fi
+      else
+        [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+        ln -sf "$source_file" "$target_file"
+      fi
       ;;
     copy)
-      cp --remove-destination "$source_file" "$target_file"
+      mkdir -p "$target_dir"
+      # 既存ファイルをバックアップしてからコピー
+      [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+      cp "$source_file" "$target_file"
       ;;
     delete)
-      sudo -n rm -rf "$target_file"
+      if [[ -e "$target_file" ]]; then
+        rm -f "$target_file"
+        if [[ -f "$backup_path" ]]; then
+          # バックアップファイルが存在する場合は復元
+          echo "restore: $backup_path -> $target_file"
+          mv "$backup_path" "$target_file"
+        fi
+      else
+        echo "file not found: $target_file"
+      fi
       ;;
   esac
 }
@@ -33,49 +60,72 @@ mode_file() {
 mode_directory() {
     local source_dir="$1"
     local target_dir="$2"
-    find "$source_dir" -mindepth 1 | while read -r path; do
-        local relative_path="${path#$source_dir/}"
-        local target_path="$target_dir/$relative_path"
-        #echo "$source_dir"
-        #echo "$target_dir"
-        #echo "$path"
-        #echo "$target_dir/$relative_path"
-
-
-        mode_file "$path" "$target_dir/$relative_path"
+    
+    # パスを正規化
+    source_dir="$(realpath "$source_dir")"
+    target_dir="$(realpath "$target_dir")"
+    
+    #echo "Processing directory:"
+    #echo "  Source: $source_dir"
+    #echo "  Target: $target_dir"
+    
+    # すべてのファイルを再帰的に処理
+    find "$source_dir" -type f | while read -r source_path; do
+        # 相対パスを計算
+        local rel_path="${source_path#$source_dir/}"
+        local target_path="$target_dir/$rel_path"
+        
+        # ターゲットディレクトリを作成
+        mkdir -p "$(dirname "$target_path")"
+        
+        #echo "Linking:"
+        #echo "  From: $source_path"
+        #echo "  To: $target_path"
+        
+        mode_file "$source_path" "$target_path"
     done
 }
 
 deploy_git () {
     mode_file "$1/gitignore_global" "${HOME}/.gitignore_global"
-    cp --remove-destination "$1"/gitconfig ~/.gitconfig # copy it since modify user config after
-    ## SET USER CONFIG INTO COMPANY DIR
-    echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
-    read flag
-    if [[ $flag = "y" || $flag = "Y" ]]; then
-        echo "INPUT THE COMPANY NAME: "
-        read company
-        echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
-        echo "INPUT YOUR COMPANY E-MAIL: "
-        read mail_company
-        echo "INPUT YOUR NAME: "
-        read name_company
+    case "$MODE" in
+    link|copy)
+        cp --remove-destination "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
+        ## SET USER CONFIG INTO COMPANY DIR
+        echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
+        read -r flag
+        if [[ "$flag" == "y" || "$flag" == "Y" ]]; then
+            echo "INPUT THE COMPANY NAME: "
+            read -r company
+            echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
+            echo "INPUT YOUR COMPANY E-MAIL: "
+            read -r mail_company
+            echo "INPUT YOUR NAME: "
+            read -r name_company
 
-        COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
-        mkdir -p $WORKSPACE/${company}
-        cat - << EOS >> ${COMPANY_CONFIG}
+            COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
+            mkdir -p "$WORKSPACE/${company}"
+            cat << EOS >> "${COMPANY_CONFIG}"
 [user]
   email = ${mail_company}
   name = ${name_company}
 EOS
-        ### UPDATE UER CONFIG
-        cat - << EOS >> ~/.gitconfig
+            ### UPDATE USER CONFIG
+            cat << EOS >> ~/.gitconfig
 
 #external
 [includeIf "gitdir:${WORKSPACE}/${company}/"]
   path = ${COMPANY_CONFIG}
 EOS
-    fi
+        fi
+        ;;
+    delete)
+        sudo -n rm -rf ~/.gitconfig
+        ;;
+    *)
+        echo "Invalid mode: $MODE"
+        ;;
+    esac
 }
 
 deploy_vim () {
@@ -96,8 +146,7 @@ deploy_fish () {
 
 deploy_vscode () {
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
-      sudo -n mkdir "$vscode_dir"
-      sudo -n mode_file "{$1}/settings.json" "$vscode_dir/settings.json"
+      sudo -n mode_file "$1/settings.json" "$vscode_dir/settings.json"
 }
 
 deploy_nvim () {

@@ -98,6 +98,7 @@ fish:
 .PHONY: zsh
 zsh:
 	@echo "Setup Zsh\n"
+	make check-sudo
 	sudo -n sh $(SETUP_ZSH)
 
 .PHONY: zsh_extensions

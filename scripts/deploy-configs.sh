@@ -15,16 +15,20 @@ fi
 mode_file() {
   local source_file="$1"
   local target_file="$2"
+  local backup_suffix=".backup"
   mkdir -p "$(dirname "$target_file")"
   case "$MODE" in
     link)
-      ln -sf "$source_file" "$target_file"
+      ln -s -b --suffix="$backup_suffix" "$source_file" "$target_file"
       ;;
     copy)
-      cp --remove-destination "$source_file" "$target_file"
+      cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
       ;;
     delete)
       sudo -n rm -rf "$target_file"
+      if [[ -f "$target_file$backup_suffix" ]]; then
+        sudo -n mv "$target_file$backup_suffix" "$target_file"
+      fi
       ;;
   esac
 }

@@ -23,12 +23,12 @@ install_brew_packages() {
             eval "$(/usr/local/bin/brew shellenv)"
         fi
         # Brewfileの読み込み
-        brew bundle --file="$SHARED_BREWFILE" || true
-        brew bundle --file="$MAC_BREWFILE" || true
+        sudo -n brew bundle --file="$SHARED_BREWFILE" || true
+        sudo -n brew bundle --file="$MAC_BREWFILE" || true
     elif [[ "$OS" == "Linux" ]]; then
         # Linuxの場合
         eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        brew bundle --file="$SHARED_BREWFILE" || true
+        sudo -n brew bundle --file="$SHARED_BREWFILE" || true
     else
         echo "サポートされていないOSです: $OS"
         exit 1

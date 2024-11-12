@@ -2,4 +2,4 @@
 
 # $1: Brewfile path
 
-brew bundle --file="${1}"
+sudo -n brew bundle --file="${1}"

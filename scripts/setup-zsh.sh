@@ -1,16 +1,15 @@
 #!/bin/bash
-sudo -v
 if command -v zsh >/dev/null 2>&1; then
     # set to the default shell to zsh
     # sudo -n sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac
     if [ "$(uname)" == 'Darwin' ]; then
       if [ "$(uname -m)" == x86_64 ]; then
-        sudo -n sh -c 'echo "/usr/local/bin/zsh" >> /etc/shells' # add zsh path of homebrew
+        sh -c 'echo "/usr/local/bin/zsh" >> /etc/shells' # add zsh path of homebrew
       elif [ "$(uname -m)" == arm64 ]; then
-        sudo -n sh -c 'echo "/opt/homebrew/bin/zsh" >> /etc/shells' # add zsh path of homebrew
+        sh -c 'echo "/opt/homebrew/bin/zsh" >> /etc/shells' # add zsh path of homebrew
       fi
     fi
-    sudo -n chsh -s $(which zsh)
+    chsh -s $(which zsh)
     zdh
 
     if [ -d "$HOME/.oh-my-zsh" ]; then

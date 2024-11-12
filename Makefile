@@ -59,14 +59,14 @@ endif
 brew_install:
 	@echo "Running Homebrew installation script..."
 	chmod +x $(SCRIPTS)/install-brew.sh
-	zsh $(SCRIPTS)/install-brew.sh
+	sudo zsh $(SCRIPTS)/install-brew.sh
 
 .PHONY: brew_setup
 brew_setup:
 	@echo "Setting up Brewfile packages..."
 	@INSTALL_SHELL="$(SCRIPTS)/install-brew-bundle.sh"; \
-	chmod +x "$$INSTALL_SHELL"; \
-	"$$INSTALL_SHELL"
+	sudo chmod +x "$$INSTALL_SHELL"; \
+	sudo"$$INSTALL_SHELL"
 
 .PHONY: brew_mac_app
 brew_mac_app:
@@ -96,12 +96,12 @@ fish:
 .PHONY: zsh
 zsh:
 	@echo "Setup Zsh\n"
-	sh $(SETUP_ZSH)
+	sudo $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
-	sh $(SCRIPTS)/install-zsh-extensitions.sh
+	sudo $(SCRIPTS)/install-zsh-extensitions.sh
 
 .PHONY: linux_setup
 linux_setup:
@@ -121,7 +121,7 @@ reload_zshrc:
 	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
 		ZSH_SHELL=$(shell which zsh); \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
-		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+		sudo $$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi
@@ -131,15 +131,15 @@ reload_zshrc:
 link l:
 	make check-sudo
 	@echo "Link dot files\n"
-	sh $(DEPLOY_CONFIGS) link $(ROOT)
-	sh $(SCRIPTS)/setup-gitconfig.sh
+	sudo sh $(DEPLOY_CONFIGS) link $(ROOT)
+	sudo sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: copy
 copy:
 	make check-sudo
 	@echo "Copy dot files\n"
-	sh $(DEPLOY_CONFIGS) copy $(ROOT)
-	sh $(SCRIPTS)/setup-gitconfig.sh
+	sudo sh $(DEPLOY_CONFIGS) copy $(ROOT)
+	sudo sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: delete
 delete:

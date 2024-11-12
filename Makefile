@@ -134,8 +134,8 @@ reload_zshrc:
 link l:
 #make check-sudo
 	@echo "Link dot files\n"
-	sudo -n sh $(DEPLOY_CONFIGS) link $(ROOT)
-	sudo -n sh $(SCRIPTS)/setup-gitconfig.sh
+	sh $(DEPLOY_CONFIGS) link $(ROOT)
+	sh $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: copy
 copy:

@@ -66,7 +66,7 @@ brew_setup:
 	@echo "Setting up Brewfile packages..."
 	@INSTALL_SHELL="$(SCRIPTS)/install-brew-bundle.sh"; \
 	sudo chmod +x "$$INSTALL_SHELL"; \
-	sudo"$$INSTALL_SHELL"
+	sudo "$$INSTALL_SHELL"
 
 .PHONY: brew_mac_app
 brew_mac_app:

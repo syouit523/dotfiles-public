@@ -7,6 +7,8 @@ ROOT_DIR=$2
 WORKSPACE="${HOME}/workspace"
 CONFIGS="${ROOT_DIR}/configs"
 
+sudo -v
+
 if [[ -z "$MODE" || -z "$ROOT_DIR" ]]; then
   echo "Usage: $0 {link|copy|delete} /path/to/root_dir"
   exit 1

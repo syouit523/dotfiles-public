@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+sudo -v
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # システム情報の取得

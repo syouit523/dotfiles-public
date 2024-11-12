@@ -23,7 +23,6 @@
   ph = push
   pl = pull
   st = status
-  ph = push
   pl = pull
   st = status
   pr = "!gh pr create -w"

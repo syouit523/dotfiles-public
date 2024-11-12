@@ -59,8 +59,9 @@ endif
 .PHONY: brew_install
 brew_install:
 	@echo "Running Homebrew installation script..."
-	sudo chmod +x $(SCRIPTS)/install-brew.sh
-	sudo $(SCRIPTS)/install-brew.sh
+	@INSTALL_SHELL="$(SCRIPTS)/install-brew.sh"; \
+	chmod +x "$$INSTALL_SHELL"; \
+	"$$INSTALL_SHELL"
 
 .PHONY: brew_setup
 brew_setup:

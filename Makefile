@@ -16,13 +16,14 @@ default: bootstrap
 
 PHONY: check-sudo
 check-sudo:
-	@if sudo -n true 2>/dev/null; then \
-		echo "Sudo is not required. Skipping."; \
-	else \
-		echo "Starting sudo loop..."; \
-		sudo -v; \
-		while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
-	fi
+	@echo "Check sudo"
+	# @if sudo -n true 2>/dev/null; then \
+	# 	echo "Sudo is not required. Skipping."; \
+	# else \
+	# 	echo "Starting sudo loop..."; \
+	# 	sudo -v; \
+	# 	while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
+	# fi
 
 ## ******************** Setup ********************
 .PHONY: bootstrap

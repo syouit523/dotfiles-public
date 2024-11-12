@@ -16,40 +16,45 @@ mode_file() {
   local source_file="$1"
   local target_file="$2"
   local backup_suffix=".backup"
+  local target_dir="$(dirname "$target_file")"
+  local backup_path="${target_dir}/$(basename "$target_file")${backup_suffix}"
+
    case "$MODE" in
     link)
-      mkdir -p "$(dirname "$target_file")"
+      mkdir -p "$target_dir"
       if [[ ! -e "$target_file" ]]; then
-        # ターゲットファイルが存在しない場合、リンクを作成
         ln -sf "$source_file" "$target_file"
       elif [[ -L "$target_file" ]]; then
-        # ターゲットがシンボリックリンクの場合のみ、readlinkを使用
         if [[ "$(readlink -f "$target_file")" == "$(realpath "$source_file")" ]]; then
           echo "already linked: $target_file"
         else
-          ln -sf -b --suffix="${backup_suffix}" "$source_file" "$target_file"
+          # 既存ファイルをバックアップしてからリンク作成
+          [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+          ln -sf "$source_file" "$target_file"
         fi
       else
-        # ターゲットファイルが存在する場合、バックアップを作成してリンク
-        ln -sf -b --suffix="${backup_suffix}" "$source_file" "$target_file"
+        # 既存ファイルをバックアップしてからリンク作成
+        [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+        ln -sf "$source_file" "$target_file"
       fi
       ;;
     copy)
-      mkdir -p "$(dirname "$target_file")"
-      if [[ -e "${target_file}${backup_suffix}" ]]; then
-        # backup file is already exists
-        cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
-      else
-        # copy source file to target file and create backup file
-        cp -b --suffix="$backup_suffix" "$source_file" "$target_file"
-      fi
+      mkdir -p "$target_dir"
+      # 既存ファイルをバックアップしてからコピー
+      [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+      cp "$source_file" "$target_file"
       ;;
     delete)
-      echo "delete: $target_file"
-      sudo -n rm -rf "$target_file"
-      if [[ -f "${target_file}${backup_suffix}" ]]; then
-        # restore backup file
-        sudo -n mv "${target_file}${backup_suffix}" "$target_file"
+      if [[ -e "$target_file" ]]; then
+        echo "delete: $target_file"
+        rm -f "$target_file"
+        if [[ -f "$backup_path" ]]; then
+          # バックアップファイルが存在する場合は復元
+          echo "restore: $backup_path -> $target_file"
+          mv "$backup_path" "$target_file"
+        fi
+      else
+        echo "file not found: $target_file"
       fi
       ;;
   esac

@@ -156,6 +156,10 @@ deploy_nvim () {
   mode_directory "$1" "${HOME}/.config/nvim"
 }
 
+deploy_karabiner () {
+  mode_directory "$1" "${HOME}/.config/karabiner"
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
@@ -166,6 +170,7 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "fish" ) deploy_fish $DIR_FULLPATH;;
     "vscode" ) deploy_vscode $DIR_FULLPATH;;
     "nvim" ) deploy_nvim $DIR_FULLPATH;;
+    "karabiner" ) deploy_karabiner $DIR_FULLPATH;;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
 done

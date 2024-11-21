@@ -39,6 +39,7 @@ brew "tree"
 brew "jesseduffield/lazygit/lazygit"
 brew "gh"
 brew "coreutils" # cp command from GNU
+brew "tailscale"
 
 ## neovim
 brew "ripgrep"

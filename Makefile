@@ -30,8 +30,8 @@ check-sudo:
 bootstrap b:
 ifeq ($(UNAME_S), Linux)
 	make check-sudo
-	make brew_install
-	make brew_setup
+	sudo -n apt update && sudo -n apt upgrade -y
+	make install_apt_packages_from_brew
 	make font
 	make zsh
 	make zsh_extensions
@@ -56,6 +56,7 @@ else
 	@echo "$(UNAME_S)" is not supported
 endif
 
+# ******************** brew ********************
 .PHONY: brew_install
 brew_install:
 	@echo "Running Homebrew installation script..."
@@ -86,15 +87,18 @@ else ifeq ($(UNAME_S), Darwin)
 endif
 	brew bundle
 
+# ******************** font ********************
 .PHONY: font f
 font f:
 	sh $(SCRIPTS)/install-fonts.sh
 
+# ******************** fish ********************
 .PHONY: fish
 fish:
 	@echo "Setup Fish\n"
 	sh $(SETUP_FISH)
 
+# ******************** zsh ********************
 .PHONY: zsh
 zsh:
 	@echo "Setup Zsh\n"
@@ -106,6 +110,11 @@ zsh_extensions:
 	@echo "Install Zsh Extensions\n"
 	sudo -n sh $(SCRIPTS)/install-zsh-extensitions.sh
 
+# ******************** linux ********************
+.PHONY: install_apt_packages_from_brew
+install_apt_packages_from_brew:
+	sh $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
+
 .PHONY: linux_setup
 linux_setup:
 # for GUI Linux
@@ -114,6 +123,7 @@ linux_setup:
 	@echo "Install Apps\n"
 	sh $(SCRIPTS)/linux/install-apps.sh
 
+# ******************** ssh ********************
 .PHONY: ssh-key-gen
 ssh-key-gen:
 	@echo "Generate SSH Key\n"
@@ -129,7 +139,7 @@ reload_zshrc:
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi
 
-## ******************** dot files ********************
+# ******************** dot files ********************
 .PHONY: link l
 link l:
 #make check-sudo

@@ -94,6 +94,7 @@ deploy_git () {
     case "$MODE" in
     link|copy)
         cp --remove-destination "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
+        git config --global core.excludesfile ~/.gitignore_global
         ## SET USER CONFIG INTO COMPANY DIR
         echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
         read -r flag

@@ -161,6 +161,10 @@ deploy_karabiner () {
   mode_directory "$1" "${HOME}/.config/karabiner"
 }
 
+deploy_wezterm () {
+  mode_directory "$1" "${HOME}/.config/wezterm"
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
@@ -172,6 +176,7 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "vscode" ) deploy_vscode $DIR_FULLPATH;;
     "nvim" ) deploy_nvim $DIR_FULLPATH;;
     "karabiner" ) deploy_karabiner $DIR_FULLPATH;;
+    "wezterm" ) deploy_wezterm $DIR_FULLPATH;;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
 done

@@ -165,6 +165,10 @@ deploy_wezterm () {
   mode_directory "$1" "${HOME}/.config/wezterm"
 }
 
+deploy_tmux () {
+  mode_directory "$1" "${HOME}/.config/tmux"
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
@@ -177,6 +181,7 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "nvim" ) deploy_nvim $DIR_FULLPATH;;
     "karabiner" ) deploy_karabiner $DIR_FULLPATH;;
     "wezterm" ) deploy_wezterm $DIR_FULLPATH;;
+    "tmux" ) deploy_tmux $DIR_FULLPATH;;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
 done

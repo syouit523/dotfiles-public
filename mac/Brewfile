@@ -12,6 +12,7 @@ brew "harelba/q/q"
 
 ## font
 cask "font-hack-nerd-font"
+brew "font-meslo-lg-nerd-font"
 
 ## Apps
 cask "google-japanese-ime"

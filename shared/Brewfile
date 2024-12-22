@@ -43,3 +43,6 @@ brew "tailscale"
 
 ## neovim
 brew "ripgrep"
+
+## tmux
+#brew "tmux-mem-cpu-load"

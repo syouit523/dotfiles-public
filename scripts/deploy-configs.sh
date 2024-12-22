@@ -166,7 +166,7 @@ deploy_wezterm () {
 }
 
 deploy_tmux () {
-  mode_directory "$1" "${HOME}/.config/tmux"
+  mode_file "$1/tmux.conf" "${HOME}/.tmux.conf"
 }
 
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do

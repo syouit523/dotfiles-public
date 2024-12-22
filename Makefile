@@ -37,6 +37,7 @@ ifeq ($(UNAME_S), Linux)
 	make zsh_extensions
 	make link
 	make reload_zshrc
+	make tmux
 	make linux_setup
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Darwin)
@@ -48,6 +49,7 @@ else ifeq ($(UNAME_S), Darwin)
 	make zsh
 	make link
 	make zsh_extensions
+	make tmux
 	make reload_zshrc
 	make ssh-key-gen
 else ifeq ($(UNAME_S), Windows_NT)
@@ -138,6 +140,12 @@ reload_zshrc:
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi
+
+# ******************** tmux ********************
+.PHONY: tmux
+tmux:
+	@echo "Setup Tmux\n"
+	sh $(SCRIPTS)/setup-tmux.sh
 
 # ******************** dot files ********************
 .PHONY: link l

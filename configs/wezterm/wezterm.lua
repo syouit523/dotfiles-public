@@ -1,52 +1,32 @@
+-- Pull in the wezterm API
 local wezterm = require("wezterm")
+
+-- This will hold the configuration.
 local config = wezterm.config_builder()
 
-config.automatically_reload_config = true
-config.font_size = 12.0
-config.window_background_opacity = 0.85
-config.macos_window_background_blur = 20
-config.window_decorations = "RESIZE"
+-- This is where you actually apply your config choices
 
-config.window_frame = {
-	inactive_titlebar_bg = "none",
-	active_titlebar_bg = "none",
-}
-config.window_background_gradient = {
-	colors = { "#000000" },
-}
-
--- TAB
-config.hide_tab_bar_if_only_one_tab = true
-config.show_new_tab_button_in_tab_bar = false
-config.show_close_tab_button_in_tabs = false
-
+-- my coolnight colorscheme
 config.colors = {
-	tab_bar = {
-		inactive_tab_edge = "none",
-	},
+	foreground = "#CBE0F0",
+	background = "#011423",
+	cursor_bg = "#47FF9C",
+	cursor_border = "#47FF9C",
+	cursor_fg = "#011423",
+	selection_bg = "#033259",
+	selection_fg = "#CBE0F0",
+	ansi = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#0FC5ED", "#a277ff", "#24EAF7", "#24EAF7" },
+	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
 }
 
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-	local background = "#5c6d74"
-	local foreground = "#FFFFFF"
-	local edge_background = "none"
-	if tab.is_active then
-		background = "#ae8b2d"
-		foreground = "#FFFFFF"
-	end
-	local edge_foreground = background
-	local title = "   " .. wezterm.truncate_right(tab.active_pane.title, max_width - 1) .. "   "
-	return {
-		{ Background = { Color = edge_background } },
-		{ Foreground = { Color = edge_foreground } },
-		{ Text = SOLID_LEFT_ARROW },
-		{ Background = { Color = background } },
-		{ Foreground = { Color = foreground } },
-		{ Text = title },
-		{ Background = { Color = edge_background } },
-		{ Foreground = { Color = edge_foreground } },
-		{ Text = SOLID_RIGHT_ARROW },
-	}
-end)
+config.font = wezterm.font("MesloLGS Nerd Font Mono")
+config.font_size = 12
 
+config.enable_tab_bar = true
+
+config.window_decorations = "RESIZE"
+config.window_background_opacity = 0.75
+config.macos_window_background_blur = 10
+
+-- and finally, return the configuration to wezterm
 return config

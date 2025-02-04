@@ -169,6 +169,10 @@ deploy_tmux () {
   mode_file "$1/tmux.conf" "${HOME}/.tmux.conf"
 }
 
+deploy_starship () {
+  mode_directory "$1" "${HOME}/.config/starship"
+}
+
 for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
@@ -182,6 +186,7 @@ for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1
     "karabiner" ) deploy_karabiner $DIR_FULLPATH;;
     "wezterm" ) deploy_wezterm $DIR_FULLPATH;;
     "tmux" ) deploy_tmux $DIR_FULLPATH;;
+    "starship" ) deploy_starship $DIR_FULLPATH;;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
 done

@@ -1,5 +1,6 @@
 zsh_dir="$HOME"/.config/zsh
 shoichi_dir="$zsh_dir"/shoichi
+export EDITOR=nvim
 
 #----- setup prompt -----#
 prompt="starship"

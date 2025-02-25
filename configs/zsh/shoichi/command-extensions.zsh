@@ -51,3 +51,11 @@ eval $(thefuck --alias fk)
 
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
+
+
+# zsh
+# zsh-autosuggestions
+source "$HOME"/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# zsh-syntax-highlighting
+source "$HOME"/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

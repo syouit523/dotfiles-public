@@ -18,3 +18,5 @@ if command -v z > /dev/null 2>&1; then
 else
     echo "z not found"
 fi
+
+alias g="git"

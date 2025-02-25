@@ -26,9 +26,6 @@ source "$HOME"/.config/zsh/fzf-git/fzf-git.sh
 # ----- Bat (better cat) -----
 export BAT_THEME=tokyonight_night
 
-# ---- Eza (better ls) -----
-alias ls="eza --color=always --long --git --icons=always --no-user"
-
 # eza & bat
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
@@ -54,4 +51,3 @@ eval $(thefuck --alias fk)
 
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"
-alias cd="z"

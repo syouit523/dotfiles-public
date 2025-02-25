@@ -38,11 +38,13 @@
   # プルリクエストを編集する
   pp = "!gh pr edit"
   # 指定したブランチの最初のマージプルリクエストを表示する
+  # $1 はブランチ名
   showpr = "!f() { default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); git log --merges --oneline --reverse --ancestry-path $1...$default_branch | grep 'Merge pull request #' | head -n 1; }; f"
   # 指定したブランチの最初のマージプルリクエストをブラウザで開く
-  openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"
+  # $1 はブランチ名
+  openpr = "!f() { default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); pr_number=$(git log --merges --oneline --reverse --ancestry-path $1...$default_branch | grep 'Merge pull request #' | head -n 1 | cut -d' ' -f5 | sed 's/#//'); if [ -n \"$pr_number\" ]; then gh pr view $pr_number --web; else echo 'No merged pull request found'; fi; }; f"
   # すべての変更をステージングしてコミットする
-  ca = "!git add -A && git commit -m"
+  ca = "!git add -A && git commit"
   # コミット履歴をグラフ形式で表示する
   lg = "log --oneline --graph --decorate --all"
   # ステージングされた変更を取り消す

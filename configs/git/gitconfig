@@ -61,8 +61,8 @@
   resolve = "!git mergetool && git commit"
   # リベースを続行する
   rebase-continue = "rebase --continue"
-  # リモートのブランチを追跡する
-  track = "!f() { git branch --set-upstream-to=origin/$1 $1; }; f"
+  # 現在のブランチをリモートの同名ブランチに追跡する
+  track = "!f() { current_branch=$(git symbolic-ref --short HEAD); git branch --set-upstream-to=origin/$current_branch $current_branch; }; f"
   # すべての変更をスタッシュする
   stash-all = "stash save --include-untracked"
   # スタッシュをポップする

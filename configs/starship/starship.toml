@@ -1,8 +1,13 @@
 format = """
+${custom.os_icon}\
 $directory\
 $git_branch\
 $git_status\
+$git_metrics\
 $fill\
+$git_commit\
+$swift\
+$terraform\
 $lua\
 $python\
 $nodejs\
@@ -10,18 +15,24 @@ $aws\
 $docker_context\
 $jobs\
 $cmd_duration\
+$time\
 $line_break\
 $character"""
 
 add_newline = true
 palette = 'nord'
 
+[time]
+format = '[$time]($style)'
+style = 'fg:gray'
+time_format = '%H:%M:%S'
+disabled = false
+
 [directory]
 style = 'bold fg:dark_blue'
-format = '[$path ]($style)'
+format = '[$path]($style)  '
 truncation_length = 3
 truncation_symbol = '…/'
-truncate_to_repo = false
 
 [directory.substitutions]
 'Documents' = '󰈙'
@@ -31,12 +42,28 @@ truncate_to_repo = false
 
 [git_branch]
 style = 'fg:green'
-symbol = ' '
-format = '[on](white) [$symbol$branch ]($style)'
+symbol = '  '
+format = '[$symbol$branch ]($style)'
+
+[git_commit]
+tag_disabled = false
 
 [git_status]
 style = 'fg:green'
 format = '([$all_status$ahead_behind]($style) )'
+
+[git_metrics]
+disabled = false
+format = '[+$added]($added_style)/[-$deleted]($deleted_style) '
+
+[swift]
+symbol = '󰛥 '
+detect_extensions = ['.swift', '.xcworkspace', '.xcodeproj']
+format = '[$symbol($version )]($style)'
+
+[terraform]
+symbol = ' '
+format = 'via [$symbol$version $workspace]($style)'
 
 [lua]
 symbol = ' '
@@ -108,3 +135,19 @@ yellow='#e5c07b'
 gray='#828997'
 white ='#abb2bf'
 black='#2c323c'
+
+[custom.os_icon]
+command = """
+if [[ $(uname) == 'Darwin' ]]; then
+  echo ''
+elif [[ $(uname) == 'Linux' ]]; then
+  echo ''
+elif [[ $(uname) == 'Windows' ]]; then
+  echo ''
+else
+  echo ''
+fi
+"""
+when = 'true'
+style = 'bold'
+format = '[$output ]($style)'

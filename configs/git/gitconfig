@@ -14,21 +14,59 @@
 [merge]
   tool = vimdiff
 [alias]
-  open = browse
-  o = browse
+  # GitHubで現在のリポジトリを開く
+  open = "!gh browse"
+  # 'open' エイリアスの短縮形
+  o = "open"
+  # ブランチを切り替える
   ch = checkout
+  # ブランチを表示または操作する
   b = branch
+  # 変更点を表示する
   d = diff
+  # 変更をコミットする
   cm = commit
+  # 変更をリモートにプッシュする
+  push = "!git push -u origin HEAD"
   ph = push
+  # リモートから変更をプルする
   pl = pull
+  # リポジトリの状態を表示する
   st = status
-  pl = pull
-  st = status
-  pr = "!gh pr create -w"
-  pp = "pull-request --edit"
-  showpr = "!f() { git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1; }; f"
-  openpr = "!f() { hub browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"
+  # 新しいプルリクエストを作成する
+  pr = "!gh pr create --web"
+  # プルリクエストを編集する
+  pp = "!gh pr edit"
+  # 指定したブランチの最初のマージプルリクエストを表示する
+  showpr = "!f() { default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'); git log --merges --oneline --reverse --ancestry-path $1...$default_branch | grep 'Merge pull request #' | head -n 1; }; f"
+  # 指定したブランチの最初のマージプルリクエストをブラウザで開く
+  openpr = "!f() { gh browse -- `git log --merges --oneline --reverse --ancestry-path $1...master | grep 'Merge pull request #' | head -n 1 | cut -f5 -d' ' | sed -e 's%#%pull/%'`; }; f"
+  # すべての変更をステージングしてコミットする
+  ca = "!git add -A && git commit -m"
+  # コミット履歴をグラフ形式で表示する
+  lg = "log --oneline --graph --decorate --all"
+  # ステージングされた変更を取り消す
+  unstage = "reset HEAD --"
+  # 最後のコミットメッセージを修正する
+  amend = "commit --amend"
+  # すべてのリモートブランチを取得する
+  fetch-all = "fetch --all"
+  # すべてのリモートブランチをプルする
+  pull-all = "!git fetch --all && git pull --all"
+  # 指定したブランチを削除する
+  delete-branch = "!git branch -d"
+  # マージコンフリクトを解決し、コミットする
+  resolve = "!git mergetool && git commit"
+  # リベースを続行する
+  rebase-continue = "rebase --continue"
+  # リモートのブランチを追跡する
+  track = "!f() { git branch --set-upstream-to=origin/$1 $1; }; f"
+  # すべての変更をスタッシュする
+  stash-all = "stash save --include-untracked"
+  # スタッシュをポップする
+  stash-pop = "stash pop"
+  # スタッシュの一覧を表示する
+  stash-list = "stash list"
 [push]
   autoSetupRemote = true
 [pull]

@@ -1,4 +1,7 @@
 {
     "security.workspace.trust.untrustedFiles": "open",
-    "terminal.integrated.fontFamily": "MesloLGS NF"
+    "terminal.integrated.fontFamily": "MesloLGS Nerd Font Mono",
+    "editor.fontFamily": "MesloLGS Nerd Font Mono",
+    "editor.fontSize": 12,
+    "editor.lineHeight": 1
 }

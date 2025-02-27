@@ -61,14 +61,24 @@ endif
 # ******************** brew ********************
 .PHONY: brew_install
 brew_install:
-	@echo "Running Homebrew installation script..."
-	@INSTALL_SHELL="$(SCRIPTS)/install-brew.sh"; \
-	chmod +x "$$INSTALL_SHELL"; \
-	"$$INSTALL_SHELL"
+	ifeq ($(UNAME_S), Darwin)
+		@echo "Running Homebrew installation script..."
+		@INSTALL_SHELL="$(SCRIPTS)/install-brew.sh"; \
+		chmod +x "$$INSTALL_SHELL"; \
+		"$$INSTALL_SHELL"
+	else
+		@echo "$(UNAME_S)" is not supported to install Homebrew.
+	endif
 
 .PHONY: brew_setup
 brew_setup:
 	@echo "Setting up Brewfile packages..."
+
+# base
+	@echo "Installing Base-Brewfile packages"
+# extra
+	@echo "Installing Extra-Brewfile packages"
+
 	@INSTALL_SHELL="$(SCRIPTS)/install-brew-bundle.sh"; \
 	chmod +x "$$INSTALL_SHELL"; \
 	"$$INSTALL_SHELL"

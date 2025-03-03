@@ -1,5 +1,5 @@
 format = """
-${custom.os_icon}\
+$os\
 $directory\
 $git_branch\
 $git_status\
@@ -21,6 +21,20 @@ $character"""
 
 add_newline = true
 palette = 'nord'
+
+[os]
+format = "[$symbol]($style)"
+style = 'bold'
+disabled = false
+
+[os.symbols]
+Macos = " "
+Linux = " "
+CentOS = " "
+FreeBSD = " "
+Ubuntu = " "
+Windows = " "
+Unknown = "❓ "
 
 [time]
 format = '[$time]($style)'
@@ -135,19 +149,3 @@ yellow='#e5c07b'
 gray='#828997'
 white ='#abb2bf'
 black='#2c323c'
-
-[custom.os_icon]
-command = """
-if [[ $(uname) == 'Darwin' ]]; then
-  echo ''
-elif [[ $(uname) == 'Linux' ]]; then
-  echo ''
-elif [[ $(uname) == 'Windows' ]]; then
-  echo ''
-else
-  echo ''
-fi
-"""
-when = 'true'
-style = 'bold'
-format = '[$output ]($style)'

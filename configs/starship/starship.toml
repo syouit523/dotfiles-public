@@ -124,7 +124,7 @@ format = '[$symbol]($style)'
 [cmd_duration]
 min_time = 500
 style = 'bold fg:dark_blue'
-format = '[[$duration]]($style)'
+format = '[$duration]($style)'
 
 [palettes.nord]
 dark_blue = '#5E81AC'

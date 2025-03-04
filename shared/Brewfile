@@ -41,6 +41,7 @@ brew "gh"
 brew "coreutils" # cp command from GNU
 brew "starship"
 brew "tailscale"
+brew "pyenv"
 
 ## neovim
 brew "ripgrep"

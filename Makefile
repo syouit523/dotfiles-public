@@ -59,11 +59,10 @@ linux_setup:
 	make install_apt_packages_from_brew
 	make font
 	make zsh
-	make zsh_extensions
 	make link
-	make reload_zshrc
+	make zsh_extensions
 	make tmux
-	make linux_gui_setup
+	make reload_zshrc
 	make ssh-key-gen
 
 .PHONY: linux_gui_setup

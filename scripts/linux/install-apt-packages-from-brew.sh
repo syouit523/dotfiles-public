@@ -38,7 +38,6 @@ declare -A PKG_MAP=(
     ["tree"]="tree"
     ["ripgrep"]="ripgrep"
     ["zoxide"]="zoxide"
-    ["awscli"]="awscli"
     ["tailscale"]="tailscale"
     ["coreutils"]="coreutils"
     ["ffmpeg"]="ffmpeg"
@@ -108,6 +107,25 @@ install_tfenv() {
     touch .bash_profile
     echo export PATH='$HOME/.tfenv/bin:$PATH' >> ~/.bash_profile
     source ~/.bash_profile
+}
+
+install_awscli() {
+    if [[ "$OS" == "Linux" ]]; then
+        echo "awscliをインストール中..."
+        sudo apt install python3-pip
+        pip3 install --upgrade --user awscli
+        # awscliをPATHに追加
+        if [[ "$SHELL" == *"zsh"* ]]; then
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+            source ~/.zshrc
+        elif [[ "$SHELL" == *"bash"* ]]; then
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bash_profile
+            source ~/.bash_profile
+        fi
+    else
+        echo "サポートされていないOSです: $OS"
+        exit 1
+    fi
 }
 
 # 対話的なインストールを防ぐための設定

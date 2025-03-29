@@ -157,7 +157,8 @@ zsh_extensions:
 # ******************** linux ********************
 .PHONY: install_apt_packages_from_brew
 install_apt_packages_from_brew:
-	sh $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
+	chmod +x $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
+	$(SCRIPTS)/linux/install-apt-packages-from-brew.sh
 
 .PHONY: linux_setup
 linux_setup:

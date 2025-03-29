@@ -8,6 +8,10 @@ if command -v zsh >/dev/null 2>&1; then
       elif [ "$(uname -m)" == arm64 ]; then
         sh -c 'echo "/opt/homebrew/bin/zsh" >> /etc/shells' # add zsh path of homebrew
       fi
+    elif [ "$(uname)" == 'Linux' ]; then
+        if [ -f /etc/shells ]; then
+        sh -c 'echo "/usr/bin/zsh" >> /etc/shells' # add zsh path of apt
+      fi
     fi
     chsh -s $(which zsh)
     zdh
@@ -31,7 +35,7 @@ if command -v zsh >/dev/null 2>&1; then
         $SCRIPTS/git-clone.sh https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
     fi
 
-    # install plugins of oh-my-zsh
+    # theme
     ## zsh-autosuggestions
     if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
         $SCRIPTS/git-clone.sh https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions

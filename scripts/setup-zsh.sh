@@ -1,4 +1,8 @@
 #!/bin/bash
+
+ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
+SCRIPTS="$ROOT_DIR/scripts"
+
 if command -v zsh >/dev/null 2>&1; then
     # set to the default shell to zsh
     # sudo -n sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac

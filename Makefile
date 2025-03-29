@@ -53,7 +53,7 @@ bootstrap b: check-sudo
 
 ## ******************** Linux Setup ********************
 .PHONY: linux_setup
-linux_setup:
+Linux_setup:
 	@echo "\n=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
 	make install_apt_packages_from_brew

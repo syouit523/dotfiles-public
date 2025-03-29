@@ -212,10 +212,15 @@ delete:
 clean c:
 	@echo "Clean\n"
 	make check-sudo
-	rm -rf deps
+	make clean-deps
 	make uninstall-brew
 	make delete
 	make change-default-shell
+
+.PHONY: clean-deps
+clean-deps:
+	@echo "Clean dependencies\n"
+	rm -rf deps
 
 .PHONY: uninstall-brew
 uninstall-brew:

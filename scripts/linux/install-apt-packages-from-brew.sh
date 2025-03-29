@@ -51,8 +51,8 @@ declare -A PKG_MAP=(
 install_packages() {
     # minimumとextraのBrewfileを処理
     BREWFILES=(
-        "$ROOT_DIR/Brewfiles/minimum-Brewfile"
-        "$ROOT_DIR/Brewfiles/extra-Brewfile"
+        "$ROOT/Brewfiles/minimum-Brewfile"
+        "$ROOT/Brewfiles/extra-Brewfile"
     )
     
     if [[ "$OS" == "Linux" ]]; then

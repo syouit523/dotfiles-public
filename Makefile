@@ -218,7 +218,9 @@ clean c:
 	@echo "Clean\n"
 	make check-sudo
 	make clean-deps
-	make uninstall-brew
+	@if [ "$(UNAME_S)" = "Darwin" ]; then \
+		make uninstall-brew; \
+	fi
 	make delete
 	make change-default-shell
 

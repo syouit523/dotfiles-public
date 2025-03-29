@@ -104,6 +104,13 @@ install_pyenv() {
     fi
 }
 
+install_tfenv() {
+    git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+    touch .bash_profile
+    echo export PATH='$HOME/.tfenv/bin:$PATH' >> ~/.bash_profile
+    source ~/.bash_profile
+}
+
 # 対話的なインストールを防ぐための設定
 export DEBIAN_FRONTEND=noninteractive
 echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections

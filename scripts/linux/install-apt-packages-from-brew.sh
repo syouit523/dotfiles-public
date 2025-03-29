@@ -60,8 +60,11 @@ install_packages() {
     )
     
     if [[ "$OS" == "Linux" ]]; then
+        echo "debconf-utilsをインストール中..."
+        sudo apt-get install -y debconf-utils
+        
         echo "パッケージリストを更新中..."
-        sudo apt update
+        sudo apt-get update
         
         echo "Brewfileからaptでパッケージをインストール中..."
         for BREWFILE in "${BREWFILES[@]}"; do
@@ -73,7 +76,7 @@ install_packages() {
                     
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
-                        sudo apt install -y $apt_pkg
+                        sudo apt-get install -y --force-yes $apt_pkg
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi

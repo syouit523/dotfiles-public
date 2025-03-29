@@ -32,7 +32,6 @@ declare -A PKG_MAP=(
     ["neovim"]="neovim"
     ["rbenv"]="rbenv"
     ["ruby-build"]="ruby-build"
-    ["tfenv"]="tfenv"
     ["optipng"]="optipng"
     ["nkf"]="nkf"
     ["tcl-tk"]="tcl tk"

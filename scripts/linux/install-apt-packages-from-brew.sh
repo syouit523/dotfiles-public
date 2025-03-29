@@ -18,7 +18,6 @@ declare -A PKG_MAP=(
     ["curl"]="curl"
     ["wget"]="wget"
     ["nmap"]="nmap"
-    ["iperf3"]="iperf3"
     ["fish"]="fish"
     ["zsh"]="zsh"
     ["fzf"]="fzf"
@@ -111,10 +110,6 @@ install_tfenv() {
 install_tailscale() {
     curl -fsSL https://tailscale.com/install.sh | sh
 }
-
-# 対話的なインストールを防ぐための設定
-export DEBIAN_FRONTEND=noninteractive
-echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
 
 install_packages
 install_pyenv

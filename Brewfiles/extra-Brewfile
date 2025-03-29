@@ -1,0 +1,14 @@
+# Homebrewリポジトリの追加
+tap "homebrew/bundle"  # Homebrew Bundle用公式リポジトリ
+tap "jesseduffield/lazygit"  # lazygitの非公式リポジトリ
+
+# 基本コマンドラインツール
+# AWS/クラウド関連
+brew "awscli"  # AWSコマンドラインインターフェース
+brew "tailscale"  # VPNサービス
+
+# シェル/ターミナル強化
+brew "coreutils"  # GNUコアユーティリティ(cpなど)
+
+# マルチメディア/ユーティリティ
+brew "ffmpeg"  # 動画/音声処理

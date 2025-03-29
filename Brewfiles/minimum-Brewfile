@@ -1,0 +1,54 @@
+# Homebrewリポジトリの追加
+tap "homebrew/bundle"  # Homebrew Bundle用公式リポジトリ
+tap "jesseduffield/lazygit"  # lazygitの非公式リポジトリ
+
+# ファイル/テキスト操作
+brew "eza"  # lsコマンドの拡張版
+brew "fd"  # findコマンドの高速代替
+brew "bat"  # catコマンドの拡張版
+brew "micro"  # モダンなテキストエディタ
+brew "jq"  # JSON処理ツール
+brew "tlrc"  # manページの簡易表示
+brew "git-delta"  # git diffの拡張
+
+# ネットワーク関連
+brew "curl"  # HTTPクライアント
+brew "wget"  # ファイルダウンロード
+brew "nmap"  # ネットワークスキャン
+brew "iperf3"
+
+# シェル/ターミナル強化
+brew "fish"  # フレンドリーなシェル
+brew "zsh"  # 拡張可能なシェル
+brew "fzf"  # ファジーファインダー
+brew "zoxide"  # スマートなcd代替
+brew "starship"  # カスタマイズ可能なプロンプト
+brew "tmux"  # ターミナルマルチプレクサ
+brew "direnv"  # ディレクトリごとの環境変数管理
+
+# Git関連
+brew "gh"  # GitHub CLI
+brew "git"  # バージョン管理システム
+brew "git-lfs"  # 大容量ファイル管理
+brew "git-now"  # gitコミット簡易化
+brew "hub"  # GitHubコマンドライン拡張
+brew "jesseduffield/lazygit/lazygit"  # Git TUIクライアント
+
+# プログラミング言語/環境
+brew "go"  # Go言語
+brew "node"  # Node.js
+brew "neovim"  # モダンなVimエディタ
+brew "pyenv"  # Pythonバージョン管理
+brew "rbenv"  # Rubyバージョン管理
+brew "ruby-build"  # Rubyビルドツール
+brew "tfenv"  # Terraformバージョン管理
+brew "pyenv"
+
+# マルチメディア/ユーティリティ
+brew "optipng"  # PNG画像最適化
+brew "nkf"  # 文字コード変換
+brew "tcl-tk"  # Tcl/Tkツールキット
+brew "tree"  # ディレクトリツリー表示
+
+# Neovim関連
+brew "ripgrep"  # 高速grepツール(Neovim用)

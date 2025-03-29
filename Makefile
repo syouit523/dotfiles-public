@@ -1,4 +1,12 @@
 ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+export ROOT
+
+## ******************** Global Variables ********************
+# Installation mode: minimum or extra (default: minimum)
+MODE ?= minimum
+export MODE
+export SCRIPTS := $(ROOT)/scripts
+export MAC := $(ROOT)/mac
 
 ## ******************** Script Environment ********************
 UNAME_S := $(shell uname -s)
@@ -11,6 +19,7 @@ BREW_SETUP   = $(SCRIPTS)/brew-setup.sh
 DEPLOY_CONFIGS = $(SCRIPTS)/deploy-configs.sh
 SETUP_FISH = $(SCRIPTS)/setup-fish.sh
 SETUP_ZSH = $(SCRIPTS)/setup-zsh.sh
+BREWFILES = $(ROOT)/brewfiles
 
 default: bootstrap
 
@@ -25,11 +34,27 @@ check-sudo:
 		while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
 	fi
 
-## ******************** Setup ********************
+## ******************** Common Targets ********************
 .PHONY: bootstrap
-bootstrap b:
-ifeq ($(UNAME_S), Linux)
-	make check-sudo
+bootstrap b: check-sudo
+	@echo "Starting bootstrap for $(UNAME_S)"
+	@echo "\nSelect installation mode:"
+	@echo "1) minimum (essential packages only)"
+	@echo "2) extra (all packages)"
+	@read -p "Enter choice [1-2] (default: 1): " choice; \
+	case "$$choice" in \
+		1) mode="minimum";; \
+		2|"") mode="extra";; \
+		*) echo "Invalid choice, using extra mode"; mode="minimum";; \
+	esac; \
+	echo "Selected mode: $$mode"; \
+	MODE=$$mode
+	@make $(UNAME_S)_setup
+
+## ******************** Linux Setup ********************
+.PHONY: linux_setup
+linux_setup:
+	@echo "\n=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
 	make install_apt_packages_from_brew
 	make font
@@ -38,12 +63,19 @@ ifeq ($(UNAME_S), Linux)
 	make link
 	make reload_zshrc
 	make tmux
-	make linux_setup
+	make linux_gui_setup
 	make ssh-key-gen
-else ifeq ($(UNAME_S), Darwin)
-#	sh defaults write com.apple.finder AppleShowAllFiles TRUE
-#	sh killall Finder
-	make check-sudo
+
+.PHONY: linux_gui_setup
+linux_gui_setup:
+	@echo "\n=== Linux GUI Setup ==="
+	sh $(SCRIPTS)/linux/install-flatpak.sh
+	sh $(SCRIPTS)/linux/install-apps.sh
+
+## ******************** macOS Setup ********************
+.PHONY: darwin_setup
+Darwin_setup:
+	@echo "\n=== macOS Setup ==="
 	make brew_install
 	make brew_setup
 	make zsh
@@ -52,11 +84,16 @@ else ifeq ($(UNAME_S), Darwin)
 	make tmux
 	make reload_zshrc
 	make ssh-key-gen
-else ifeq ($(UNAME_S), Windows_NT)
-	@echo Windows is not supported
-else
-	@echo "$(UNAME_S)" is not supported
-endif
+
+## ******************** Windows Setup ********************
+.PHONY: Windows_NT_setup
+Windows_NT_setup:
+	@echo "Windows is not supported"
+
+## ******************** Other OS ********************
+.PHONY: %_setup
+%_setup:
+	@echo "$* is not supported"
 
 # ******************** brew ********************
 .PHONY: brew_install
@@ -69,14 +106,20 @@ brew_install:
 .PHONY: brew_setup
 brew_setup:
 	@echo "Setting up Brewfile packages..."
+	@echo "Installation mode: $(MODE)"
 	@INSTALL_SHELL="$(SCRIPTS)/install-brew-bundle.sh"; \
 	chmod +x "$$INSTALL_SHELL"; \
-	"$$INSTALL_SHELL"
+	"$$INSTALL_SHELL" $(MODE)
 
 .PHONY: brew_mac_app
 brew_mac_app:
 	@echo "Installing Mac apps from AppStore..."
-	- brew bundle --file="$(MAC)/mac-app/Brewfile"
+	@if [ "$(MODE)" = "extra" ]; then \
+		echo "Running in extra mode, installing Mac apps..."; \
+		brew bundle --file="$(BREWFILES)/mac-apps/Brewfile"; \
+	else \
+		echo "Skipping Mac apps installation (not in extra mode)"; \
+	fi
 
 .PHONY: brew_update_all
 brew_update_all:
@@ -174,9 +217,15 @@ delete:
 clean c:
 	@echo "Clean\n"
 	make check-sudo
+	make clean-deps
 	make uninstall-brew
 	make delete
 	make change-default-shell
+
+.PHONY: clean-deps
+clean-deps:
+	@echo "Clean dependencies\n"
+	rm -rf deps
 
 .PHONY: uninstall-brew
 uninstall-brew:

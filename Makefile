@@ -1,9 +1,12 @@
 ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+export ROOT
 
 ## ******************** Global Variables ********************
 # Installation mode: minimum or extra (default: minimum)
 MODE ?= minimum
 export MODE
+export SCRIPTS := $(ROOT)/scripts
+export MAC := $(ROOT)/mac
 
 ## ******************** Script Environment ********************
 UNAME_S := $(shell uname -s)
@@ -209,6 +212,7 @@ delete:
 clean c:
 	@echo "Clean\n"
 	make check-sudo
+	rm -rf deps
 	make uninstall-brew
 	make delete
 	make change-default-shell

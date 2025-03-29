@@ -76,7 +76,8 @@ install_packages() {
                     
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
-                        sudo apt-get install -y --force-yes $apt_pkg > /dev/null 2>&1
+                        # APT_ARGSで対話プロンプトを無効化
+                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y --force-yes $apt_pkg
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi

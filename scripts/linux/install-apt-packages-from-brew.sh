@@ -39,7 +39,6 @@ declare -A PKG_MAP=(
     ["tcl-tk"]="tcl tk"
     ["tree"]="tree"
     ["ripgrep"]="ripgrep"
-    ["starship"]="starship"
     ["zoxide"]="zoxide"
     ["awscli"]="awscli"
     ["tailscale"]="tailscale"
@@ -73,7 +72,7 @@ install_packages() {
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
                         # APT_ARGSで対話プロンプトを無効化
-                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y --force-yes $apt_pkg
+                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y $apt_pkg
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi
@@ -86,8 +85,19 @@ install_packages() {
     fi
 }
 
+install_starship() {
+    if [[ "$OS" == "Linux" ]]; then
+        echo "starshipをインストール中..."
+        curl -sS https://starship.rs/install.sh | sh -s -- --yes
+    else
+        echo "サポートされていないOSです: $OS"
+        exit 1
+    fi
+}
+
 # 対話的なインストールを防ぐための設定
 export DEBIAN_FRONTEND=noninteractive
 echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
 
 install_packages
+install_starship

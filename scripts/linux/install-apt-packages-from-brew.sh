@@ -108,24 +108,6 @@ install_tfenv() {
     source ~/.bash_profile
 }
 
-install_awscli() {
-    if [[ "$OS" == "Linux" ]]; then
-        echo "awscliをインストール中..."
-        sudo apt install python3-pip
-        pip3 install --upgrade --user awscli
-        # awscliをPATHに追加
-        if [[ "$SHELL" == *"zsh"* ]]; then
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
-            source ~/.zshrc
-        elif [[ "$SHELL" == *"bash"* ]]; then
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bash_profile
-            source ~/.bash_profile
-        fi
-    else
-        echo "サポートされていないOSです: $OS"
-        exit 1
-    fi
-}
 install_tailscale() {
     curl -fsSL https://tailscale.com/install.sh | sh
 }
@@ -137,6 +119,5 @@ echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
 install_packages
 install_pyenv
 install_tfenv
-install_awscli
 install_tailscale
 install_starship

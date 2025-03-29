@@ -38,7 +38,6 @@ declare -A PKG_MAP=(
     ["tree"]="tree"
     ["ripgrep"]="ripgrep"
     ["zoxide"]="zoxide"
-    ["tailscale"]="tailscale"
     ["coreutils"]="coreutils"
     ["ffmpeg"]="ffmpeg"
 )
@@ -127,6 +126,9 @@ install_awscli() {
         exit 1
     fi
 }
+install_tailscale() {
+    curl -fsSL https://tailscale.com/install.sh | sh
+}
 
 # 対話的なインストールを防ぐための設定
 export DEBIAN_FRONTEND=noninteractive
@@ -134,4 +136,7 @@ echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
 
 install_packages
 install_pyenv
+install_tfenv
+install_awscli
+install_tailscale
 install_starship

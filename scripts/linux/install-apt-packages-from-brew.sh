@@ -30,7 +30,6 @@ declare -A PKG_MAP=(
     ["go"]="golang"
     ["node"]="nodejs"
     ["neovim"]="neovim"
-    ["pyenv"]="pyenv"
     ["rbenv"]="rbenv"
     ["ruby-build"]="ruby-build"
     ["tfenv"]="tfenv"
@@ -95,9 +94,20 @@ install_starship() {
     fi
 }
 
+install_pyenv() {
+    if [[ "$OS" == "Linux" ]]; then
+        echo "pyenvをインストール中..."
+        curl https://pyenv.run | bash
+    else
+        echo "サポートされていないOSです: $OS"
+        exit 1
+    fi
+}
+
 # 対話的なインストールを防ぐための設定
 export DEBIAN_FRONTEND=noninteractive
 echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
 
 install_packages
+install_pyenv
 install_starship

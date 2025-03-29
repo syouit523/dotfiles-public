@@ -7,6 +7,10 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
+# 対話的なインストールを防ぐための設定
+export DEBIAN_FRONTEND=noninteractive
+echo "iperf3 iperf3/autostart boolean false" | sudo debconf-set-selections
+
 # brewパッケージからaptパッケージへのマッピング
 declare -A PKG_MAP=(
     ["eza"]="eza"

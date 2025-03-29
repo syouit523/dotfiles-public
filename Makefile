@@ -45,7 +45,7 @@ bootstrap b: check-sudo
 	case "$$choice" in \
 		1) mode="minimum";; \
 		2|"") mode="extra";; \
-		*) echo "Invalid choice, using extra mode"; mode="extra";; \
+		*) echo "Invalid choice, using extra mode"; mode="minimum";; \
 	esac; \
 	echo "Selected mode: $$mode"; \
 	MODE=$$mode
@@ -114,7 +114,12 @@ brew_setup:
 .PHONY: brew_mac_app
 brew_mac_app:
 	@echo "Installing Mac apps from AppStore..."
-	- brew bundle --file="$(BREWFILES)/mac-apps/Brewfile"
+	@if [ "$(MODE)" = "extra" ]; then \
+		echo "Running in extra mode, installing Mac apps..."; \
+		brew bundle --file="$(BREWFILES)/mac-apps/Brewfile"; \
+	else \
+		echo "Skipping Mac apps installation (not in extra mode)"; \
+	fi
 
 .PHONY: brew_update_all
 brew_update_all:

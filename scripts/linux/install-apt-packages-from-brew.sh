@@ -76,7 +76,7 @@ install_packages() {
                     
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
-                        sudo apt-get install -y --force-yes $apt_pkg
+                        sudo apt-get install -y --force-yes $apt_pkg > /dev/null 2>&1
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi

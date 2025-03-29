@@ -1,0 +1,85 @@
+# ======================
+# リポジトリ追加
+# ======================
+tap "robotsandpencils/made"  # xcodes用リポジトリ
+tap "harelba/q"  # qコマンド用リポジトリ
+
+# ======================
+# コマンドラインツール
+# ======================
+brew "robotsandpencils/made/xcodes"  # Xcodeバージョン管理
+brew "harelba/q/q"  # CSV処理ツール
+
+# ======================
+# フォント
+# ======================
+cask "font-hack-nerd-font"  # プログラミング用フォント
+brew "font-meslo-lg-nerd-font"  # ターミナル用フォント
+
+# ======================
+# 開発ツール
+# ======================
+cask "visual-studio-code"  # コードエディタ
+cask "cursor"  # AI支援エディタ
+cask "postman"  # API開発ツール
+cask "proxyman"  # ネットワークデバッグ
+cask "charles"  # HTTPプロキシ
+cask "docker"  # コンテナ管理
+cask "tower"  # Gitクライアント
+cask "transmit" # FTPクライアント
+cask "charles"  # HTTPプロキシ
+cask "rapidapi"  # API開発ツール
+
+# ======================
+# コミュニケーション
+# ======================
+cask "slack"  # チームチャット
+cask "discord"  # コミュニケーションツール
+cask "chatgpt"  # AIチャット
+cask "claude"  # AIチャット
+
+# ======================
+# 生産性ツール
+# ======================
+cask "alfred"  # ランチャー
+cask "obsidian"  # ノートアプリ
+cask "figma"  # デザインツール
+cask "transmit"  # FTPクライアント
+
+# ======================
+# ブラウザ/ターミナル
+# ======================
+cask "google-chrome"  # Webブラウザ
+cask "brave-browser"  # プライバシーブラウザ
+cask "wezterm"  # ターミナル
+cask "iterm2"  # ターミナル
+cask "warp"  # モダンターミナル
+
+# ======================
+# システムツール
+# ======================
+cask "karabiner-elements"  # キーボードカスタマイズ
+cask "google-japanese-ime"  # 日本語入力
+cask "sf-symbols"  # Appleシステムアイコン
+cask "vlc"  # メディアプレイヤー
+
+# mas "Compressor", id: 424390742
+mas "DaisyDisk", id: 411643860
+mas "Developer", id: 640199958
+mas "Disk Speed Test", id: 425264550
+# mas "Final Cut Pro", id: 424389933
+# mas "GarageBand", id: 682658836
+# mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
+mas "LINE", id: 539883307
+# mas "Logic Pro", id: 634148309
+# mas "MainStage", id: 634159523
+mas "MindNode", id: 1289197285
+# mas "Motion", id: 434290957
+mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Pixelmator Pro", id: 1289583905
+# mas "Prime Video", id: 545519333
+mas "Steam Link", id: 1246969117
+mas "Tailscale", id: 1475387142
+mas "Windows App", id: 1295203466

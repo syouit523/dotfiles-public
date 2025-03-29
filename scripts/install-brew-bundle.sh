@@ -7,11 +7,34 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
+# 使用方法表示
+show_usage() {
+  echo "使用方法: $0 [minimum|extra]"
+  echo "  minimum: 最小限のパッケージのみインストール (minimum-Brewfile)"
+  echo "  extra:   追加パッケージもインストール (extra-Brewfile)"
+  echo "  引数なし: インストールしない"
+  exit 1
+}
 
 # Homebrewのパッケージインストール
 install_brew_packages() {
-  SHARED_BREWFILE="$ROOT_DIR/shared/Brewfile"
-  MAC_BREWFILE="$ROOT_DIR/mac/Brewfile"
+  local mode="${1:-minimum}" # デフォルトはminimum
+  
+  # Brewfileの選択
+  case "$mode" in
+    minimum)
+      BREWFILES=("$ROOT_DIR/Brewfiles/minimum-Brewfile")
+      ;;
+    extra|"")
+      BREWFILES=(
+        "$ROOT_DIR/Brewfiles/minimum-Brewfile"
+        "$ROOT_DIR/Brewfiles/extra-Brewfile"
+      )
+      ;;
+    *)
+      show_usage
+      ;;
+  esac
   
   if [[ "$OS" == "Darwin" ]]; then
         # macOSの場合
@@ -22,17 +45,27 @@ install_brew_packages() {
             # Intel Macの場合
             eval "$(/usr/local/bin/brew shellenv)"
         fi
-        # Brewfileの読み込み
-        brew bundle --file="$SHARED_BREWFILE" || true
-        brew bundle --file="$MAC_BREWFILE" || true
-    elif [[ "$OS" == "Linux" ]]; then
-        # Linuxの場合
-        eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-        brew bundle --file="$SHARED_BREWFILE" || true
     else
         echo "サポートされていないOSです: $OS"
         exit 1
     fi
+    
+    # 選択されたBrewfileをインストール
+    for brewfile in "${BREWFILES[@]}"; do
+      if [[ -f "$brewfile" ]]; then
+        echo "Installing from $brewfile..."
+        brew bundle --file="$brewfile" || true
+      else
+        echo "Brewfile not found: $brewfile"
+        exit 1
+      fi
+    done
 }
 
-install_brew_packages
+# メイン処理
+if [[ $# -ne 1 ]]; then
+  show_usage
+  exit 1
+fi
+
+install_brew_packages "$1"

@@ -2,20 +2,23 @@
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
+ZSH_PATH=$(which zsh)
 
 if command -v zsh >/dev/null 2>&1; then
     # set to the default shell to zsh
     # sudo -n sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac
-    if [ "$(uname)" == 'Darwin' ]; then
-      if [ "$(uname -m)" == x86_64 ]; then
-        sh -c 'echo "/usr/local/bin/zsh" >> /etc/shells' # add zsh path of homebrew
-      elif [ "$(uname -m)" == arm64 ]; then
-        sh -c 'echo "/opt/homebrew/bin/zsh" >> /etc/shells' # add zsh path of homebrew
-      fi
-    elif [ "$(uname)" == 'Linux' ]; then
-        if [ -f /etc/shells ]; then
-        sh -c 'echo "/usr/bin/zsh" >> /etc/shells' # add zsh path of apt
-      fi
+    if ! grep -q "^$ZSH_PATH$" /etc/shells; then
+        if [ "$(uname)" == 'Darwin' ]; then
+            if [ "$(uname -m)" == x86_64 ]; then
+                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of homebrew
+            elif [ "$(uname -m)" == arm64 ]; then
+                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of homebrew
+            fi
+        elif [ "$(uname)" == 'Linux' ]; then
+            if [ -f /etc/shells ]; then
+                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of apt
+            fi
+        fi
     fi
     chsh -s $(which zsh)
     zdh

@@ -7,6 +7,8 @@ ROOT_DIR=$2
 WORKSPACE="${HOME}/workspace"
 CONFIGS="${ROOT_DIR}/configs"
 
+OS="$(uname -s)"
+
 if [[ -z "$MODE" || -z "$ROOT_DIR" ]]; then
   echo "Usage: $0 {link|copy|delete} /path/to/root_dir"
   exit 1
@@ -149,8 +151,10 @@ deploy_fish () {
 }
 
 deploy_vscode () {
+  if [[ "$OS" == "Darwin" ]]; then
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
       mode_file "$1/settings.json" "$vscode_dir/settings.json"
+  fi
 }
 
 deploy_nvim () {

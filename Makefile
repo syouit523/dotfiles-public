@@ -64,6 +64,7 @@ Linux_setup:
 	make tmux
 	make reload_zshrc
 	make ssh-key-gen
+	make change-default-shell
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
@@ -83,6 +84,7 @@ Darwin_setup:
 	make tmux
 	make reload_zshrc
 	make ssh-key-gen
+	make change-default-shell
 
 ## ******************** Windows Setup ********************
 .PHONY: Windows_NT_setup
@@ -237,4 +239,5 @@ uninstall-brew:
 .PHONY: change-default-shell
 change-default-shell:
 	@echo "Change default shell\n"
+	make check-sudo
 	sh $(SCRIPTS)/change-default-shell.sh

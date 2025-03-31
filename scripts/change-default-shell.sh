@@ -20,7 +20,7 @@ while IFS= read -r shell; do
     
     echo "$counter) $shell"
     eval "shell_$counter=\"$shell\""
-    ((counter++))
+    counter=$((counter + 1))
 done < "$tmpfile"
 
 # 一時ファイルを削除

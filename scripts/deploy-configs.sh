@@ -9,7 +9,7 @@ CONFIGS="${ROOT_DIR}/configs"
 
 OS="$(uname -s)"
 
-if [[ -z "$MODE" || -z "$ROOT_DIR" ]]; then
+if [ -z "$MODE" ] || [ -z "$ROOT_DIR" ]; then
   echo "Usage: $0 {link|copy|delete} /path/to/root_dir"
   exit 1
 fi
@@ -23,30 +23,30 @@ mode_file() {
 
    case "$MODE" in
     link)
-      if [[ ! -e "$target_file" ]]; then
+      if [ ! -e "$target_file" ]; then
         ln -sf "$source_file" "$target_file"
-      elif [[ -L "$target_file" ]]; then
-        if [[ "$(readlink -f "$target_file")" == "$(realpath "$source_file")" ]]; then
+      elif [ -L "$target_file" ]; then
+        if [ "$(readlink -f "$target_file")" = "$(realpath "$source_file")" ]; then
           echo "already linked: $target_file"
         else
-          [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+          [ -e "$target_file" ] && mv "$target_file" "$backup_path"
           ln -sf "$source_file" "$target_file"
         fi
       else
-        [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+        [ -e "$target_file" ] && mv "$target_file" "$backup_path"
         ln -sf "$source_file" "$target_file"
       fi
       ;;
     copy)
       mkdir -p "$target_dir"
       # 既存ファイルをバックアップしてからコピー
-      [[ -e "$target_file" ]] && mv "$target_file" "$backup_path"
+      [ -e "$target_file" ] && mv "$target_file" "$backup_path"
       cp "$source_file" "$target_file"
       ;;
     delete)
-      if [[ -e "$target_file" ]]; then
+      if [ -e "$target_file" ]; then
         rm -f "$target_file"
-        if [[ -f "$backup_path" ]]; then
+        if [ -f "$backup_path" ]; then
           # バックアップファイルが存在する場合は復元
           echo "restore: $backup_path -> $target_file"
           mv "$backup_path" "$target_file"
@@ -100,7 +100,7 @@ deploy_git () {
         ## SET USER CONFIG INTO COMPANY DIR
         echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
         read -r flag
-        if [[ "$flag" == "y" || "$flag" == "Y" ]]; then
+        if [ "$flag" = "y" -o "$flag" = "Y" ]; then
             echo "INPUT THE COMPANY NAME: "
             read -r company
             echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
@@ -151,7 +151,7 @@ deploy_fish () {
 }
 
 deploy_vscode () {
-  if [[ "$OS" == "Darwin" ]]; then
+  if [ "$OS" = "Darwin" ]; then
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
       mode_file "$1/settings.json" "$vscode_dir/settings.json"
   fi

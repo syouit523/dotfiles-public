@@ -9,7 +9,6 @@ echo -e "\n利用可能なシェル:"
 
 # シェルのリストを番号付きで表示
 counter=1
-shell_map=()
 while IFS= read -r shell; do
     # コメント行をスキップ
     [[ $shell =~ ^#.*$ ]] && continue
@@ -17,7 +16,7 @@ while IFS= read -r shell; do
     [[ -z $shell ]] && continue
     
     echo "$counter) $shell"
-    shell_map[$counter]="$shell"
+    eval "shell_$counter=\"$shell\""
     ((counter++))
 done <<< "$available_shells"
 
@@ -26,8 +25,8 @@ echo -e "\nデフォルトシェルとして設定するものを番号で選択
 read choice
 
 # 選択が有効か確認
-if [[ -n "${shell_map[choice]}" ]]; then
-    selected_shell="${shell_map[choice]}"
+eval "selected_shell=\"\$shell_$choice\""
+if [[ -n "$selected_shell" ]]; then
     
     # シェルの変更を実行
     sudo -n chsh -s "$selected_shell"

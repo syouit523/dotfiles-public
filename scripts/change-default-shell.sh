@@ -7,8 +7,8 @@ tmpfile=$(mktemp /tmp/available_shells.XXXXXX)
 cat /etc/shells > "$tmpfile"
 
 # 現在のシェルを表示
-echo "現在のシェル: $SHELL"
-echo -e "\n利用可能なシェル:"
+echo "Current shell: $SHELL"
+echo -e "\nAvailable shells:"
 
 # シェルのリストを番号付きで表示
 counter=1
@@ -27,7 +27,7 @@ done < "$tmpfile"
 rm -f "$tmpfile"
 
 # ユーザーに選択させる
-echo -e "\nデフォルトシェルとして設定するものを番号で選択してください："
+echo -e "\nEnter the number of the shell you want to set as default:"
 read choice
 
 # 選択が有効か確認
@@ -38,11 +38,11 @@ if [ -n "$selected_shell" ]; then
     sudo -n chsh -s "$selected_shell"
     
     if [ $? -eq 0 ]; then
-        echo "デフォルトシェルを $selected_shell に変更しました"
-        echo "変更を適用するには再ログインが必要です"
+        echo "Default shell changed to $selected_shell"
+        echo "You need to log out and log back in for changes to take effect"
     else
-        echo "シェルの変更に失敗しました"
+        echo "Failed to change shell"
     fi
 else
-    echo "無効な選択です"
+    echo "Invalid selection"
 fi

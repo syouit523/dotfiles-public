@@ -65,6 +65,7 @@ Linux_setup:
 	make reload_zshrc
 	make ssh-key-gen
 	make change-default-shell
+	sh $(SCRIPTS)/linux/support-japanese.sh
 
 .PHONY: linux_gui_setup
 linux_gui_setup:

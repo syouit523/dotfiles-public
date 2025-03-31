@@ -14,9 +14,9 @@ echo -e "\n利用可能なシェル:"
 counter=1
 while IFS= read -r shell; do
     # コメント行をスキップ
-    [[ $shell =~ ^#.*$ ]] && continue
+    [ "$(echo "$shell" | grep -q '^#')" ] && continue
     # 空行をスキップ
-    [[ -z $shell ]] && continue
+    [ -z "$shell" ] && continue
     
     echo "$counter) $shell"
     eval "shell_$counter=\"$shell\""

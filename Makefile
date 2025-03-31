@@ -56,6 +56,7 @@ bootstrap b: check-sudo
 Linux_setup:
 	@echo "\n=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
+	make linux_support_japanese
 	make install_apt_packages_from_brew
 	make font
 	make zsh
@@ -65,7 +66,6 @@ Linux_setup:
 	make reload_zshrc
 	make ssh-key-gen
 	make change-default-shell
-	sh $(SCRIPTS)/linux/support-japanese.sh
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
@@ -170,6 +170,11 @@ linux_setup:
 	sh $(SCRIPTS)/linux/install-flatpak.sh
 	@echo "Install Apps\n"
 	sh $(SCRIPTS)/linux/install-apps.sh
+
+.PHONY: linux_support_japanese
+linux_support_japanese:
+	@echo "Support Japanese\n"
+	sh $(SCRIPTS)/linux/support-japanese.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen

@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# 利用可能なシェルのリストを取得
-available_shells=$(cat /etc/shells)
+# 一時ファイルを作成
+tmpfile=$(mktemp /tmp/available_shells.XXXXXX)
+
+# 利用可能なシェルのリストを取得して一時ファイルに保存
+cat /etc/shells > "$tmpfile"
 
 # 現在のシェルを表示
 echo "現在のシェル: $SHELL"
@@ -18,7 +21,10 @@ while IFS= read -r shell; do
     echo "$counter) $shell"
     eval "shell_$counter=\"$shell\""
     ((counter++))
-done <<< "$available_shells"
+done < "$tmpfile"
+
+# 一時ファイルを削除
+rm -f "$tmpfile"
 
 # ユーザーに選択させる
 echo -e "\nデフォルトシェルとして設定するものを番号で選択してください："

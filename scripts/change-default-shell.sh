@@ -32,7 +32,7 @@ read choice
 
 # 選択が有効か確認
 eval "selected_shell=\"\$shell_$choice\""
-if [[ -n "$selected_shell" ]]; then
+if [ -n "$selected_shell" ]; then
     
     # シェルの変更を実行
     sudo -n chsh -s "$selected_shell"

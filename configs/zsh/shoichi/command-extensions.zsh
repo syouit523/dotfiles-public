@@ -45,9 +45,12 @@ _fzf_comprun() {
   esac
 }
 
-# thefuck alias
-eval $(thefuck --alias)
-eval $(thefuck --alias fk)
+
+# thefuck alias (only execute on macOS)
+if [[ "$(uname)" == "Darwin" ]]; then
+  eval $(thefuck --alias)
+  eval $(thefuck --alias fk)
+fi
 
 # ---- Zoxide (better cd) ----
 eval "$(zoxide init zsh)"

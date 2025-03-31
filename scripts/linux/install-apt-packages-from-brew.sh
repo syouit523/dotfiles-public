@@ -111,8 +111,15 @@ install_tailscale() {
     curl -fsSL https://tailscale.com/install.sh | sh
 }
 
+setup_bat() {
+    # ref: https://github.com/sharkdp/bat?tab=readme-ov-file#on-ubuntu-using-apt
+    mkdir -p ~/.local/bin
+    ln -s /usr/bin/batcat ~/.local/bin/bat
+}
+
 install_packages
 install_pyenv
 install_tfenv
 install_tailscale
 install_starship
+setup_bat

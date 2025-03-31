@@ -155,7 +155,8 @@ zsh:
 .PHONY: zsh_extensions
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
-	sudo -n sh $(SCRIPTS)/install-zsh-extensitions.sh
+	make check-sudo
+	sh $(SCRIPTS)/install-zsh-extensitions.sh
 
 # ******************** linux ********************
 .PHONY: install_apt_packages_from_brew

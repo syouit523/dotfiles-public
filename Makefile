@@ -174,7 +174,7 @@ linux_setup:
 .PHONY: linux_support_japanese
 linux_support_japanese:
 	@echo "Support Japanese\n"
-	sh $(SCRIPTS)/linux/support-japanese.sh
+	sudo sh $(SCRIPTS)/linux/support-japanese.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen

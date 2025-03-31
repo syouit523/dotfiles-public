@@ -35,7 +35,7 @@ eval "selected_shell=\"\$shell_$choice\""
 if [ -n "$selected_shell" ]; then
     
     # シェルの変更を実行
-    sudo -n chsh -s "$selected_shell"
+    sudo -n chsh -s "$selected_shell" $USER
     
     if [ $? -eq 0 ]; then
         echo "Default shell changed to $selected_shell"

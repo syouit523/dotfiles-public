@@ -4,5 +4,5 @@ if type -q exa
 end
 
 # enable japanese
-set -x LANG ja_JP.UTF-8
-set -x LC_ALL ja_JP.UTF-8
+set -x LANG en_US.UTF-8
+set -x LC_CTYPE ja_JP.UTF-8

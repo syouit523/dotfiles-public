@@ -36,8 +36,8 @@ BASHRC="/home/$SUDO_USER/.bashrc"
 if ! grep -q "export LANG=ja_JP.UTF-8" "$BASHRC"; then
   echo "" >> "$BASHRC"
   echo "# 日本語表示設定" >> "$BASHRC"
-  echo "export LANG=ja_JP.UTF-8" >> "$BASHRC"
-  echo "export LC_ALL=ja_JP.UTF-8" >> "$BASHRC"
+  echo "export LANG=en_US.UTF-8" >> "$BASHRC"
+  echo "export LC_CTYPE=ja_JP.UTF-8" >> "$BASHRC"
   echo "環境変数の設定を .bashrc に追加しました。"
 else
   echo "環境変数の設定はすでに .bashrc に存在します。"

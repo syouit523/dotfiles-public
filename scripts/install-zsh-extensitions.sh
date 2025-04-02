@@ -5,6 +5,9 @@ SCRIPTS="$ROOT_DIR/scripts"
 
 zsh -c 'source ~/.zshrc'
 
+mkdir $HOME/.zsh
+chmod 775 $HOME/.zsh
+
 # fzf-git
 $SCRIPTS/git-clone.sh https://github.com/junegunn/fzf-git.sh.git $HOME/.config/zsh/fzf-git
 

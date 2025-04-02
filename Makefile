@@ -63,9 +63,9 @@ Linux_setup:
 	make link
 	make zsh_extensions
 	make tmux
+	make change-default-shell
 	make reload_zshrc
 	make ssh-key-gen
-	make change-default-shell
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
@@ -83,9 +83,9 @@ Darwin_setup:
 	make link
 	make zsh_extensions
 	make tmux
+	make change-default-shell
 	make reload_zshrc
 	make ssh-key-gen
-	make change-default-shell
 
 ## ******************** Windows Setup ********************
 .PHONY: Windows_NT_setup

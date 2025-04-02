@@ -18,6 +18,7 @@ mkdir -p deps
 chmod 775 deps
 
 # リポジトリクローン
+rm -rf "deps/$REPO_NAME"
 echo "Cloning $REPO_URL into deps/$REPO_NAME..."
 git clone "$REPO_URL" "deps/$REPO_NAME" --depth 1
 

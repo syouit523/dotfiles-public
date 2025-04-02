@@ -15,6 +15,7 @@ LINK_DIR=$2
 
 # depsディレクトリ作成
 mkdir -p deps
+chmod 775 deps
 
 # リポジトリクローン
 echo "Cloning $REPO_URL into deps/$REPO_NAME..."

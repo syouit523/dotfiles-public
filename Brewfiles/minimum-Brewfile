@@ -25,6 +25,7 @@ brew "zoxide"  # スマートなcd代替
 brew "starship"  # カスタマイズ可能なプロンプト
 brew "tmux"  # ターミナルマルチプレクサ
 brew "direnv"  # ディレクトリごとの環境変数管理
+brew "thefuck"
 
 # Git関連
 brew "gh"  # GitHub CLI
@@ -55,11 +56,10 @@ brew "ripgrep"  # 高速grepツール(Neovim用)
 
 # Apps
 cask "font-hack-nerd-font"  # プログラミング用フォント
-brew "font-meslo-lg-nerd-font"  # ターミナル用フォント
+cask "font-meslo-lg-nerd-font"  # ターミナル用フォント
 cask "visual-studio-code"  # コードエディタ
 cask "charles"  # HTTPプロキシ
 cask "alfred"  # ランチャー
 cask "wezterm"  # ターミナル
 cask "iterm2"  # ターミナル
 cask "karabiner-elements"  # キーボードカスタマイズ
-

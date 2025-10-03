@@ -26,7 +26,7 @@ mode_file() {
       if [ ! -e "$target_file" ]; then
         ln -sf "$source_file" "$target_file"
       elif [ -L "$target_file" ]; then
-        if [ "$(readlink -f "$target_file")" = "$(realpath "$source_file")" ]; then
+        if [ "$(realpath "$target_file")" = "$(realpath "$source_file")" ]; then
           echo "already linked: $target_file"
         else
           [ -e "$target_file" ] && mv "$target_file" "$backup_path"
@@ -95,7 +95,8 @@ deploy_git () {
     mode_file "$1/gitignore_global" "${HOME}/.gitignore_global"
     case "$MODE" in
     link|copy)
-        cp --remove-destination "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
+        rm -f ~/.gitconfig
+        cp "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
         git config --global core.excludesfile ~/.gitignore_global
         ## SET USER CONFIG INTO COMPANY DIR
         echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"

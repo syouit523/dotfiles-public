@@ -3,5 +3,6 @@
     "terminal.integrated.fontFamily": "MesloLGS Nerd Font Mono",
     "editor.fontFamily": "MesloLGS Nerd Font Mono",
     "editor.fontSize": 12,
-    "editor.lineHeight": 1
+    "editor.lineHeight": 1,
+    "explorer.confirmDragAndDrop": false
 }

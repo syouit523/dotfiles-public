@@ -2,6 +2,13 @@ zsh_dir="$HOME"/.config/zsh
 shoichi_dir="$zsh_dir"/shoichi
 export EDITOR=nvim
 
+# Enable emacs key bindings (Ctrl+A, Ctrl+E, etc.)
+bindkey -e
+
+#----- LANG -----#
+export LANG=ja_JP.UTF-8
+export LC_ALL=ja_JP.UTF-8
+
 #----- setup prompt -----#
 prompt="starship"
 case $prompt in
@@ -40,3 +47,4 @@ source $shoichi_dir/alias.zsh
 # for warp terminal settings
 ## change the font to Meslo Nerd Font
 ## https://docs.warp.dev/appearance/prompt#powerlevel10k
+

@@ -1,0 +1,44 @@
+# Ghostty Configuration
+# Migrated from Wezterm config
+
+# ============================================
+# Color Scheme (coolnight)
+# ============================================
+
+# Cursor colors
+cursor-color = 47ff9c
+cursor-text = 011423
+
+# Selection colors
+selection-background = 033259
+selection-foreground = cbe0f0
+
+# ANSI colors (0-7)
+palette = 0=#214969
+palette = 1=#e52e2e
+palette = 2=#44ffb1
+palette = 3=#ffe073
+palette = 4=#0fc5ed
+palette = 5=#a277ff
+palette = 6=#24eaf7
+palette = 7=#24eaf7
+
+# Bright colors (8-15)
+palette = 8=#214969
+palette = 9=#e52e2e
+palette = 10=#44ffb1
+palette = 11=#ffe073
+palette = 12=#a277ff
+palette = 13=#a277ff
+palette = 14=#24eaf7
+palette = 15=#24eaf7
+
+# ============================================
+# Window Settings
+# ============================================
+
+# Window opacity (0.0 = transparent, 1.0 = opaque)
+background-opacity = 0.75
+
+# Background blur (macOS)
+background-blur = 10

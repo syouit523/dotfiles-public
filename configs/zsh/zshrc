@@ -47,4 +47,3 @@ source $shoichi_dir/alias.zsh
 # for warp terminal settings
 ## change the font to Meslo Nerd Font
 ## https://docs.warp.dev/appearance/prompt#powerlevel10k
-

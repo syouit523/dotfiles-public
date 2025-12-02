@@ -48,3 +48,7 @@ source $shoichi_dir/alias.zsh
 ## change the font to Meslo Nerd Font
 ## https://docs.warp.dev/appearance/prompt#powerlevel10k
 
+#alias claude="/Users/s-taguchi/.claude/local/claude"
+
+# Android Studio JDK for Mercari development
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"

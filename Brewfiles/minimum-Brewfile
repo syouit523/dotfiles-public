@@ -45,6 +45,9 @@ brew "ruby-build"  # Rubyビルドツール
 brew "tfenv"  # Terraformバージョン管理
 brew "pyenv"
 
+# ビルドツール
+brew "cmake"  # クロスプラットフォームビルドツール
+
 # マルチメディア/ユーティリティ
 brew "optipng"  # PNG画像最適化
 brew "nkf"  # 文字コード変換

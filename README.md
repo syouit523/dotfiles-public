@@ -31,6 +31,17 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 - `make copy`: dotfilesをコピー
 - `make delete`: dotfilesを削除
 
+### Tmux
+- `make tmux`: tmuxとTPM（Tmux Plugin Manager）のセットアップ
+  - **初回のみ**: プラグインを有効化するため、以下の手順を実行してください
+    1. `tmux` でセッションを開始
+    2. `Ctrl+Space` + `I` (大文字のI) を押してプラグインをインストール
+    3. "TMUX environment reloaded" のメッセージが表示されたら完了
+  - **利用可能な機能**:
+    - `Ctrl+H/J/K/L`: tmuxペイン間の移動（vim/neovimとシームレスに連携）
+    - セッションの自動保存・復元（tmux-resurrect/continuum）
+    - CPU/メモリ使用率の表示（ステータスバー左側）
+
 ### その他
 - `make font` または `make f`: フォントのインストール
 - `make ssh-key-gen`: SSHキーを生成

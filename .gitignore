@@ -7,3 +7,4 @@ mac/mac-app/Brewfile.lock.json
 fzf-git.sh
 configs/nvim/lazy-lock.json
 deps/
+.claude/

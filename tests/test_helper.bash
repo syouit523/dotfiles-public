@@ -29,8 +29,12 @@ assert_symlink_to() {
   local expected_target="$2"
 
   [ -L "$link" ] || return 1
-  local actual_target="$(readlink "$link")"
-  [ "$actual_target" = "$expected_target" ] || return 1
+
+  # Resolve both paths to handle macOS /private prefix
+  local actual_target="$(cd -P "$(dirname "$link")" 2>/dev/null && cd -P "$(dirname "$(readlink "$link")")" 2>/dev/null && pwd)/$(basename "$(readlink "$link")")"
+  local expected_resolved="$(cd -P "$(dirname "$expected_target")" 2>/dev/null && pwd)/$(basename "$expected_target")"
+
+  [ "$actual_target" = "$expected_resolved" ] || return 1
 }
 
 # Assert file exists

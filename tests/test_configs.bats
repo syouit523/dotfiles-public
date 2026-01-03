@@ -163,7 +163,7 @@ setup() {
 
   while IFS= read -r -d '' test_file; do
     test_files+=("$test_file")
-  done < <(find "$SCRIPT_DIR/tests" -name "*.bats" -type f -print0)
+  done < <(find "$SCRIPT_DIR/tests" -name "*.bats" -type f -not -path "*/\.bats/*" -print0)
 
   for test_file in "${test_files[@]}"; do
     # Check for basic BATS test structure

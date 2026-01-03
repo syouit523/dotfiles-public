@@ -165,9 +165,9 @@ teardown() {
   create_test_file "$TEST_CONFIGS/git/gitignore_global" "*.log"
 
   # Mock interactive input for deploy_git
-  echo "n" | run "$SOURCE_SCRIPT" link "$TEST_ROOT"
+  run bash -c "echo 'n' | \"$SOURCE_SCRIPT\" link \"$TEST_ROOT\""
 
-  [ "$status" -eq 0 ]
+  assert_equal "$status" 0
 }
 
 @test "deploy-configs.sh: accepts valid copy mode with root directory" {

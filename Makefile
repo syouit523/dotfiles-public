@@ -261,3 +261,21 @@ test-install-bats:
 	@echo "Installing BATS test framework...\n"
 	@chmod +x $(ROOT)/tests/run-tests.sh
 	@cd $(ROOT)/tests && ./run-tests.sh --install-only || true
+
+.PHONY: docker-test dt
+docker-test dt:
+	@echo "Running tests in Docker (Ubuntu environment)...\n"
+	@chmod +x $(ROOT)/tests/docker/docker-test.sh
+	@$(ROOT)/tests/docker/docker-test.sh
+
+.PHONY: docker-build
+docker-build:
+	@echo "Building Docker test image...\n"
+	@docker build -f $(ROOT)/tests/docker/Dockerfile.test -t dotfiles-test .
+
+.PHONY: test-clean
+test-clean:
+	@echo "Cleaning test artifacts...\n"
+	@rm -rf $(ROOT)/tests/.bats
+	@find $(ROOT)/tests -name "*.log" -delete
+	@echo "Test clean complete"

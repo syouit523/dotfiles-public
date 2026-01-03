@@ -9,6 +9,17 @@
 
 ### テストの実行
 
+**推奨: Makeコマンドを使用**
+
+```bash
+# リポジトリのルートから
+make docker-test
+# または短縮形
+make dt
+```
+
+**直接スクリプトを実行**
+
 ```bash
 # tests/docker ディレクトリに移動
 cd tests/docker
@@ -21,6 +32,16 @@ cd tests/docker
 
 ```bash
 ./tests/docker/docker-test.sh
+```
+
+### その他のコマンド
+
+```bash
+# Dockerイメージをビルドのみ
+make docker-build
+
+# テストアーティファクトをクリーンアップ
+make test-clean
 ```
 
 ## ファイル構成

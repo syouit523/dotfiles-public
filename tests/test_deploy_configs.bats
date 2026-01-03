@@ -167,7 +167,7 @@ teardown() {
   # Mock interactive input for deploy_git
   run bash -c "echo 'n' | \"$SOURCE_SCRIPT\" link \"$TEST_ROOT\""
 
-  assert_equal "$status" 0
+  [ "$status" -eq 0 ]
 }
 
 @test "deploy-configs.sh: accepts valid copy mode with root directory" {

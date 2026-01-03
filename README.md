@@ -42,8 +42,40 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
     - セッションの自動保存・復元（tmux-resurrect/continuum）
     - CPU/メモリ使用率の表示（ステータスバー左側）
 
+### テスト
+- `make test` または `make t`: すべてのテストを実行
+  - 初回実行時は自動的にBATSテストフレームワークをインストールします
+  - 主要なシェルスクリプトの機能をテストします
+  - テスト対象:
+    - `deploy-configs.sh`: ファイルのリンク/コピー/削除機能
+    - `git-clone.sh`: リポジトリクローンとシンボリックリンク作成
+    - `setup-gitconfig.sh`: Git設定のセットアップ
+
 ### その他
 - `make font` または `make f`: フォントのインストール
 - `make ssh-key-gen`: SSHキーを生成
 - `make linux_setup`: Linux用GUIアプリケーションのセットアップ
 - `make clean` または `make c`: 環境をクリーンアップ（Homebrew、dotfiles、シェルの設定を削除）
+
+## 開発
+
+### テストの実行
+
+このリポジトリには、主要なシェルスクリプトの動作を検証するためのテストが含まれています。
+
+```bash
+# すべてのテストを実行
+make test
+
+# または直接テストランナーを実行
+./tests/run-tests.sh
+```
+
+テストフレームワークには [BATS (Bash Automated Testing System)](https://github.com/bats-core/bats-core) を使用しています。初回実行時は自動的にインストールされます。
+
+### CI/CD
+
+GitHub Actionsを使用して、プッシュやプルリクエスト時に自動的にテストが実行されます。
+
+- テストはUbuntuとmacOSの両方の環境で実行されます
+- ShellCheckによる静的解析も実行されます

@@ -14,10 +14,10 @@ echo -e "\nAvailable shells:"
 counter=1
 while IFS= read -r shell; do
     # コメント行をスキップ
-    [ "$(echo "$shell" | grep -q '^#')" ] && continue
+    echo "$shell" | grep -q '^#' && continue
     # 空行をスキップ
     [ -z "$shell" ] && continue
-    
+
     echo "$counter) $shell"
     eval "shell_$counter=\"$shell\""
     counter=$((counter + 1))
@@ -28,16 +28,14 @@ rm -f "$tmpfile"
 
 # ユーザーに選択させる
 echo -e "\nEnter the number of the shell you want to set as default:"
-read choice
+read -r choice
 
 # 選択が有効か確認
 eval "selected_shell=\"\$shell_$choice\""
 if [ -n "$selected_shell" ]; then
-    
+
     # シェルの変更を実行
-    sudo -n chsh -s "$selected_shell" $USER
-    
-    if [ $? -eq 0 ]; then
+    if sudo -n chsh -s "$selected_shell" "$USER"; then
         echo "Default shell changed to $selected_shell"
         echo "You need to log out and log back in for changes to take effect"
     else

@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/bin/bash
+# shellcheck disable=SC1071
 
 architecture=$(uname -m)
 

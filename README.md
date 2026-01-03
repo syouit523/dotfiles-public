@@ -75,7 +75,24 @@ make test
 
 ### CI/CD
 
-GitHub Actionsを使用して、プッシュやプルリクエスト時に自動的にテストが実行されます。
+GitHub Actionsワークフローのテンプレートが用意されています。セットアップ方法：
 
+```bash
+# ワークフローディレクトリを作成
+mkdir -p .github/workflows
+
+# テンプレートをコピー
+cp tests/ci-templates/github-actions-test.yml .github/workflows/test.yml
+
+# コミット＆プッシュ
+git add .github/workflows/test.yml
+git commit -m "Add GitHub Actions workflow"
+git push
+```
+
+ワークフローの機能：
 - テストはUbuntuとmacOSの両方の環境で実行されます
 - ShellCheckによる静的解析も実行されます
+- プッシュ、プルリクエスト、または手動で実行可能
+
+詳細は [`tests/ci-templates/README.md`](tests/ci-templates/README.md) を参照してください。

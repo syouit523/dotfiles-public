@@ -4,7 +4,7 @@ ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
 
 # Change to dotfiles-public directory so deps are created there
-cd "$ROOT_DIR"
+cd "$ROOT_DIR" || exit
 
 ## Install TPM using git-clone.sh
 "$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tpm "$HOME"/.tmux/plugins/tpm

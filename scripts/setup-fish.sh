@@ -1,7 +1,9 @@
 #!/opt/homebrew/bin/fish
+# shellcheck shell=bash
+# shellcheck disable=SC1008
 
 # change the default shell to fish
-chsh -s $(which fish)
+chsh -s "$(which fish)"
 # change the shell in the current one
 fish
 # install fisher

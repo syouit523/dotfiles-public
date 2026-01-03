@@ -7,7 +7,7 @@ SCRIPTS="$ROOT_DIR/scripts"
 cd "$ROOT_DIR"
 
 ## Install TPM using git-clone.sh
-$SCRIPTS/git-clone.sh https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+"$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tpm "$HOME"/.tmux/plugins/tpm
 
 # Fix TPM circular symlink issue
 TPM_DIR="$ROOT_DIR/deps/tpm"
@@ -19,11 +19,11 @@ if [ -f "$TPM_DIR/.git/config" ]; then
 fi
 
 ## Install tmux plugins
-$SCRIPTS/git-clone.sh https://github.com/tmux-plugins/tmux-resurrect $HOME/.tmux/plugins/tmux-resurrect
-$SCRIPTS/git-clone.sh https://github.com/tmux-plugins/tmux-continuum $HOME/.tmux/plugins/tmux-continuum
-$SCRIPTS/git-clone.sh https://github.com/christoomey/vim-tmux-navigator $HOME/.tmux/plugins/vim-tmux-navigator
-$SCRIPTS/git-clone.sh https://github.com/jimeh/tmux-themepack $HOME/.tmux/plugins/tmux-themepack
-$SCRIPTS/git-clone.sh https://github.com/thewtex/tmux-mem-cpu-load $HOME/.tmux/plugins/tmux-mem-cpu-load
+"$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tmux-resurrect "$HOME"/.tmux/plugins/tmux-resurrect
+"$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tmux-continuum "$HOME"/.tmux/plugins/tmux-continuum
+"$SCRIPTS"/git-clone.sh https://github.com/christoomey/vim-tmux-navigator "$HOME"/.tmux/plugins/vim-tmux-navigator
+"$SCRIPTS"/git-clone.sh https://github.com/jimeh/tmux-themepack "$HOME"/.tmux/plugins/tmux-themepack
+"$SCRIPTS"/git-clone.sh https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/.tmux/plugins/tmux-mem-cpu-load
 
 # Build tmux-mem-cpu-load plugin
 PLUGIN_DIR="$HOME/.tmux/plugins/tmux-mem-cpu-load"
@@ -36,13 +36,11 @@ fi
 # Build the plugin
 if command -v cmake >/dev/null 2>&1 && command -v make >/dev/null 2>&1; then
     echo "Building tmux-mem-cpu-load..."
-    (
+    if (
         cd "$PLUGIN_DIR" && \
         cmake . >/dev/null 2>&1 && \
         make >/dev/null 2>&1
-    )
-
-    if [ $? -eq 0 ]; then
+    ); then
         echo "Successfully built tmux-mem-cpu-load"
     else
         echo "Warning: Failed to build tmux-mem-cpu-load"

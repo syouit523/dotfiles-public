@@ -2,7 +2,7 @@
 
 connection_test_github () {
     echo "DO YOU WANT TO CONNECTION TEST TO GITHUB? (Y/n)"
-    read flag
+    read -r flag
     if [ "$flag" = "Y" ]; then
         ssh -T git@github.com
     fi

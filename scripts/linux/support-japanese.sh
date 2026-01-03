@@ -7,7 +7,7 @@ echo "====================================================="
 echo
 
 # rootチェック
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
   echo "このスクリプトはroot権限が必要です。"
   echo "sudo ./setup-japanese.sh として実行してください。"
   exit 1

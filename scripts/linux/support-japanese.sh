@@ -7,7 +7,7 @@ echo "====================================================="
 echo
 
 # rootチェック
-if [ $(id -u) -ne 0 ]; then
+if [ "$(id -u)" -ne 0 ]; then
   echo "このスクリプトはroot権限が必要です。"
   echo "sudo ./setup-japanese.sh として実行してください。"
   exit 1
@@ -34,10 +34,12 @@ echo "ユーザー設定ファイルを更新しています..."
 # bash用設定
 BASHRC="/home/$SUDO_USER/.bashrc"
 if ! grep -q "export LANG=ja_JP.UTF-8" "$BASHRC"; then
-  echo "" >> "$BASHRC"
-  echo "# 日本語表示設定" >> "$BASHRC"
-  echo "export LANG=en_US.UTF-8" >> "$BASHRC"
-  echo "export LC_CTYPE=ja_JP.UTF-8" >> "$BASHRC"
+  {
+    echo ""
+    echo "# 日本語表示設定"
+    echo "export LANG=en_US.UTF-8"
+    echo "export LC_CTYPE=ja_JP.UTF-8"
+  } >> "$BASHRC"
   echo "環境変数の設定を .bashrc に追加しました。"
 else
   echo "環境変数の設定はすでに .bashrc に存在します。"

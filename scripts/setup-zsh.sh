@@ -20,14 +20,14 @@ if command -v zsh >/dev/null 2>&1; then
             fi
         fi
     fi
-    chsh -s $(which zsh)
+    chsh -s "$(which zsh)"
     zdh
 
     if [ -d "$HOME/.oh-my-zsh" ]; then
         echo "Oh My Zsh is already installed."
     else
         echo "Oh My Zsh is not installed. Installing now..."
-        
+
         # Install oh-my-zsh without changing the shell immediately
         sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
@@ -35,21 +35,22 @@ if command -v zsh >/dev/null 2>&1; then
     fi
 
     if [ -n "$ZSH_VERSION" ]; then
+        # shellcheck disable=SC1090
         source ~/.zshrc
     fi
     # theme
     if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-        $SCRIPTS/git-clone.sh https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        "$SCRIPTS"/git-clone.sh https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k
     fi
 
     # theme
     ## zsh-autosuggestions
     if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-        $SCRIPTS/git-clone.sh https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
     fi
     ## zsh-syntax-highlighting
     if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-        $SCRIPTS/git-clone.sh https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
     fi
 
 else

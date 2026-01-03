@@ -1,4 +1,5 @@
-#!/bin/zsh
+#!/bin/bash
+# shellcheck disable=SC1071
 
 architecture=$(uname -m)
 
@@ -9,16 +10,19 @@ else
     # sudoを使用せずに通常のユーザー権限で実行
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [ "$(uname)" = 'Darwin' ]; then
-        echo >> $HOME/.zprofile
+        echo >> "$HOME"/.zprofile
         if [ "$architecture" = "arm64" ]; then
             # Set the path for Apple Silicon
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> $HOME/.zprofile
+            # shellcheck disable=SC2016
+            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
             eval "$(/opt/homebrew/bin/brew shellenv)"
         else
             # Set the path for Intel Mac
-            echo 'eval "$(/usr/local/bin/brew shellenv)"' >> $HOME/.zprofile
+            # shellcheck disable=SC2016
+            echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
             eval "$(/usr/local/bin/brew shellenv)"
         fi
-        source $HOME/.zprofile
+        # shellcheck disable=SC1091
+        source "$HOME"/.zprofile
     fi
 fi

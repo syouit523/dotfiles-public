@@ -5,7 +5,6 @@ set -e
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # システム情報の取得
 OS="$(uname -s)"
-ARCH="$(uname -m)"
 
 # 使用方法表示
 show_usage() {
@@ -13,7 +12,6 @@ show_usage() {
   echo "  minimum: 最小限のパッケージのみインストール (minimum-Brewfile)"
   echo "  extra:   追加パッケージもインストール (extra-Brewfile)"
   echo "  引数なし: インストールしない"
-  exit 1
 }
 
 # Homebrewのパッケージインストール

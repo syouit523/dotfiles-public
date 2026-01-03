@@ -18,8 +18,10 @@ mode_file() {
   local source_file="$1"
   local target_file="$2"
   local backup_suffix=".backup"
-  local target_dir="$(dirname "$target_file")"
-  local backup_path="${target_dir}/$(basename "$target_file")${backup_suffix}"
+  local target_dir
+  target_dir="$(dirname "$target_file")"
+  local backup_path
+  backup_path="${target_dir}/$(basename "$target_file")${backup_suffix}"
 
    case "$MODE" in
     link)
@@ -77,7 +79,7 @@ mode_directory() {
     # すべてのファイルを再帰的に処理
     find "$source_dir" -type f | while read -r source_path; do
         # 相対パスを計算
-        local rel_path="${source_path#$source_dir/}"
+        local rel_path="${source_path#"$source_dir"/}"
         local target_path="$target_dir/$rel_path"
         
         # ターゲットディレクトリを作成
@@ -101,7 +103,7 @@ deploy_git () {
         ## SET USER CONFIG INTO COMPANY DIR
         echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
         read -r flag
-        if [ "$flag" = "y" -o "$flag" = "Y" ]; then
+        if [ "$flag" = "y" ] || [ "$flag" = "Y" ]; then
             echo "INPUT THE COMPANY NAME: "
             read -r company
             echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
@@ -182,21 +184,21 @@ deploy_ghostty () {
   mode_directory "$1" "${HOME}/.config/ghostty"
 }
 
-for DIR_FULLPATH in $(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d); do
+find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d | while read -r DIR_FULLPATH; do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
   case "$DIR_NAME" in
-    "git" ) deploy_git $DIR_FULLPATH;;
-    "vim" ) deploy_vim $DIR_FULLPATH;;
-    "zsh" ) deploy_zsh $DIR_FULLPATH;;
-    "fish" ) deploy_fish $DIR_FULLPATH;;
-    "vscode" ) deploy_vscode $DIR_FULLPATH;;
-    "nvim" ) deploy_nvim $DIR_FULLPATH;;
-    "karabiner" ) deploy_karabiner $DIR_FULLPATH;;
-    "wezterm" ) deploy_wezterm $DIR_FULLPATH;;
-    "tmux" ) deploy_tmux $DIR_FULLPATH;;
-    "starship" ) deploy_starship $DIR_FULLPATH;;
-    "ghostty" ) deploy_ghostty $DIR_FULLPATH;;
+    "git" ) deploy_git "$DIR_FULLPATH";;
+    "vim" ) deploy_vim "$DIR_FULLPATH";;
+    "zsh" ) deploy_zsh "$DIR_FULLPATH";;
+    "fish" ) deploy_fish "$DIR_FULLPATH";;
+    "vscode" ) deploy_vscode "$DIR_FULLPATH";;
+    "nvim" ) deploy_nvim "$DIR_FULLPATH";;
+    "karabiner" ) deploy_karabiner "$DIR_FULLPATH";;
+    "wezterm" ) deploy_wezterm "$DIR_FULLPATH";;
+    "tmux" ) deploy_tmux "$DIR_FULLPATH";;
+    "starship" ) deploy_starship "$DIR_FULLPATH";;
+    "ghostty" ) deploy_ghostty "$DIR_FULLPATH";;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
 done

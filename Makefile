@@ -248,3 +248,16 @@ change-default-shell:
 	@echo "Change default shell\n"
 	make check-sudo
 	sh $(SCRIPTS)/change-default-shell.sh
+
+# ******************** tests ********************
+.PHONY: test t
+test t:
+	@echo "Running tests...\n"
+	@chmod +x $(ROOT)/tests/run-tests.sh
+	@$(ROOT)/tests/run-tests.sh
+
+.PHONY: test-install-bats
+test-install-bats:
+	@echo "Installing BATS test framework...\n"
+	@chmod +x $(ROOT)/tests/run-tests.sh
+	@cd $(ROOT)/tests && ./run-tests.sh --install-only || true

@@ -2,10 +2,8 @@
 
 set -e
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # システム情報の取得
 OS="$(uname -s)"
-ARCH="$(uname -m)"
 
 # brewパッケージからaptパッケージへのマッピング
 declare -A PKG_MAP=(
@@ -61,13 +59,13 @@ install_packages() {
             echo "処理中: $BREWFILE"
             while IFS= read -r line; do
                 if [[ $line == brew* ]]; then
-                    brew_pkg=$(echo $line | awk -F'"' '{print $2}')
+                    brew_pkg=$(echo "$line" | awk -F'"' '{print $2}')
                     apt_pkg=${PKG_MAP[$brew_pkg]}
-                    
+
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
                         # APT_ARGSで対話プロンプトを無効化
-                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y $apt_pkg
+                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y "$apt_pkg"
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi
@@ -102,8 +100,9 @@ install_pyenv() {
 
 install_tfenv() {
     git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-    touch .bash_profile
-    echo export PATH='$HOME/.tfenv/bin:$PATH' >> ~/.bash_profile
+    touch ~/.bash_profile
+    echo "export PATH=\"\$HOME/.tfenv/bin:\$PATH\"" >> ~/.bash_profile
+    # shellcheck disable=SC1090
     source ~/.bash_profile
 }
 

@@ -20,9 +20,7 @@ chmod 775 deps
 # リポジトリクローン
 rm -rf "deps/$REPO_NAME"
 echo "Cloning $REPO_URL into deps/$REPO_NAME..."
-git clone "$REPO_URL" "deps/$REPO_NAME" --depth 1
-
-if [ $? -ne 0 ]; then
+if ! git clone "$REPO_URL" "deps/$REPO_NAME" --depth 1; then
   echo "Failed to clone repository"
   exit 1
 fi
@@ -31,9 +29,7 @@ fi
 if [ -n "$LINK_DIR" ]; then
   echo "Creating symbolic link from deps/$REPO_NAME to $LINK_DIR"
   mkdir -p "$(dirname "$LINK_DIR")"
-  ln -sf "$(pwd)/deps/$REPO_NAME" "$LINK_DIR"
-  
-  if [ $? -eq 0 ]; then
+  if ln -sf "$(pwd)/deps/$REPO_NAME" "$LINK_DIR"; then
     echo "Successfully created symbolic link"
   else
     echo "Failed to create symbolic link"
@@ -41,7 +37,8 @@ if [ -n "$LINK_DIR" ]; then
   fi
 fi
 
-export CLONED_DIR_PATH="$(pwd)/deps/$REPO_NAME"
+CLONED_DIR_PATH="$(pwd)/deps/$REPO_NAME"
+export CLONED_DIR_PATH
 echo "Operation completed successfully"
 echo "Cloned repository path: $CLONED_DIR_PATH"
 

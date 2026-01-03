@@ -1,0 +1,18 @@
+FROM ubuntu:latest
+
+# 基本的なツールとGitをインストール
+RUN apt-get update && apt-get install -y \
+    git \
+    curl \
+    shellcheck \
+    && rm -rf /var/lib/apt/lists/*
+
+# Gitの設定（テスト用）
+RUN git config --global user.name "Test User" && \
+    git config --global user.email "test@example.com"
+
+# 作業ディレクトリを設定
+WORKDIR /workspace
+
+# テストスクリプトを実行可能にする
+CMD ["bash", "-c", "chmod +x tests/run-tests.sh && tests/run-tests.sh && echo '=== Running shellcheck ===' && find scripts -name '*.sh' -type f -exec shellcheck {} +"]

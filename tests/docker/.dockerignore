@@ -1,0 +1,6 @@
+.git
+.github
+deps
+tests/.bats
+*.log
+.DS_Store

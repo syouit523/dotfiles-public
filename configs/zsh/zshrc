@@ -47,3 +47,11 @@ source $shoichi_dir/alias.zsh
 # for warp terminal settings
 ## change the font to Meslo Nerd Font
 ## https://docs.warp.dev/appearance/prompt#powerlevel10k
+
+# Android Studio JDK for Mercari development
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+# Android Studio JDK for Mercari development
+export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+eval "$(direnv hook zsh)"

@@ -43,6 +43,7 @@ return {
 				"jsonls", -- JSON
 				"yamlls", -- YAML
 			},
+			automatic_installation = true,
 		})
 
 		mason_tool_installer.setup({

@@ -86,9 +86,18 @@ return {
       "pyright",
       "terraformls",
       "kotlin_language_server",
-      "swift_mesonls",
+      "sourcekit",
       "jsonls",
       "yamlls",
+      "buf_ls",
+      "bashls",
+      "dockerls",
+      "docker_compose_language_service",
+      "marksman",
+      "rust_analyzer",
+      "clangd",
+      "taplo",
+      "sqlls",
     }
 
     -- Server-specific configurations

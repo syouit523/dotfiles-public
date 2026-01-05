@@ -39,9 +39,18 @@ return {
 				"pyright",
 				"terraformls",
 				"kotlin_language_server",
-				"swift_mesonls",
 				"jsonls", -- JSON
 				"yamlls", -- YAML
+				"gopls", -- Go
+				"buf_ls", -- Protobuf
+				"bashls", -- Shell
+				"dockerls", -- Dockerfile
+				"docker_compose_language_service", -- docker-compose
+				"marksman", -- Markdown
+				"rust_analyzer", -- Rust
+				"clangd", -- C/C++
+				"taplo", -- TOML
+				"sqlls", -- SQL
 			},
 			automatic_installation = true,
 		})

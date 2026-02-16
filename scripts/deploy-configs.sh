@@ -184,6 +184,21 @@ deploy_ghostty () {
   mode_directory "$1" "${HOME}/.config/ghostty"
 }
 
+## Deploy bin scripts to ~/.local/bin
+deploy_bin() {
+    local bin_dir="$ROOT_DIR/bin"
+    local target_dir="$HOME/.local/bin"
+    mkdir -p "$target_dir"
+    find "$bin_dir" -type f | while read -r script; do
+        local name
+        name="$(basename "$script")"
+        mode_file "$script" "$target_dir/$name"
+    done
+}
+
+echo "${MODE} bin"
+deploy_bin
+
 find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d | while read -r DIR_FULLPATH; do
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"

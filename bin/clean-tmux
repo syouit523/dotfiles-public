@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "Cleaning tmux sessions..."
+
+# Kill all tmux sessions
+if tmux list-sessions >/dev/null 2>&1; then
+    tmux kill-server
+    echo "All tmux sessions killed."
+else
+    echo "No active tmux sessions."
+fi
+
+# Remove tmux-resurrect saved sessions
+RESURRECT_DIR="$HOME/.tmux/resurrect"
+if [ -d "$RESURRECT_DIR" ]; then
+    rm -rf "$RESURRECT_DIR"
+    echo "Removed saved sessions: $RESURRECT_DIR"
+else
+    echo "No saved sessions found."
+fi
+
+echo "Done. tmux is now clean."

@@ -52,3 +52,4 @@ source $shoichi_dir/alias.zsh
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
 eval "$(direnv hook zsh)"
+export PATH="$HOME/.local/bin:$PATH"

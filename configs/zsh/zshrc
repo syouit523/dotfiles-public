@@ -51,13 +51,14 @@ source $shoichi_dir/alias.zsh
 # Android Studio JDK
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 
-# Auto-rename tmux session to current directory name
-_tmux_rename_session() {
+# Auto-rename tmux session and window to current directory name
+_tmux_rename() {
   if [ -n "$TMUX" ]; then
     tmux rename-session "$(basename "$PWD")"
+    tmux rename-window "$(basename "$PWD")"
   fi
 }
-precmd_functions+=(_tmux_rename_session)
+precmd_functions+=(_tmux_rename)
 
 eval "$(direnv hook zsh)"
 export PATH="$HOME/.local/bin:$PATH"

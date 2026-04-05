@@ -47,3 +47,8 @@ background-opacity = 0.75
 # Background blur (macOS)
 background-blur = 10
 keybind = shift+enter=text:\x1b\r
+
+# ============================================
+# スリープ復帰時の文字化け対策
+# ============================================
+window-vsync = false

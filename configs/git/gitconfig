@@ -48,6 +48,20 @@
   ca = "!git add -A && git commit"
   # コミット履歴をグラフ形式で表示する
   lg = "log --oneline --graph --decorate --all"
+  # ログ + パッチ（各コミットの差分を見る）
+  lo = "log -p"
+  # 直近N件の差分付きログ（例: git lon 3）
+  lon = "!f() { git log -p -${1:-1}; }; f"
+  # ファイル単位の変更サマリ付きログ
+  ls = "log --stat"
+  # 特定ファイルの変更履歴（差分付き: git fl <file>）
+  fl = "log -p --follow --"
+  # 誰がいつ何を変えたか（1行サマリ）
+  blame-log = "log --pretty=format:'%C(yellow)%h %C(cyan)%ad %C(green)%an%C(reset) %s' --date=short"
+  # 今日の自分のコミット
+  today = "log --since='midnight' --author='Shoichi' --oneline"
+  # ブランチ間の差分コミット一覧（例: git branch-diff main）
+  branch-diff = "!f() { git log --oneline $1..HEAD; }; f"
   # ステージングされた変更を取り消す
   unstage = "reset HEAD --"
   # 最後のコミットメッセージを修正する

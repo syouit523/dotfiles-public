@@ -43,13 +43,18 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
     - CPU/メモリ使用率の表示（ステータスバー左側）
 
 ### テスト
-- `make test` または `make t`: すべてのテストを実行
+- `make test` または `make t`: ローカル環境でテストを実行
   - 初回実行時は自動的にBATSテストフレームワークをインストールします
   - 主要なシェルスクリプトの機能をテストします
   - テスト対象:
     - `deploy-configs.sh`: ファイルのリンク/コピー/削除機能
     - `git-clone.sh`: リポジトリクローンとシンボリックリンク作成
     - `setup-gitconfig.sh`: Git設定のセットアップ
+- `make docker-test` または `make dt`: Docker（Ubuntu環境）でテストを実行
+  - GitHub ActionsのCI環境をローカルで再現します
+  - Dockerが必要です
+- `make docker-build`: Dockerテストイメージをビルド
+- `make test-clean`: テストアーティファクトをクリーンアップ
 
 ### その他
 - `make font` または `make f`: フォントのインストール
@@ -63,6 +68,8 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 
 このリポジトリには、主要なシェルスクリプトの動作を検証するためのテストが含まれています。
 
+#### ローカル環境でのテスト
+
 ```bash
 # すべてのテストを実行
 make test
@@ -73,26 +80,47 @@ make test
 
 テストフレームワークには [BATS (Bash Automated Testing System)](https://github.com/bats-core/bats-core) を使用しています。初回実行時は自動的にインストールされます。
 
-### CI/CD
+#### Docker環境でのテスト
 
-GitHub Actionsワークフローのテンプレートが用意されています。セットアップ方法：
+GitHub ActionsのCI環境（Ubuntu）をローカルで再現してテストできます：
 
 ```bash
-# ワークフローディレクトリを作成
-mkdir -p .github/workflows
+# Dockerでテストを実行（推奨）
+make docker-test
 
-# テンプレートをコピー
-cp tests/ci-templates/github-actions-test.yml .github/workflows/test.yml
-
-# コミット＆プッシュ
-git add .github/workflows/test.yml
-git commit -m "Add GitHub Actions workflow"
-git push
+# または直接スクリプトを実行
+./tests/docker/docker-test.sh
 ```
 
-ワークフローの機能：
-- テストはUbuntuとmacOSの両方の環境で実行されます
-- ShellCheckによる静的解析も実行されます
-- プッシュ、プルリクエスト、または手動で実行可能
+**前提条件**: Dockerがインストールされていること
 
-詳細は [`tests/ci-templates/README.md`](tests/ci-templates/README.md) を参照してください。
+Dockerテストでは以下が実行されます：
+- BATSテストスイート
+- ShellCheckによる静的解析
+
+詳細は [`tests/docker/README.md`](tests/docker/README.md) を参照してください。
+
+### CI/CD
+
+このリポジトリではGitHub Actionsによる自動テストが設定されています。
+
+#### 自動実行タイミング
+- `main` ブランチへのプッシュ時
+- `claude/**` ブランチへのプッシュ時
+- `main` ブランチへのプルリクエスト時
+- 手動実行（workflow_dispatch）
+
+#### テスト内容
+1. **BATSテスト** (Ubuntu & macOS)
+   - すべてのテストケースを実行
+   - テスト結果をアーティファクトとして保存（7日間）
+
+2. **ShellCheck静的解析** (Ubuntu)
+   - 全シェルスクリプトの静的解析
+   - スクリプトの実行権限チェック
+
+#### ローカルでCI環境を再現
+```bash
+# Docker環境でテストを実行（Ubuntu環境を再現）
+make docker-test
+```

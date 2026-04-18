@@ -44,7 +44,7 @@ brew "rbenv"  # Rubyバージョン管理
 brew "ruby-build"  # Rubyビルドツール
 brew "tfenv"  # Terraformバージョン管理
 brew "pyenv"
-
+berw "awscli"
 # ビルドツール
 brew "cmake"  # クロスプラットフォームビルドツール
 
@@ -66,3 +66,5 @@ cask "alfred"  # ランチャー
 cask "wezterm"  # ターミナル
 cask "iterm2"  # ターミナル
 cask "karabiner-elements"  # キーボードカスタマイズ
+cask "docker"
+cask "gcloud-cli"

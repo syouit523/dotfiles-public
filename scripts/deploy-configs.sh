@@ -213,7 +213,18 @@ deploy_fish () {
 deploy_vscode () {
   if [ "$OS" = "Darwin" ]; then
       local vscode_dir="${HOME}/Library/Application Support/Code/User"
+      # VS Code を起動したことがない場合ディレクトリが存在しないので作成
+      mkdir -p "$vscode_dir"
       mode_file "$1/settings.json" "$vscode_dir/settings.json"
+  fi
+}
+
+deploy_iterm2 () {
+  if [ "$OS" = "Darwin" ]; then
+      # iTerm2 の plist は ~/Library/Preferences/ に置く
+      local prefs_dir="${HOME}/Library/Preferences"
+      mkdir -p "$prefs_dir"
+      mode_file "$1/com.googlecode.iterm2.plist" "$prefs_dir/com.googlecode.iterm2.plist"
   fi
 }
 
@@ -265,6 +276,7 @@ find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d | while read 
     "zsh" ) deploy_zsh "$DIR_FULLPATH";;
     "fish" ) deploy_fish "$DIR_FULLPATH";;
     "vscode" ) deploy_vscode "$DIR_FULLPATH";;
+    "iterm2" ) deploy_iterm2 "$DIR_FULLPATH";;
     "nvim" ) deploy_nvim "$DIR_FULLPATH";;
     "karabiner" ) deploy_karabiner "$DIR_FULLPATH";;
     "wezterm" ) deploy_wezterm "$DIR_FULLPATH";;

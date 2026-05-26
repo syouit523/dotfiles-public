@@ -59,7 +59,7 @@ brew "periphery"  # Swift未使用コード検出
 
 # クラウド
 brew "firebase-cli"  # Firebase CLI
-cask "google-cloud-sdk"  # GCP CLI (gcloud, gsutil, bq)
+cask "gcloud-cli"  # GCP CLI (gcloud, gsutil, bq) ※旧名 google-cloud-sdk
 
 # 開発支援
 brew "shellcheck"  # シェルスクリプトlinter

@@ -32,20 +32,31 @@ install_brew_packages() {
       ;;
     *)
       show_usage
+      exit 1
       ;;
   esac
   
   if [[ "$OS" == "Darwin" ]]; then
         # macOSの場合
         if [[ "$ARCH" == "arm64" ]]; then
-            # Apple Siliconの場合
+            # Apple Silicon
             eval "$(/opt/homebrew/bin/brew shellenv)"
         else
-            # Intel Macの場合
+            # Intel Mac
             eval "$(/usr/local/bin/brew shellenv)"
         fi
+    elif [[ "$OS" == "Linux" ]]; then
+        # Linuxbrew
+        if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+            eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+        elif command -v brew >/dev/null 2>&1; then
+            eval "$(brew shellenv)"
+        else
+            echo "Homebrew not found on Linux. Skipping brew bundle."
+            exit 0
+        fi
     else
-        echo "サポートされていないOSです: $OS"
+        echo "Unsupported OS: $OS"
         exit 1
     fi
     

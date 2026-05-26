@@ -79,6 +79,11 @@ check-sudo:
 		echo "Sudo is not required. Skipping."; \
 	elif [ -f $(SUDO_KEEPALIVE_PID) ] && kill -0 $$(cat $(SUDO_KEEPALIVE_PID)) 2>/dev/null; then \
 		echo "Sudo keep-alive already running."; \
+	elif [ ! -t 0 ]; then \
+		echo "Error: sudo password required but stdin is not a TTY."; \
+		echo "Run 'sudo -v' manually before invoking this target,"; \
+		echo "or use NOPASSWD sudoers entry for this user."; \
+		exit 1; \
 	else \
 		echo "Requesting sudo password (cached for the rest of bootstrap)..."; \
 		sudo -v; \
@@ -146,6 +151,7 @@ linux_gui_setup:
 .PHONY: Darwin_setup
 Darwin_setup:
 	@echo "\n=== macOS Setup ==="
+	sh $(XCODE_SELECT_INSTALL)
 	make brew_install
 	make brew_setup
 	make link

@@ -1,5 +1,7 @@
 # fzf
-source <(fzf --zsh)
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
 
 #fd
 ## -- Use fd instead of fzf --
@@ -21,7 +23,9 @@ _fzf_compgen_dir() {
 }
 
 # fzf-git
-source "$HOME"/.config/zsh/fzf-git/fzf-git.sh
+if [ -f "$HOME/.config/zsh/fzf-git/fzf-git.sh" ]; then
+  source "$HOME/.config/zsh/fzf-git/fzf-git.sh"
+fi
 
 # ----- Bat (better cat) -----
 export BAT_THEME=tokyonight_night
@@ -47,18 +51,24 @@ _fzf_comprun() {
 
 
 # thefuck alias (only execute on macOS)
-if [[ "$(uname)" == "Darwin" ]]; then
-  eval $(thefuck --alias)
-  eval $(thefuck --alias fk)
+if [[ "$(uname)" == "Darwin" ]] && command -v thefuck >/dev/null 2>&1; then
+  eval "$(thefuck --alias)"
+  eval "$(thefuck --alias fk)"
 fi
 
 # ---- Zoxide (better cd) ----
-eval "$(zoxide init zsh)"
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 
 # zsh
 # zsh-autosuggestions
-source "$HOME"/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -f "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
 
 # zsh-syntax-highlighting
-source "$HOME"/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi

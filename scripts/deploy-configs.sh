@@ -17,6 +17,10 @@ fi
 # Back up a file before overwriting. Uses a fixed `.backup` name to keep
 # delete-mode restore deterministic, but never overwrites an existing backup —
 # subsequent re-runs add a timestamped suffix to preserve the original.
+#
+# If the target is already a symlink pointing into this dotfiles repo
+# (ROOT_DIR), skip the backup: it's just a leftover from a previous link,
+# not user data worth preserving.
 backup_file() {
   local target_file="$1"
   local target_dir
@@ -24,6 +28,17 @@ backup_file() {
   local base
   base="$(basename "$target_file")"
   local backup_path="${target_dir}/${base}.backup"
+
+  if [ -L "$target_file" ]; then
+    local link_target
+    link_target="$(readlink "$target_file" 2>/dev/null || true)"
+    case "$link_target" in
+      "$ROOT_DIR"/*)
+        # 既に dotfiles-public 配下を指す symlink。バックアップ不要。
+        return 0
+        ;;
+    esac
+  fi
 
   if [ ! -e "$backup_path" ] && [ ! -L "$backup_path" ]; then
     mv "$target_file" "$backup_path"
@@ -69,6 +84,14 @@ mode_file() {
         if [ -e "$backup_path" ] || [ -L "$backup_path" ]; then
           echo "restore: $backup_path -> $target_file"
           mv "$backup_path" "$target_file"
+        else
+          # .backup が無い場合、最古のタイムスタンプ付きバックアップを復元
+          local oldest_ts_backup
+          oldest_ts_backup=$(ls -1 "${target_dir}/$(basename "$target_file").backup."* 2>/dev/null | sort | head -n 1 || true)
+          if [ -n "$oldest_ts_backup" ] && [ -e "$oldest_ts_backup" ]; then
+            echo "restore (oldest timestamped): $oldest_ts_backup -> $target_file"
+            mv "$oldest_ts_backup" "$target_file"
+          fi
         fi
       else
         echo "file not found: $target_file"

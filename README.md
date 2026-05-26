@@ -3,8 +3,11 @@
 ## インストール方法
 
 ```bash
+xcode-select --install
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
+
+> **Note**: `xcode-select --install` はmacOSでのみ必要です。インストールダイアログが表示されたら、完了するまで待ってから次のコマンドを実行してください。既にインストール済みの場合はスキップされます。
 
 ## 利用可能なコマンド
 

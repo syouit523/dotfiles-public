@@ -129,7 +129,7 @@ bootstrap b: check-sudo
 
 ## ******************** Linux Setup ********************
 .PHONY: Linux_setup
-Linux_setup:
+Linux_setup: check-sudo
 	@echo "\n=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
 	make linux_support_japanese
@@ -155,7 +155,7 @@ linux_gui_setup:
 
 ## ******************** macOS Setup ********************
 .PHONY: Darwin_setup
-Darwin_setup:
+Darwin_setup: check-sudo
 	@echo "\n=== macOS Setup ==="
 	sh $(XCODE_SELECT_INSTALL)
 	make brew_install

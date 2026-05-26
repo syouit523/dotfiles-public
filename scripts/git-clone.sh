@@ -8,6 +8,13 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+# deps/ の作成場所を確定する。
+#   - GIT_CLONE_BASE_DIR が指定されていればそこに cd（テスト等で活用）
+#   - そうでなければスクリプト 1階層上 (= リポジトリルート) に cd
+# これにより任意ディレクトリから sh 経由で呼ばれても deps/ が散らからない。
+BASE_DIR="${GIT_CLONE_BASE_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
+cd "$BASE_DIR" || exit 1
+
 REPO_URL=$1
 # リポジトリ名をURLから抽出 (https://.../repo.git や git@...:repo.git からrepoを抽出)
 REPO_NAME=$(basename "$REPO_URL" .git | sed 's/.*[:/]//')
@@ -15,7 +22,7 @@ LINK_DIR=$2
 
 # depsディレクトリ作成
 mkdir -p deps
-chmod 775 deps
+chmod 755 deps
 
 # 既存ディレクトリを削除（過去に sudo 経由で実行され root 所有になっている
 # 可能性があるため、通常削除に失敗したら sudo にフォールバック）

@@ -1,71 +1,75 @@
-name: Run Tests
+# CI を一時的に無効化
+# このリポジトリは個人用 dotfiles のため、push/PR 毎の CI 実行を行わない。
+# 再有効化したい場合は以下のコメントを外してください。
 
-on:
-  push:
-    branches: [ main, claude/** ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
-
-jobs:
-  test:
-    name: Run BATS Tests
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup Git for tests
-        run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
-
-      - name: Make test runner executable
-        run: chmod +x tests/run-tests.sh
-
-      - name: Install BATS and run tests
-        run: |
-          cd tests
-          ./run-tests.sh
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results-${{ matrix.os }}
-          path: |
-            tests/*.log
-            tests/.bats/
-          retention-days: 7
-
-  test-scripts-syntax:
-    name: Validate Shell Scripts
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
-
-      - name: Run shellcheck on all shell scripts
-        run: |
-          find scripts -name "*.sh" -type f -exec shellcheck {} +
-
-      - name: Check shell script permissions
-        run: |
-          echo "Checking that all .sh files are executable..."
-          failed=0
-          for script in scripts/*.sh scripts/*/*.sh; do
-            if [ -f "$script" ] && [ ! -x "$script" ]; then
-              echo "Warning: $script is not executable"
-              failed=1
-            fi
-          done
-          exit $failed
+# name: Run Tests
+#
+# on:
+#   push:
+#     branches: [ main, claude/** ]
+#   pull_request:
+#     branches: [ main ]
+#   workflow_dispatch:
+#
+# jobs:
+#   test:
+#     name: Run BATS Tests
+#     runs-on: ${{ matrix.os }}
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         os: [ubuntu-latest, macos-latest]
+#
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#
+#       - name: Setup Git for tests
+#         run: |
+#           git config --global user.name "Test User"
+#           git config --global user.email "test@example.com"
+#
+#       - name: Make test runner executable
+#         run: chmod +x tests/run-tests.sh
+#
+#       - name: Install BATS and run tests
+#         run: |
+#           cd tests
+#           ./run-tests.sh
+#
+#       - name: Upload test results
+#         if: always()
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: test-results-${{ matrix.os }}
+#           path: |
+#             tests/*.log
+#             tests/.bats/
+#           retention-days: 7
+#
+#   test-scripts-syntax:
+#     name: Validate Shell Scripts
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#
+#       - name: Install shellcheck
+#         run: sudo apt-get update && sudo apt-get install -y shellcheck
+#
+#       - name: Run shellcheck on all shell scripts
+#         run: |
+#           find scripts -name "*.sh" -type f -exec shellcheck {} +
+#
+#       - name: Check shell script permissions
+#         run: |
+#           echo "Checking that all .sh files are executable..."
+#           failed=0
+#           for script in scripts/*.sh scripts/*/*.sh; do
+#             if [ -f "$script" ] && [ ! -x "$script" ]; then
+#               echo "Warning: $script is not executable"
+#               failed=1
+#             fi
+#           done
+#           exit $failed

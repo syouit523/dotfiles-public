@@ -50,7 +50,7 @@ teardown() {
   }
   export -f git
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
 
   [ "$status" -eq 0 ]
   assert_dir_exists "$TEST_TEMP_DIR/deps/test-repo"
@@ -65,7 +65,7 @@ teardown() {
   }
   export -f git
 
-  run "$SOURCE_SCRIPT" "git@github.com:user/test-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "git@github.com:user/test-repo.git"
 
   [ "$status" -eq 0 ]
   assert_dir_exists "$TEST_TEMP_DIR/deps/test-repo"
@@ -83,7 +83,7 @@ teardown() {
 
   local link_dir="$TEST_TEMP_DIR/.config/test-repo"
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git" "$link_dir"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git" "$link_dir"
 
   [ "$status" -eq 0 ]
   assert_symlink_to "$link_dir" "$TEST_TEMP_DIR/deps/test-repo"
@@ -100,7 +100,7 @@ teardown() {
 
   local link_dir="$TEST_TEMP_DIR/nested/dirs/.config/test-repo"
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git" "$link_dir"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git" "$link_dir"
 
   [ "$status" -eq 0 ]
   assert_dir_exists "$TEST_TEMP_DIR/nested/dirs/.config"
@@ -121,7 +121,7 @@ teardown() {
   mkdir -p "$TEST_TEMP_DIR/deps/test-repo"
   echo "old" > "$TEST_TEMP_DIR/deps/test-repo/file.txt"
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
 
   [ "$status" -eq 0 ]
   [ "$(cat "$TEST_TEMP_DIR/deps/test-repo/file.txt")" = "new" ]
@@ -136,7 +136,7 @@ teardown() {
   }
   export -f git
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/nonexistent-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/nonexistent-repo.git"
 
   [ "$status" -eq 1 ]
   [[ "$output" == *"Failed to clone repository"* ]]
@@ -151,7 +151,7 @@ teardown() {
   }
   export -f git
 
-  run bash -c "source '$SOURCE_SCRIPT' https://github.com/user/test-repo.git > /dev/null 2>&1; echo \$CLONED_DIR_PATH"
+  run bash -c "GIT_CLONE_BASE_DIR='$TEST_TEMP_DIR' source '$SOURCE_SCRIPT' https://github.com/user/test-repo.git > /dev/null 2>&1; echo \$CLONED_DIR_PATH"
 
   [[ "$output" == *"/deps/test-repo"* ]]
 }
@@ -167,7 +167,7 @@ teardown() {
   }
   export -f git
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
 
   [ "$status" -eq 0 ]
   grep -q "clone.*--depth 1" "$TEST_TEMP_DIR/git_commands.log"
@@ -182,10 +182,10 @@ teardown() {
   }
   export -f git
 
-  run "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "https://github.com/user/test-repo.git"
 
   [ "$status" -eq 0 ]
   assert_dir_exists "$TEST_TEMP_DIR/deps"
-  # Check permissions (775 = rwxrwxr-x)
-  [ "$(stat -c %a "$TEST_TEMP_DIR/deps")" = "775" ] || [ "$(stat -f %A "$TEST_TEMP_DIR/deps" 2>/dev/null)" = "775" ]
+  # Check permissions (755 = rwxr-xr-x)
+  [ "$(stat -c %a "$TEST_TEMP_DIR/deps")" = "755" ] || [ "$(stat -f %A "$TEST_TEMP_DIR/deps" 2>/dev/null)" = "755" ]
 }

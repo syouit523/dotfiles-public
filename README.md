@@ -36,11 +36,29 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 
 #### bootstrap 後の手動ステップ
 
+##### 1. SSH 鍵生成 + GitHub 認証
+
 SSH キー生成と GitHub 認証（`gh auth login`）は対話が必要なため、bootstrap には含めていません。完了後に手動で:
 
 ```bash
 cd ~/workspace/dotfiles-public && make ssh-key-gen
 ```
+
+> このコマンドは、リポジトリの origin が HTTPS だった場合に **自動で SSH に切り替え** ます（`git pull` が PAT 無しで通るようになる）。SSH 鍵が既にある環境でも、origin URL の書き換えは実行されます。
+
+##### 2. SwiftLint (iOS 開発)
+
+`swiftlint` は **Xcode.app の完全インストールが必須** で、Xcode CLT だけでは導入できないため bootstrap から除外しています。App Store で Xcode をインストールした後に:
+
+```bash
+brew install swiftlint
+# または mint 経由
+mint install realm/SwiftLint
+```
+
+##### 3. Ghostty のフォント
+
+`configs/ghostty/config` は `Hack Nerd Font Mono` を使用します。bootstrap で `font-hack-nerd-font` cask が自動インストールされますが、**プロンプトアイコンが `?` に化ける場合** は Ghostty を完全に再起動してください（fontキャッシュの再読み込み）。
 
 ### 対話モード（従来）
 
@@ -95,9 +113,11 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
   - 初回実行時は自動的にBATSテストフレームワークをインストールします
   - 主要なシェルスクリプトの機能をテストします
   - テスト対象:
-    - `deploy-configs.sh`: ファイルのリンク/コピー/削除機能
+    - `deploy-configs.sh`: リンク/コピー/削除 + backup_file タイムスタンプ
     - `git-clone.sh`: リポジトリクローンとシンボリックリンク作成
-    - `setup-gitconfig.sh`: Git設定のセットアップ
+    - `setup-gitconfig.sh`: 対話 + `DOTFILES_GIT_USER_NAME/EMAIL` + `NONINTERACTIVE`
+    - `change-default-shell.sh`: brew パス優先選択 + `SHELLS_FILE` 注入
+    - 各種 config ファイル / Brewfile の構文検証
 
 ### その他
 - `make font` または `make f`: フォントのインストール

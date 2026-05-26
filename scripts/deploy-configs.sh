@@ -101,8 +101,13 @@ deploy_git () {
         cp "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
         git config --global core.excludesfile ~/.gitignore_global
         ## SET USER CONFIG INTO COMPANY DIR
-        echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
-        read -r flag
+        if [ "$NONINTERACTIVE" = "1" ]; then
+            flag="n"
+            echo "NONINTERACTIVE: skipping company user info setup"
+        else
+            echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
+            read -r flag
+        fi
         if [ "$flag" = "y" ] || [ "$flag" = "Y" ]; then
             echo "INPUT THE COMPANY NAME: "
             read -r company

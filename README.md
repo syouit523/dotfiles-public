@@ -1,14 +1,56 @@
 # dotfiles-public
 
+## ⚠️ Breaking Changes
+
+- **`make bootstrap` から `make ssh-key-gen` を除外**しました。SSH キー生成と `gh auth login` は対話が必須なため、bootstrap 後に手動で `make ssh-key-gen` を実行してください。
+- 非対話モードの環境変数は `DOTFILES_` プレフィックス付きです（`GIT_USER_NAME` などのジェネリックな名前はユーザー環境と衝突するため避けています）。
+
 ## インストール方法
+
+### macOS（ワンライナー、対話なし）
+
+```bash
+xcode-select -p &>/dev/null || xcode-select --install
+until xcode-select -p &>/dev/null; do sleep 5; done
+NONINTERACTIVE=1 \
+DOTFILES_BOOTSTRAP_MODE=minimum \
+DOTFILES_GIT_USER_NAME="Shoichi Taguchi" \
+DOTFILES_GIT_USER_EMAIL="taguchi@shoichi.me" \
+DOTFILES_DEFAULT_SHELL=zsh \
+bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
+```
+
+実行中に **1回だけ sudo パスワードを聞かれます**（Makefile の `check-sudo` が cache + keep-alive を担当）。それ以降は全自動で完了します。
+
+> **Security note**: 環境変数を直接コマンドラインに書くとシェル履歴・`ps` 出力に残ります。気になる場合は行頭にスペースを置くか（`HISTCONTROL=ignorespace` 設定時）、別ファイルに `export` して `source` してください。
+
+#### 環境変数の一覧
+
+| 変数 | 用途 | 例 |
+|------|------|------|
+| `NONINTERACTIVE` | `1` を渡すとすべての対話プロンプトをスキップ | `1` |
+| `DOTFILES_BOOTSTRAP_MODE` | インストールするパッケージの範囲（内部的に Makefile の `MODE` にマップ） | `minimum` / `extra` |
+| `DOTFILES_GIT_USER_NAME` | git の user.name | `"Shoichi Taguchi"` |
+| `DOTFILES_GIT_USER_EMAIL` | git の user.email | `"taguchi@shoichi.me"` |
+| `DOTFILES_DEFAULT_SHELL` | デフォルトシェル（`/etc/shells` から検索、フルパスも可） | `zsh` / `fish` / `/bin/zsh` |
+
+#### bootstrap 後の手動ステップ
+
+SSH キー生成と GitHub 認証（`gh auth login`）は対話が必要なため、bootstrap には含めていません。完了後に手動で:
+
+```bash
+cd ~/workspace/dotfiles-public && make ssh-key-gen
+```
+
+### 対話モード（従来）
+
+環境変数を渡さない場合は対話モードで実行されます:
 
 ```bash
 xcode-select -p &>/dev/null || xcode-select --install
 until xcode-select -p &>/dev/null; do sleep 5; done
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
-
-> **Note**: 1行目で Xcode Command Line Tools がインストール済みかチェックし、未インストールならインストールダイアログを表示します。2行目で完了するまで待機してから、次のコマンド（init.sh）を実行します。Linux環境では1〜2行目はスキップしてください。
 
 ## 利用可能なコマンド
 

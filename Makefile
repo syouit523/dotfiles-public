@@ -2,11 +2,20 @@ ROOT = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 export ROOT
 
 ## ******************** Global Variables ********************
-# Installation mode: minimum or extra (default: minimum)
-MODE ?= minimum
+# Installation mode: minimum or extra
+# - For interactive use: MODE defaults to minimum
+# - For non-interactive use: pass DOTFILES_BOOTSTRAP_MODE=extra (etc.)
+MODE ?= $(if $(DOTFILES_BOOTSTRAP_MODE),$(DOTFILES_BOOTSTRAP_MODE),minimum)
 export MODE
+export NONINTERACTIVE
+export DOTFILES_BOOTSTRAP_MODE
+export DOTFILES_GIT_USER_NAME
+export DOTFILES_GIT_USER_EMAIL
+export DOTFILES_DEFAULT_SHELL
 export SCRIPTS := $(ROOT)/scripts
 export MAC := $(ROOT)/mac
+
+SUDO_KEEPALIVE_PID := /tmp/dotfiles-sudo-keepalive.pid
 
 ## ******************** Script Environment ********************
 UNAME_S := $(shell uname -s)
@@ -23,33 +32,49 @@ BREWFILES = $(ROOT)/brewfiles
 
 default: bootstrap
 
-PHONY: check-sudo
+.PHONY: check-sudo
 check-sudo:
 	@echo "Check sudo"
 	@if sudo -n true 2>/dev/null; then \
 		echo "Sudo is not required. Skipping."; \
+	elif [ -f $(SUDO_KEEPALIVE_PID) ] && kill -0 $$(cat $(SUDO_KEEPALIVE_PID)) 2>/dev/null; then \
+		echo "Sudo keep-alive already running."; \
 	else \
-		echo "Starting sudo loop..."; \
+		echo "Requesting sudo password (cached for the rest of bootstrap)..."; \
 		sudo -v; \
-		while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
+		( while true; do sudo -n true; sleep 50; done ) >/dev/null 2>&1 & \
+		echo $$! > $(SUDO_KEEPALIVE_PID); \
+	fi
+
+.PHONY: cleanup-sudo
+cleanup-sudo:
+	@if [ -f $(SUDO_KEEPALIVE_PID) ]; then \
+		PID=$$(cat $(SUDO_KEEPALIVE_PID)); \
+		kill $$PID 2>/dev/null && echo "Stopped sudo keep-alive (PID $$PID)"; \
+		rm -f $(SUDO_KEEPALIVE_PID); \
 	fi
 
 ## ******************** Common Targets ********************
 .PHONY: bootstrap
 bootstrap b: check-sudo
 	@echo "Starting bootstrap for $(UNAME_S)"
-	@echo "\nSelect installation mode:"
-	@echo "1) minimum (essential packages only)"
-	@echo "2) extra (all packages)"
-	@read -p "Enter choice [1-2] (default: 1): " choice; \
-	case "$$choice" in \
-		1) mode="minimum";; \
-		2|"") mode="extra";; \
-		*) echo "Invalid choice, using extra mode"; mode="minimum";; \
-	esac; \
-	echo "Selected mode: $$mode"; \
-	MODE=$$mode
-	@make $(UNAME_S)_setup
+	@if [ "$(NONINTERACTIVE)" != "1" ] && [ -z "$(DOTFILES_BOOTSTRAP_MODE)" ]; then \
+		echo ""; \
+		echo "Select installation mode:"; \
+		echo "1) minimum (essential packages only)"; \
+		echo "2) extra (all packages)"; \
+		read -p "Enter choice [1-2] (default: 1): " choice; \
+		case "$$choice" in \
+			2) mode="extra";; \
+			*) mode="minimum";; \
+		esac; \
+		echo "Selected mode: $$mode"; \
+		$(MAKE) $(UNAME_S)_setup MODE=$$mode; \
+	else \
+		echo "Installation mode: $(MODE)"; \
+		$(MAKE) $(UNAME_S)_setup; \
+	fi
+	@$(MAKE) cleanup-sudo
 
 ## ******************** Linux Setup ********************
 .PHONY: linux_setup
@@ -65,7 +90,11 @@ Linux_setup:
 	make tmux
 	make change-default-shell
 	make reload_zshrc
-	make ssh-key-gen
+	@echo ""
+	@echo "===================================================="
+	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
+	@echo "run manually:  make ssh-key-gen"
+	@echo "===================================================="
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
@@ -85,7 +114,11 @@ Darwin_setup:
 	make tmux
 	make change-default-shell
 	make reload_zshrc
-	make ssh-key-gen
+	@echo ""
+	@echo "===================================================="
+	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
+	@echo "run manually:  make ssh-key-gen"
+	@echo "===================================================="
 
 ## ******************** Windows Setup ********************
 .PHONY: Windows_NT_setup

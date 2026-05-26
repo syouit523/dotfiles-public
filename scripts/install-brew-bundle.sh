@@ -5,6 +5,7 @@ set -e
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # システム情報の取得
 OS="$(uname -s)"
+ARCH="$(uname -m)"
 
 # 使用方法表示
 show_usage() {

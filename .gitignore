@@ -1,5 +1,7 @@
 .idea/
 .DS_Store
+**/.DS_Store
+*.log
 nerd-fonts/
 shared/Brewfile.lock.json
 mac/Brewfile.lock.json
@@ -9,3 +11,7 @@ configs/nvim/lazy-lock.json
 deps/
 .claude/
 tests/.bats/
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

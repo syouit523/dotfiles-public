@@ -8,7 +8,7 @@ if [[ $answer =~ ^[Yy]$ ]]; then
 fi
 
 # Mac App Storeアプリケーションのアンインストール
-if command -v brew mas &> /dev/null; then
+if command -v brew &> /dev/null && command -v mas &> /dev/null; then
     read -r -p "Mac App Storeアプリケーションをアンインストールしますか？(y/N): " answer
     if [[ $answer =~ ^[Yy]$ ]]; then
         echo "Mac App Storeアプリケーションをアンインストール中..."

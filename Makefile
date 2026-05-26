@@ -23,14 +23,54 @@ SCRIPTS  := $(ROOT)/scripts
 MAC = $(ROOT)/mac
 XCODE_SELECT_INSTALL    = $(MAC)/scripts/xcode-select-install.sh
 MAKE_WORKSPACE   = $(SCRIPTS)/make-workspace.sh
-BREW_INSTALL   = $(SCRIPTS)/brew-install.sh
-BREW_SETUP   = $(SCRIPTS)/brew-setup.sh
 DEPLOY_CONFIGS = $(SCRIPTS)/deploy-configs.sh
 SETUP_FISH = $(SCRIPTS)/setup-fish.sh
 SETUP_ZSH = $(SCRIPTS)/setup-zsh.sh
-BREWFILES = $(ROOT)/brewfiles
+BREWFILES = $(ROOT)/Brewfiles
 
-default: bootstrap
+default: help
+
+.PHONY: help
+help:
+	@echo "Available targets:"
+	@echo ""
+	@echo "  Bootstrap:"
+	@echo "    bootstrap (b)        Run OS-appropriate setup (sudo + interactive)"
+	@echo "                         Pass NONINTERACTIVE=1 + DOTFILES_* envs for one-shot install"
+	@echo ""
+	@echo "  Homebrew:"
+	@echo "    brew_install         Install Homebrew"
+	@echo "    brew_setup           Install packages from Brewfile (MODE=minimum|extra)"
+	@echo "    brew_mac_app         Install Mac App Store apps (extra mode only)"
+	@echo "    brew_update_all      Update Homebrew and all packages"
+	@echo ""
+	@echo "  Shell:"
+	@echo "    zsh                  Install zsh + oh-my-zsh"
+	@echo "    zsh_extensions       Install zsh extensions"
+	@echo "    fish                 Install fish + fisher"
+	@echo "    change-default-shell Change login shell (DOTFILES_DEFAULT_SHELL=zsh|fish)"
+	@echo "    reload_zshrc         Reload ~/.zshrc"
+	@echo ""
+	@echo "  Dotfiles:"
+	@echo "    link (l)             Symlink dotfiles"
+	@echo "    copy                 Copy dotfiles"
+	@echo "    delete               Remove dotfiles (restores .backup if present)"
+	@echo ""
+	@echo "  Tmux/Font/SSH:"
+	@echo "    tmux                 Install tmux + TPM"
+	@echo "    font (f)             Install nerd fonts"
+	@echo "    ssh-key-gen          Generate SSH key + gh auth (interactive)"
+	@echo ""
+	@echo "  Linux:"
+	@echo "    linux_gui_setup      Install GUI apps via Flatpak"
+	@echo "    linux_support_japanese"
+	@echo "                         Configure Japanese input on Linux"
+	@echo ""
+	@echo "  Test/Clean:"
+	@echo "    test (t)             Run BATS test suite"
+	@echo "    clean (c)            Uninstall everything (interactive confirm)"
+	@echo ""
+	@echo "Run 'make bootstrap' to start. See README.md for the one-line install."
 
 .PHONY: check-sudo
 check-sudo:
@@ -77,7 +117,7 @@ bootstrap b: check-sudo
 	@$(MAKE) cleanup-sudo
 
 ## ******************** Linux Setup ********************
-.PHONY: linux_setup
+.PHONY: Linux_setup
 Linux_setup:
 	@echo "\n=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
@@ -103,7 +143,7 @@ linux_gui_setup:
 	sh $(SCRIPTS)/linux/install-apps.sh
 
 ## ******************** macOS Setup ********************
-.PHONY: darwin_setup
+.PHONY: Darwin_setup
 Darwin_setup:
 	@echo "\n=== macOS Setup ==="
 	make brew_install
@@ -151,7 +191,7 @@ brew_mac_app:
 	@echo "Installing Mac apps from AppStore..."
 	@if [ "$(MODE)" = "extra" ]; then \
 		echo "Running in extra mode, installing Mac apps..."; \
-		brew bundle --file="$(BREWFILES)/mac-apps/Brewfile"; \
+		brew bundle --file="$(BREWFILES)/macApps-Brewfile"; \
 	else \
 		echo "Skipping Mac apps installation (not in extra mode)"; \
 	fi
@@ -189,21 +229,13 @@ zsh:
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
 	make check-sudo
-	sh $(SCRIPTS)/install-zsh-extensitions.sh
+	sh $(SCRIPTS)/install-zsh-extensions.sh
 
 # ******************** linux ********************
 .PHONY: install_apt_packages_from_brew
 install_apt_packages_from_brew:
 	chmod +x $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
 	$(SCRIPTS)/linux/install-apt-packages-from-brew.sh
-
-.PHONY: linux_setup
-linux_setup:
-# for GUI Linux
-	@echo "Install Flatpak\n"
-	sh $(SCRIPTS)/linux/install-flatpak.sh
-	@echo "Install Apps\n"
-	sh $(SCRIPTS)/linux/install-apps.sh
 
 .PHONY: linux_support_japanese
 linux_support_japanese:
@@ -257,7 +289,12 @@ delete:
 
 .PHONY: clean c
 clean c:
-	@echo "Clean\n"
+	@echo ""
+	@echo "*** This will uninstall Homebrew, remove dotfiles, and reset your shell. ***"
+	@if [ "$(NONINTERACTIVE)" != "1" ]; then \
+		read -p "Continue? [y/N]: " ans; \
+		case "$$ans" in y|Y|yes) ;; *) echo "Aborted."; exit 1;; esac; \
+	fi
 	make check-sudo
 	make clean-deps
 	@if [ "$(UNAME_S)" = "Darwin" ]; then \

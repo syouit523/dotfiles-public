@@ -14,8 +14,8 @@ xcode-select -p &>/dev/null || xcode-select --install
 until xcode-select -p &>/dev/null; do sleep 5; done
 NONINTERACTIVE=1 \
 DOTFILES_BOOTSTRAP_MODE=minimum \
-DOTFILES_GIT_USER_NAME="Shoichi Taguchi" \
-DOTFILES_GIT_USER_EMAIL="taguchi@shoichi.me" \
+DOTFILES_GIT_USER_NAME="Your Name" \
+DOTFILES_GIT_USER_EMAIL="you@example.com" \
 DOTFILES_DEFAULT_SHELL=zsh \
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
@@ -30,8 +30,8 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 |------|------|------|
 | `NONINTERACTIVE` | `1` を渡すとすべての対話プロンプトをスキップ | `1` |
 | `DOTFILES_BOOTSTRAP_MODE` | インストールするパッケージの範囲（内部的に Makefile の `MODE` にマップ） | `minimum` / `extra` |
-| `DOTFILES_GIT_USER_NAME` | git の user.name | `"Shoichi Taguchi"` |
-| `DOTFILES_GIT_USER_EMAIL` | git の user.email | `"taguchi@shoichi.me"` |
+| `DOTFILES_GIT_USER_NAME` | git の user.name | `"Your Name"` |
+| `DOTFILES_GIT_USER_EMAIL` | git の user.email | `"you@example.com"` |
 | `DOTFILES_DEFAULT_SHELL` | デフォルトシェル（`/etc/shells` から検索、フルパスも可） | `zsh` / `fish` / `/bin/zsh` |
 
 #### bootstrap 後の手動ステップ
@@ -51,6 +51,8 @@ xcode-select -p &>/dev/null || xcode-select --install
 until xcode-select -p &>/dev/null; do sleep 5; done
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
+
+全ターゲットの一覧は `make help` で確認できます。
 
 ## 利用可能なコマンド
 
@@ -100,7 +102,7 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 ### その他
 - `make font` または `make f`: フォントのインストール
 - `make ssh-key-gen`: SSHキーを生成
-- `make linux_setup`: Linux用GUIアプリケーションのセットアップ
+- `make linux_gui_setup`: Linux用GUIアプリケーション（Flatpak）のセットアップ
 - `make clean` または `make c`: 環境をクリーンアップ（Homebrew、dotfiles、シェルの設定を削除）
 
 ## 開発
@@ -121,24 +123,9 @@ make test
 
 ### CI/CD
 
-GitHub Actionsワークフローのテンプレートが用意されています。セットアップ方法：
+`.github/workflows/test.yml` に GitHub Actions ワークフローが設定済みです。
 
-```bash
-# ワークフローディレクトリを作成
-mkdir -p .github/workflows
-
-# テンプレートをコピー
-cp tests/ci-templates/github-actions-test.yml .github/workflows/test.yml
-
-# コミット＆プッシュ
-git add .github/workflows/test.yml
-git commit -m "Add GitHub Actions workflow"
-git push
-```
-
-ワークフローの機能：
-- テストはUbuntuとmacOSの両方の環境で実行されます
-- ShellCheckによる静的解析も実行されます
-- プッシュ、プルリクエスト、または手動で実行可能
-
-詳細は [`tests/ci-templates/README.md`](tests/ci-templates/README.md) を参照してください。
+機能:
+- Ubuntu と macOS の両環境で BATS テストを実行
+- ShellCheck による静的解析
+- push / pull request / 手動トリガーで実行

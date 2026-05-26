@@ -1,5 +1,5 @@
 # Homebrewリポジトリの追加
-tap "homebrew/bundle"  # Homebrew Bundle用公式リポジトリ
+# Note: homebrew/bundle は brew 本体に統合されたため tap 不要 (2024年以降)
 tap "jesseduffield/lazygit"  # lazygitの非公式リポジトリ
 
 # ファイル/テキスト操作
@@ -47,7 +47,9 @@ brew "deno"  # TypeScript/JavaScriptランタイム
 brew "pnpm"  # 高速なNode.jsパッケージマネージャ
 
 # iOS / Swift 開発
-brew "swiftlint"  # Swiftコードのlinter
+# Note: swiftlint は完全な Xcode.app が必要なため、bootstrap 後に
+# Xcode をApp Storeで入れてから `brew install swiftlint` するか、
+# `mint install realm/SwiftLint` で導入。
 brew "swiftformat"  # Swiftコードの自動フォーマッタ
 brew "xcbeautify"  # xcodebuild出力の整形ツール
 brew "fastlane"  # iOS/Androidアプリ配信自動化

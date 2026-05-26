@@ -75,18 +75,24 @@ help:
 .PHONY: check-sudo
 check-sudo:
 	@echo "Check sudo"
+	@# sudo cache が生きているかを実コマンドで確認 (kill -0 だけでは不十分)
 	@if sudo -n true 2>/dev/null; then \
-		echo "Sudo is not required. Skipping."; \
-	elif [ -f $(SUDO_KEEPALIVE_PID) ] && kill -0 $$(cat $(SUDO_KEEPALIVE_PID)) 2>/dev/null; then \
-		echo "Sudo keep-alive already running."; \
+		echo "Sudo cache is valid."; \
+		if [ ! -f $(SUDO_KEEPALIVE_PID) ] || ! kill -0 $$(cat $(SUDO_KEEPALIVE_PID) 2>/dev/null) 2>/dev/null; then \
+			( while true; do sudo -n true; sleep 50; done ) >/dev/null 2>&1 & \
+			echo $$! > $(SUDO_KEEPALIVE_PID); \
+		fi; \
 	elif [ ! -t 0 ]; then \
 		echo "Error: sudo password required but stdin is not a TTY."; \
 		echo "Run 'sudo -v' manually before invoking this target,"; \
 		echo "or use NOPASSWD sudoers entry for this user."; \
 		exit 1; \
 	else \
-		echo "Requesting sudo password (cached for the rest of bootstrap)..."; \
+		echo "Requesting sudo password..."; \
 		sudo -v; \
+		if [ -f $(SUDO_KEEPALIVE_PID) ] && kill -0 $$(cat $(SUDO_KEEPALIVE_PID) 2>/dev/null) 2>/dev/null; then \
+			kill $$(cat $(SUDO_KEEPALIVE_PID)) 2>/dev/null; \
+		fi; \
 		( while true; do sudo -n true; sleep 50; done ) >/dev/null 2>&1 & \
 		echo $$! > $(SUDO_KEEPALIVE_PID); \
 	fi

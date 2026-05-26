@@ -3,11 +3,12 @@
 ## インストール方法
 
 ```bash
-xcode-select --install
+xcode-select -p &>/dev/null || xcode-select --install
+until xcode-select -p &>/dev/null; do sleep 5; done
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
 
-> **Note**: `xcode-select --install` はmacOSでのみ必要です。インストールダイアログが表示されたら、完了するまで待ってから次のコマンドを実行してください。既にインストール済みの場合はスキップされます。
+> **Note**: 1行目で Xcode Command Line Tools がインストール済みかチェックし、未インストールならインストールダイアログを表示します。2行目で完了するまで待機してから、次のコマンド（init.sh）を実行します。Linux環境では1〜2行目はスキップしてください。
 
 ## 利用可能なコマンド
 

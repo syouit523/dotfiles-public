@@ -2,13 +2,49 @@
 
 ## インストール方法
 
+### macOS（ワンライナー、対話なし）
+
+```bash
+xcode-select -p &>/dev/null || xcode-select --install; \
+until xcode-select -p &>/dev/null; do sleep 5; done; \
+sudo -v && ( while true; do sudo -n true; sleep 50; done ) >/dev/null 2>&1 & \
+NONINTERACTIVE=1 \
+BOOTSTRAP_MODE=minimum \
+GIT_USER_NAME="Shoichi Taguchi" \
+GIT_USER_EMAIL="taguchi@shoichi.me" \
+DEFAULT_SHELL=zsh \
+bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
+```
+
+実行すると最初に **1回だけ sudo パスワードを聞かれます**。それ以降は全自動で完了します。
+
+#### 環境変数の一覧
+
+| 変数 | 用途 | 例 |
+|------|------|------|
+| `NONINTERACTIVE` | `1` を渡すとすべての対話プロンプトをスキップ | `1` |
+| `BOOTSTRAP_MODE` | インストールするパッケージの範囲 | `minimum` / `extra` |
+| `GIT_USER_NAME` | git の user.name | `"Shoichi Taguchi"` |
+| `GIT_USER_EMAIL` | git の user.email | `"taguchi@shoichi.me"` |
+| `DEFAULT_SHELL` | デフォルトシェル（`/etc/shells` から検索） | `zsh` / `fish` |
+
+#### bootstrap 後の手動ステップ
+
+SSH キー生成と GitHub 認証は対話が必要なため、bootstrap には含めていません。完了後に手動で:
+
+```bash
+cd ~/workspace/dotfiles-public && make ssh-key-gen
+```
+
+### 対話モード（従来）
+
+環境変数を渡さない場合は対話モードで実行されます:
+
 ```bash
 xcode-select -p &>/dev/null || xcode-select --install
 until xcode-select -p &>/dev/null; do sleep 5; done
 bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
 ```
-
-> **Note**: 1行目で Xcode Command Line Tools がインストール済みかチェックし、未インストールならインストールダイアログを表示します。2行目で完了するまで待機してから、次のコマンド（init.sh）を実行します。Linux環境では1〜2行目はスキップしてください。
 
 ## 利用可能なコマンド
 

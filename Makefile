@@ -3,8 +3,10 @@ export ROOT
 
 ## ******************** Global Variables ********************
 # Installation mode: minimum or extra (default: minimum)
-MODE ?= minimum
+# Can be overridden by BOOTSTRAP_MODE for non-interactive bootstrap
+MODE ?= $(if $(BOOTSTRAP_MODE),$(BOOTSTRAP_MODE),minimum)
 export MODE
+export NONINTERACTIVE
 export SCRIPTS := $(ROOT)/scripts
 export MAC := $(ROOT)/mac
 
@@ -29,26 +31,27 @@ check-sudo:
 	@if sudo -n true 2>/dev/null; then \
 		echo "Sudo is not required. Skipping."; \
 	else \
-		echo "Starting sudo loop..."; \
+		echo "Requesting sudo password (cached for the rest of bootstrap)..."; \
 		sudo -v; \
-		while true; do sudo -n true; sleep 60; kill -0 $$ || exit; done 2>/dev/null & \
+		( while true; do sudo -n true; sleep 50; done ) >/dev/null 2>&1 & \
+		echo $$! > /tmp/dotfiles-sudo-keepalive.pid; \
 	fi
 
 ## ******************** Common Targets ********************
 .PHONY: bootstrap
 bootstrap b: check-sudo
 	@echo "Starting bootstrap for $(UNAME_S)"
-	@echo "\nSelect installation mode:"
-	@echo "1) minimum (essential packages only)"
-	@echo "2) extra (all packages)"
-	@read -p "Enter choice [1-2] (default: 1): " choice; \
-	case "$$choice" in \
-		1) mode="minimum";; \
-		2|"") mode="extra";; \
-		*) echo "Invalid choice, using extra mode"; mode="minimum";; \
-	esac; \
-	echo "Selected mode: $$mode"; \
-	MODE=$$mode
+	@echo "Installation mode: $(MODE)"
+	@if [ "$(NONINTERACTIVE)" != "1" ] && [ -z "$(BOOTSTRAP_MODE)" ]; then \
+		echo "\nSelect installation mode:"; \
+		echo "1) minimum (essential packages only)"; \
+		echo "2) extra (all packages)"; \
+		read -p "Enter choice [1-2] (default: 1): " choice; \
+		case "$$choice" in \
+			2) echo "Selected mode: extra";; \
+			*) echo "Selected mode: minimum";; \
+		esac; \
+	fi
 	@make $(UNAME_S)_setup
 
 ## ******************** Linux Setup ********************
@@ -65,7 +68,11 @@ Linux_setup:
 	make tmux
 	make change-default-shell
 	make reload_zshrc
-	make ssh-key-gen
+	@echo ""
+	@echo "===================================================="
+	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
+	@echo "run manually:  make ssh-key-gen"
+	@echo "===================================================="
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
@@ -85,7 +92,11 @@ Darwin_setup:
 	make tmux
 	make change-default-shell
 	make reload_zshrc
-	make ssh-key-gen
+	@echo ""
+	@echo "===================================================="
+	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
+	@echo "run manually:  make ssh-key-gen"
+	@echo "===================================================="
 
 ## ******************** Windows Setup ********************
 .PHONY: Windows_NT_setup

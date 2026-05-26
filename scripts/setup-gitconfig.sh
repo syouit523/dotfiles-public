@@ -1,15 +1,12 @@
 #!/bin/bash
 
-#font
 GREEN='\033[0;32m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
-# 最新のコミットからauthor nameとemailを取得
-DEFAULT_AUTHOR_NAME=$(git log -1 --pretty=format:'%an')
-DEFAULT_AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae')
+DEFAULT_AUTHOR_NAME=$(git log -1 --pretty=format:'%an' 2>/dev/null || echo "")
+DEFAULT_AUTHOR_EMAIL=$(git log -1 --pretty=format:'%ae' 2>/dev/null || echo "")
 
-# ユーザー入力を求める関数
 ask_user_input() {
   local prompt="$1"
   local default_value="$2"
@@ -19,24 +16,36 @@ ask_user_input() {
   echo "${user_input:-$default_value}"
 }
 
-# Gitの設定を自動でセットアップ
 setup_git_config() {
-  # ユーザーに選択肢を提供
-  echo "Configure Git settings:"
-  printf "${BOLD}Do you want to change name and email? ${RESET} %s\n"
-  printf " ${GREEN}Author Name: $DEFAULT_AUTHOR_NAME ${RESET} %s\n"
-  printf " ${GREEN}Author Email: $DEFAULT_AUTHOR_EMAIL ${RESET} %s\n"
-  read -r -p "Do you want to change the name and email?: [y/n]" flag
-  if [[ $flag = "y" || $flag = "Y" ]]; then
-    AUTHOR_NAME=$(ask_user_input "Enter Git user.name" "$DEFAULT_AUTHOR_NAME")
-    AUTHOR_EMAIL=$(ask_user_input "Enter Git user.email" "$DEFAULT_AUTHOR_EMAIL")
-    
-    printf "${GREEN}Changed Author Name: $AUTHOR_NAME ${RESET} %s\n"
-    printf "${GREEN}Changed Author Email: $AUTHOR_EMAIL ${RESET} %s\n"
+  if [ -n "$GIT_USER_NAME" ] && [ -n "$GIT_USER_EMAIL" ]; then
+    AUTHOR_NAME="$GIT_USER_NAME"
+    AUTHOR_EMAIL="$GIT_USER_EMAIL"
+    printf "${GREEN}Using env vars: %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
+  elif [ "$NONINTERACTIVE" = "1" ]; then
+    AUTHOR_NAME="$DEFAULT_AUTHOR_NAME"
+    AUTHOR_EMAIL="$DEFAULT_AUTHOR_EMAIL"
+    printf "${GREEN}NONINTERACTIVE: using defaults %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
   else
-    AUTHOR_NAME=$DEFAULT_AUTHOR_NAME
-    AUTHOR_EMAIL=$DEFAULT_AUTHOR_EMAIL
-    printf "${GREEN}Using existing Name and Email... ${RESET} %s\n"
+    echo "Configure Git settings:"
+    printf "${BOLD}Do you want to change name and email?${RESET}\n"
+    printf " ${GREEN}Author Name: %s${RESET}\n" "$DEFAULT_AUTHOR_NAME"
+    printf " ${GREEN}Author Email: %s${RESET}\n" "$DEFAULT_AUTHOR_EMAIL"
+    read -r -p "Do you want to change the name and email?: [y/N]" flag
+    if [[ $flag = "y" || $flag = "Y" ]]; then
+      AUTHOR_NAME=$(ask_user_input "Enter Git user.name" "$DEFAULT_AUTHOR_NAME")
+      AUTHOR_EMAIL=$(ask_user_input "Enter Git user.email" "$DEFAULT_AUTHOR_EMAIL")
+      printf "${GREEN}Changed Author Name: %s${RESET}\n" "$AUTHOR_NAME"
+      printf "${GREEN}Changed Author Email: %s${RESET}\n" "$AUTHOR_EMAIL"
+    else
+      AUTHOR_NAME=$DEFAULT_AUTHOR_NAME
+      AUTHOR_EMAIL=$DEFAULT_AUTHOR_EMAIL
+      printf "${GREEN}Using existing Name and Email...${RESET}\n"
+    fi
+  fi
+
+  if [ -z "$AUTHOR_NAME" ] || [ -z "$AUTHOR_EMAIL" ]; then
+    echo "Skipping git config: name/email is empty"
+    return 0
   fi
 
   echo "Setting up Git configurations..."
@@ -44,7 +53,6 @@ setup_git_config() {
   git config --global user.email "$AUTHOR_EMAIL"
 }
 
-# 実行
 setup_git_config
 
-printf "Completed gitconfig setting.\\n"
+printf "Completed gitconfig setting.\n"

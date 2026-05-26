@@ -2,6 +2,14 @@
 # Migrated from Wezterm config
 
 # ============================================
+# Font
+# ============================================
+# Nerd Font が必要（starship, p10k, powerlevel10k のアイコンを表示するため）
+# Brewfile の `font-hack-nerd-font` でインストール済みのものを使用
+font-family = "Hack Nerd Font Mono"
+font-size = 13
+
+# ============================================
 # Color Scheme (coolnight)
 # ============================================
 

@@ -33,8 +33,10 @@ if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
     else
         echo "Oh My Zsh is not installed. Installing now..."
 
-        # Install oh-my-zsh without changing the shell immediately
-        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        # --unattended: 対話なしでインストール、デフォルトシェル変更もしない
+        # --keep-zshrc: dotfiles 側で配置済みの ~/.zshrc を ~/.zshrc.pre-oh-my-zsh に
+        #               リネームせず、そのまま保持する
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 
         echo "Oh My Zsh installation completed."
     fi

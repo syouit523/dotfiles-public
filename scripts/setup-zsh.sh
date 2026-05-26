@@ -2,9 +2,23 @@
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
-ZSH_PATH=$(which zsh)
 
-if command -v zsh >/dev/null 2>&1; then
+# Prefer Homebrew's zsh over the system /bin/zsh.
+# When invoked via sudo, PATH may be sanitized — check brew prefixes directly.
+find_zsh() {
+    for candidate in /opt/homebrew/bin/zsh /usr/local/bin/zsh /home/linuxbrew/.linuxbrew/bin/zsh; do
+        if [ -x "$candidate" ]; then
+            echo "$candidate"
+            return 0
+        fi
+    done
+    command -v zsh 2>/dev/null
+}
+
+ZSH_PATH=$(find_zsh)
+
+if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
+    echo "Using zsh at: $ZSH_PATH"
     # set to the default shell to zsh
     # sudo -n sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac
     if ! grep -q "^$ZSH_PATH$" /etc/shells; then

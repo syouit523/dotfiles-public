@@ -124,8 +124,8 @@ Linux_setup:
 	make linux_support_japanese
 	make install_apt_packages_from_brew
 	make font
-	make zsh
 	make link
+	make zsh
 	make zsh_extensions
 	make tmux
 	make change-default-shell
@@ -148,8 +148,8 @@ Darwin_setup:
 	@echo "\n=== macOS Setup ==="
 	make brew_install
 	make brew_setup
-	make zsh
 	make link
+	make zsh
 	make zsh_extensions
 	make tmux
 	make change-default-shell
@@ -223,7 +223,8 @@ fish:
 zsh:
 	@echo "Setup Zsh\n"
 	make check-sudo
-	sudo -n sh $(SETUP_ZSH)
+	# Preserve PATH so brew's zsh is discoverable inside the script
+	sudo -n -E env PATH="$$PATH" sh $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:

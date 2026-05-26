@@ -5,8 +5,21 @@ select_shell_noninteractive() {
   # フルパス指定にも対応（/bin/zsh → zsh に正規化してから検索）
   local basename_target
   basename_target=$(basename "$target")
-  local found
-  found=$(grep -E "^[^#]" /etc/shells | grep -E "/${basename_target}$" | head -n1)
+
+  # /etc/shells から候補を全て列挙し、Homebrew パスを優先する。
+  # システムの /bin/zsh が古いケースがあるため、brew zsh を見つけたらそちらを使う。
+  local matches
+  matches=$(grep -E "^[^#]" /etc/shells | grep -E "/${basename_target}$" || true)
+
+  local found=""
+  # 優先順位: /opt/homebrew → /usr/local → /home/linuxbrew → その他
+  for prefix in /opt/homebrew/bin /usr/local/bin /home/linuxbrew/.linuxbrew/bin; do
+    found=$(echo "$matches" | grep -E "^${prefix}/${basename_target}$" | head -n1 || true)
+    [ -n "$found" ] && { echo "$found"; return 0; }
+  done
+
+  # 上記で見つからなければ /etc/shells の最初のエントリ
+  found=$(echo "$matches" | head -n1)
   if [ -z "$found" ]; then
     found=$(command -v "$basename_target" 2>/dev/null)
   fi

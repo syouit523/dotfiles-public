@@ -17,9 +17,9 @@ ask_user_input() {
 }
 
 setup_git_config() {
-  if [ -n "$GIT_USER_NAME" ] && [ -n "$GIT_USER_EMAIL" ]; then
-    AUTHOR_NAME="$GIT_USER_NAME"
-    AUTHOR_EMAIL="$GIT_USER_EMAIL"
+  if [ -n "$DOTFILES_GIT_USER_NAME" ] && [ -n "$DOTFILES_GIT_USER_EMAIL" ]; then
+    AUTHOR_NAME="$DOTFILES_GIT_USER_NAME"
+    AUTHOR_EMAIL="$DOTFILES_GIT_USER_EMAIL"
     printf "${GREEN}Using env vars: %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
   elif [ "$NONINTERACTIVE" = "1" ]; then
     AUTHOR_NAME="$DEFAULT_AUTHOR_NAME"

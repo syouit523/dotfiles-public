@@ -20,8 +20,8 @@ if command -v zsh >/dev/null 2>&1; then
             fi
         fi
     fi
-    chsh -s "$(which zsh)"
-    zdh
+    # chsh は change-default-shell.sh に委譲（sudo -n chsh を使う）
+    # ここで chsh を実行するとパスワード入力を要求するため削除した
 
     if [ -d "$HOME/.oh-my-zsh" ]; then
         echo "Oh My Zsh is already installed."

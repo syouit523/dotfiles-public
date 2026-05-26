@@ -2,23 +2,26 @@
 
 select_shell_noninteractive() {
   local target="$1"
+  # フルパス指定にも対応（/bin/zsh → zsh に正規化してから検索）
+  local basename_target
+  basename_target=$(basename "$target")
   local found
-  found=$(grep -E "^[^#]" /etc/shells | grep -E "/${target}$" | head -n1)
+  found=$(grep -E "^[^#]" /etc/shells | grep -E "/${basename_target}$" | head -n1)
   if [ -z "$found" ]; then
-    found=$(command -v "$target" 2>/dev/null)
+    found=$(command -v "$basename_target" 2>/dev/null)
   fi
   echo "$found"
 }
 
-if [ -n "$DEFAULT_SHELL" ]; then
-  selected_shell=$(select_shell_noninteractive "$DEFAULT_SHELL")
+if [ -n "$DOTFILES_DEFAULT_SHELL" ]; then
+  selected_shell=$(select_shell_noninteractive "$DOTFILES_DEFAULT_SHELL")
   if [ -z "$selected_shell" ]; then
-    echo "DEFAULT_SHELL=$DEFAULT_SHELL not found in /etc/shells. Skipping."
+    echo "DOTFILES_DEFAULT_SHELL=$DOTFILES_DEFAULT_SHELL not found in /etc/shells. Skipping."
     exit 0
   fi
-  echo "Using DEFAULT_SHELL: $selected_shell"
+  echo "Using DOTFILES_DEFAULT_SHELL: $selected_shell"
 elif [ "$NONINTERACTIVE" = "1" ]; then
-  echo "NONINTERACTIVE: DEFAULT_SHELL not set, skipping shell change."
+  echo "NONINTERACTIVE: DOTFILES_DEFAULT_SHELL not set, skipping shell change."
   exit 0
 else
   tmpfile=$(mktemp /tmp/available_shells.XXXXXX)

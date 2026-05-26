@@ -14,7 +14,7 @@ brew "harelba/q/q"  # CSV処理ツール
 # フォント
 # ======================
 cask "font-hack-nerd-font"  # プログラミング用フォント
-brew "font-meslo-lg-nerd-font"  # ターミナル用フォント
+cask "font-meslo-lg-nerd-font"  # ターミナル用フォント
 
 # ======================
 # 開発ツール
@@ -27,7 +27,6 @@ cask "charles"  # HTTPプロキシ
 cask "docker"  # コンテナ管理
 cask "tower"  # Gitクライアント
 cask "transmit" # FTPクライアント
-cask "charles"  # HTTPプロキシ
 cask "rapidapi"  # API開発ツール
 
 # ======================
@@ -44,7 +43,6 @@ cask "claude"  # AIチャット
 cask "alfred"  # ランチャー
 cask "obsidian"  # ノートアプリ
 cask "figma"  # デザインツール
-cask "transmit"  # FTPクライアント
 
 # ======================
 # ブラウザ/ターミナル

@@ -43,7 +43,32 @@ brew "pyenv"  # Pythonバージョン管理
 brew "rbenv"  # Rubyバージョン管理
 brew "ruby-build"  # Rubyビルドツール
 brew "tfenv"  # Terraformバージョン管理
-brew "pyenv"
+brew "deno"  # TypeScript/JavaScriptランタイム
+brew "pnpm"  # 高速なNode.jsパッケージマネージャ
+
+# iOS / Swift 開発
+brew "swiftlint"  # Swiftコードのlinter
+brew "swiftformat"  # Swiftコードの自動フォーマッタ
+brew "xcbeautify"  # xcodebuild出力の整形ツール
+brew "fastlane"  # iOS/Androidアプリ配信自動化
+brew "mint"  # Swift製CLIツールのパッケージマネージャ
+brew "xcode-build-server"  # Swift LSPバックエンド（nvim等で使用）
+brew "periphery"  # Swift未使用コード検出
+
+# クラウド
+brew "firebase-cli"  # Firebase CLI
+cask "google-cloud-sdk"  # GCP CLI (gcloud, gsutil, bq)
+
+# 開発支援
+brew "shellcheck"  # シェルスクリプトlinter
+brew "shfmt"  # シェルスクリプトフォーマッタ
+brew "gitleaks"  # 秘密情報スキャン
+brew "difftastic"  # 構文解析ベースdiff
+brew "tokei"  # コード行数集計
+brew "act"  # GitHub Actionsのローカル実行
+brew "grpcurl"  # gRPCクライアント
+brew "mkcert"  # ローカルHTTPS開発用証明書発行
+brew "graphviz"  # グラフ可視化（terraform graph等で使用）
 
 # ビルドツール
 brew "cmake"  # クロスプラットフォームビルドツール

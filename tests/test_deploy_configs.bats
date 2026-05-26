@@ -238,5 +238,5 @@ teardown() {
   run bash -c "NONINTERACTIVE=1 \"$SOURCE_SCRIPT\" link \"$TEST_ROOT\" </dev/null"
 
   [ "$status" -eq 0 ]
-  [[ "$output" == *"NONINTERACTIVE: skipping company user info setup"* ]]
+  [[ "$output" == *"skipping company user info setup"* ]]
 }

@@ -117,20 +117,26 @@ mode_directory() {
     echo "  Target: $target_dir"
     
     # すべてのファイルを再帰的に処理
-    find "$source_dir" -type f | while read -r source_path; do
+    # find ... | while だと将来 mode_file 内で read を使った時に
+    # 同じ stdin パイプ食いが起きるため、配列で受けて while-read-here-string にする。
+    local source_files
+    source_files=$(find "$source_dir" -type f 2>/dev/null)
+    [ -z "$source_files" ] && return 0
+    while IFS= read -r source_path; do
+        [ -z "$source_path" ] && continue
         # 相対パスを計算
         local rel_path="${source_path#"$source_dir"/}"
         local target_path="$target_dir/$rel_path"
-        
+
         # ターゲットディレクトリを作成
         mkdir -p "$(dirname "$target_path")"
-        
+
         echo "Linking:"
         echo "  From: $source_path"
         echo "  To: $target_path"
-        
+
         mode_file "$source_path" "$target_path"
-    done
+    done <<< "$source_files"
 }
 
 deploy_git () {
@@ -145,21 +151,29 @@ deploy_git () {
         cp "$1/gitconfig" ~/.gitconfig
         git config --global core.excludesfile ~/.gitignore_global
         ## SET USER CONFIG INTO COMPANY DIR
+        # 注意: ここの read は **必ず /dev/tty から読む**。
+        # deploy-configs.sh は呼び出し側で `find ... | while read` または
+        # `<<< "$..."` 経由のループ内で source / 実行されることがあり、
+        # そのままだと read が次のループエントリを消費して
+        # configs/karabiner などが飛ばされる事故が起きる。
         if [ "$NONINTERACTIVE" = "1" ]; then
             flag="n"
             echo "NONINTERACTIVE: skipping company user info setup"
-        else
+        elif [ -e /dev/tty ]; then
             echo "DO YOU WANT TO SET COMPANY USER INFO?: y/n"
-            read -r flag
+            read -r flag </dev/tty
+        else
+            flag="n"
+            echo "No TTY: skipping company user info setup"
         fi
         if [ "$flag" = "y" ] || [ "$flag" = "Y" ]; then
             echo "INPUT THE COMPANY NAME: "
-            read -r company
+            read -r company </dev/tty
             echo "CREATED THE COMPANY DIRECTORY INTO THE WORKSPACE"
             echo "INPUT YOUR COMPANY E-MAIL: "
-            read -r mail_company
+            read -r mail_company </dev/tty
             echo "INPUT YOUR NAME: "
-            read -r name_company
+            read -r name_company </dev/tty
 
             COMPANY_CONFIG="${WORKSPACE}/${company}/.${company}.gitconfig"
             mkdir -p "$WORKSPACE/${company}"
@@ -256,18 +270,32 @@ deploy_ghostty () {
 deploy_bin() {
     local bin_dir="$ROOT_DIR/bin"
     local target_dir="$HOME/.local/bin"
+    if [ ! -d "$bin_dir" ]; then
+        return 0
+    fi
     mkdir -p "$target_dir"
-    find "$bin_dir" -type f | while read -r script; do
+    local scripts
+    scripts=$(find "$bin_dir" -type f 2>/dev/null)
+    [ -z "$scripts" ] && return 0
+    while IFS= read -r script; do
+        [ -z "$script" ] && continue
         local name
         name="$(basename "$script")"
         mode_file "$script" "$target_dir/$name"
-    done
+    done <<< "$scripts"
 }
 
 echo "${MODE} bin"
 deploy_bin
 
-find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d | while read -r DIR_FULLPATH; do
+# find の結果を一旦変数に取り込んでからループする。
+# `find ... | while read` 形式だと deploy_git 内の `read -r flag` などが
+# パイプ stdin から find の次の行を消費してしまい、特定のディレクトリが
+# 飛ばされる事故が起きる（過去に karabiner が deploy_git の prompt に
+# 食われてスキップされた）。
+CONFIG_DIRS=$(find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d)
+while IFS= read -r DIR_FULLPATH; do
+  [ -z "$DIR_FULLPATH" ] && continue
   DIR_NAME=${DIR_FULLPATH##*/}
   echo "${MODE} ${DIR_NAME}"
   case "$DIR_NAME" in
@@ -285,4 +313,4 @@ find "$CONFIGS" -not -path '*/\.*' -mindepth 1 -maxdepth 1 -type d | while read 
     "ghostty" ) deploy_ghostty "$DIR_FULLPATH";;
     * ) echo "No deployment function for ${DIR_NAME}";;
   esac
-done
+done <<< "$CONFIG_DIRS"

@@ -14,42 +14,57 @@ if [ -z "$MODE" ] || [ -z "$ROOT_DIR" ]; then
   exit 1
 fi
 
+# Back up a file before overwriting. Uses a fixed `.backup` name to keep
+# delete-mode restore deterministic, but never overwrites an existing backup —
+# subsequent re-runs add a timestamped suffix to preserve the original.
+backup_file() {
+  local target_file="$1"
+  local target_dir
+  target_dir="$(dirname "$target_file")"
+  local base
+  base="$(basename "$target_file")"
+  local backup_path="${target_dir}/${base}.backup"
+
+  if [ ! -e "$backup_path" ] && [ ! -L "$backup_path" ]; then
+    mv "$target_file" "$backup_path"
+    echo "backup: $target_file -> $backup_path"
+  else
+    local ts
+    ts="$(date +%Y%m%d-%H%M%S)"
+    local ts_backup="${target_dir}/${base}.backup.${ts}"
+    mv "$target_file" "$ts_backup"
+    echo "backup: $target_file -> $ts_backup (existing .backup preserved)"
+  fi
+}
+
 mode_file() {
   local source_file="$1"
   local target_file="$2"
-  local backup_suffix=".backup"
   local target_dir
   target_dir="$(dirname "$target_file")"
   local backup_path
-  backup_path="${target_dir}/$(basename "$target_file")${backup_suffix}"
+  backup_path="${target_dir}/$(basename "$target_file").backup"
 
    case "$MODE" in
     link)
-      if [ ! -e "$target_file" ]; then
+      if [ ! -e "$target_file" ] && [ ! -L "$target_file" ]; then
         ln -sf "$source_file" "$target_file"
-      elif [ -L "$target_file" ]; then
-        if [ "$(realpath "$target_file")" = "$(realpath "$source_file")" ]; then
-          echo "already linked: $target_file"
-        else
-          [ -e "$target_file" ] && mv "$target_file" "$backup_path"
-          ln -sf "$source_file" "$target_file"
-        fi
+      elif [ -L "$target_file" ] && [ "$(realpath "$target_file" 2>/dev/null)" = "$(realpath "$source_file")" ]; then
+        echo "already linked: $target_file"
       else
-        [ -e "$target_file" ] && mv "$target_file" "$backup_path"
+        backup_file "$target_file"
         ln -sf "$source_file" "$target_file"
       fi
       ;;
     copy)
       mkdir -p "$target_dir"
-      # 既存ファイルをバックアップしてからコピー
-      [ -e "$target_file" ] && mv "$target_file" "$backup_path"
+      [ -e "$target_file" ] || [ -L "$target_file" ] && backup_file "$target_file"
       cp "$source_file" "$target_file"
       ;;
     delete)
-      if [ -e "$target_file" ]; then
+      if [ -e "$target_file" ] || [ -L "$target_file" ]; then
         rm -f "$target_file"
-        if [ -f "$backup_path" ]; then
-          # バックアップファイルが存在する場合は復元
+        if [ -e "$backup_path" ] || [ -L "$backup_path" ]; then
           echo "restore: $backup_path -> $target_file"
           mv "$backup_path" "$target_file"
         fi
@@ -97,8 +112,12 @@ deploy_git () {
     mode_file "$1/gitignore_global" "${HOME}/.gitignore_global"
     case "$MODE" in
     link|copy)
-        rm -f ~/.gitconfig
-        cp "$1/gitconfig" ~/.gitconfig # copy it since modify user config after
+        # ~/.gitconfig は git config --global で書き換えるためコピー必須。
+        # 既存ファイルがある場合はバックアップを取ってから上書き。
+        if [ -e ~/.gitconfig ] || [ -L ~/.gitconfig ]; then
+            backup_file ~/.gitconfig
+        fi
+        cp "$1/gitconfig" ~/.gitconfig
         git config --global core.excludesfile ~/.gitignore_global
         ## SET USER CONFIG INTO COMPANY DIR
         if [ "$NONINTERACTIVE" = "1" ]; then
@@ -134,7 +153,15 @@ EOS
         fi
         ;;
     delete)
-        rm -rf ~/.gitconfig
+        # ~/.gitconfig は deploy_git の link/copy でコピーされる扱い。
+        # backup_file で待避した .backup があれば復元する。
+        if [ -e ~/.gitconfig ] || [ -L ~/.gitconfig ]; then
+            rm -f ~/.gitconfig
+        fi
+        if [ -e ~/.gitconfig.backup ]; then
+            echo "restore: ~/.gitconfig.backup -> ~/.gitconfig"
+            mv ~/.gitconfig.backup ~/.gitconfig
+        fi
         ;;
     *)
         echo "Invalid mode: $MODE"

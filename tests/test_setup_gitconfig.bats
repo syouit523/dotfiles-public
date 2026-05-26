@@ -136,3 +136,36 @@ teardown() {
   [ -n "$global_name" ]
   [ -n "$global_email" ]
 }
+
+# --- DOTFILES_* / NONINTERACTIVE 経路のテスト ---
+
+@test "setup-gitconfig.sh: uses DOTFILES_GIT_USER_NAME and EMAIL env vars without prompt" {
+  run bash -c "DOTFILES_GIT_USER_NAME='Env Name' DOTFILES_GIT_USER_EMAIL='env@example.com' source '$SOURCE_SCRIPT' 2>&1"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Using env vars: Env Name <env@example.com>"* ]]
+  [[ "$output" != *"Do you want to change"* ]]
+
+  [ "$(git config --global user.name)" = "Env Name" ]
+  [ "$(git config --global user.email)" = "env@example.com" ]
+}
+
+@test "setup-gitconfig.sh: NONINTERACTIVE=1 uses defaults from git log without prompt" {
+  # stdin が空でもブロックせずデフォルト値で進む
+  run bash -c "NONINTERACTIVE=1 source '$SOURCE_SCRIPT' </dev/null 2>&1"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"NONINTERACTIVE: using defaults"* ]]
+  [[ "$output" != *"Do you want to change"* ]]
+
+  [ "$(git config --global user.name)" = "Test User" ]
+  [ "$(git config --global user.email)" = "test@example.com" ]
+}
+
+@test "setup-gitconfig.sh: DOTFILES_GIT_USER_NAME takes precedence over NONINTERACTIVE" {
+  run bash -c "NONINTERACTIVE=1 DOTFILES_GIT_USER_NAME='Override Name' DOTFILES_GIT_USER_EMAIL='override@example.com' source '$SOURCE_SCRIPT' </dev/null 2>&1"
+
+  [ "$status" -eq 0 ]
+  [ "$(git config --global user.name)" = "Override Name" ]
+  [ "$(git config --global user.email)" = "override@example.com" ]
+}

@@ -187,3 +187,56 @@ teardown() {
 
   [ "$status" -eq 0 ]
 }
+
+# --- backup_file timestamping ---
+
+@test "backup_file: creates .backup on first call, .backup.<ts> on subsequent calls" {
+  source "$SOURCE_SCRIPT" link "$TEST_ROOT"
+
+  local target_file="$TEST_TEMP_DIR/target.txt"
+  create_test_file "$target_file" "first content"
+
+  backup_file "$target_file"
+
+  assert_file_exists "$TEST_TEMP_DIR/target.txt.backup"
+  [ "$(get_file_content "$TEST_TEMP_DIR/target.txt.backup")" = "first content" ]
+
+  # 2回目: .backup を保持したまま .backup.<ts> が作られる
+  create_test_file "$target_file" "second content"
+  backup_file "$target_file"
+
+  [ "$(get_file_content "$TEST_TEMP_DIR/target.txt.backup")" = "first content" ]
+  local ts_backups
+  ts_backups=$(ls "$TEST_TEMP_DIR"/target.txt.backup.* 2>/dev/null | wc -l | tr -d ' ')
+  [ "$ts_backups" -ge 1 ]
+}
+
+@test "backup_file: skips backup when target is already a symlink into ROOT_DIR" {
+  ROOT_DIR="$TEST_ROOT"
+  source "$SOURCE_SCRIPT" link "$TEST_ROOT"
+
+  local source_file="$TEST_ROOT/source.txt"
+  local target_file="$TEST_TEMP_DIR/target.txt"
+  create_test_file "$source_file" "dotfiles content"
+  ln -s "$source_file" "$target_file"
+
+  backup_file "$target_file"
+
+  # symlink that points into ROOT_DIR should not be backed up
+  [ ! -e "$TEST_TEMP_DIR/target.txt.backup" ]
+}
+
+# --- NONINTERACTIVE behavior for deploy_git ---
+
+@test "deploy_git: NONINTERACTIVE=1 skips company info prompt" {
+  mkdir -p "$TEST_CONFIGS/git"
+  create_test_file "$TEST_CONFIGS/git/gitignore_global" "*.log"
+  create_test_file "$TEST_CONFIGS/git/gitconfig" "[user]
+  name = test"
+
+  # stdin を空に閉じて NONINTERACTIVE=1 で実行 → ブロックせず完了する
+  run bash -c "NONINTERACTIVE=1 \"$SOURCE_SCRIPT\" link \"$TEST_ROOT\" </dev/null"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"NONINTERACTIVE: skipping company user info setup"* ]]
+}

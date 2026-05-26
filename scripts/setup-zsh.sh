@@ -19,20 +19,11 @@ ZSH_PATH=$(find_zsh)
 
 if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
     echo "Using zsh at: $ZSH_PATH"
-    # set to the default shell to zsh
-    # sudo -n sed -i.bak '/\/bin\/zsh/d' /etc/shells # remove existing zsh path for mac
-    if ! grep -q "^$ZSH_PATH$" /etc/shells; then
-        if [ "$(uname)" == 'Darwin' ]; then
-            if [ "$(uname -m)" == x86_64 ]; then
-                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of homebrew
-            elif [ "$(uname -m)" == arm64 ]; then
-                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of homebrew
-            fi
-        elif [ "$(uname)" == 'Linux' ]; then
-            if [ -f /etc/shells ]; then
-                sh -c "echo \"$ZSH_PATH\" >> /etc/shells" # add zsh path of apt
-            fi
-        fi
+    # Register zsh in /etc/shells if not already there (requires sudo).
+    # Without this, `chsh` refuses to set a non-standard shell.
+    if ! grep -qx "$ZSH_PATH" /etc/shells; then
+        echo "Adding $ZSH_PATH to /etc/shells (requires sudo)..."
+        echo "$ZSH_PATH" | sudo -n tee -a /etc/shells >/dev/null
     fi
     # chsh は change-default-shell.sh に委譲（sudo -n chsh を使う）
     # ここで chsh を実行するとパスワード入力を要求するため削除した

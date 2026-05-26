@@ -48,8 +48,10 @@ source $shoichi_dir/alias.zsh
 ## change the font to Meslo Nerd Font
 ## https://docs.warp.dev/appearance/prompt#powerlevel10k
 
-# Android Studio JDK
-export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+# Android Studio JDK (openjdk が存在する場合のみ)
+if [ -d /opt/homebrew/opt/openjdk/bin ]; then
+  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+fi
 
 # Auto-rename tmux session and window to current directory name
 _tmux_rename() {
@@ -60,5 +62,7 @@ _tmux_rename() {
 }
 precmd_functions+=(_tmux_rename)
 
-eval "$(direnv hook zsh)"
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
 export PATH="$HOME/.local/bin:$PATH"

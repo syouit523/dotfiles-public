@@ -235,8 +235,11 @@ fish:
 zsh:
 	@echo "Setup Zsh\n"
 	make check-sudo
-	# Preserve PATH so brew's zsh is discoverable inside the script
-	sudo -n -E env PATH="$$PATH" sh $(SETUP_ZSH)
+	# Run as the current user; setup-zsh.sh internally uses `sudo tee`
+	# only for /etc/shells. Running the whole script as root would make
+	# git-clone.sh create deps/* as root, causing later runs to hit
+	# Permission denied when removing them.
+	sh $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:

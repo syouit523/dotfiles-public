@@ -17,8 +17,18 @@ LINK_DIR=$2
 mkdir -p deps
 chmod 775 deps
 
-# リポジトリクローン
-rm -rf "deps/$REPO_NAME"
+# 既存ディレクトリを削除（過去に sudo 経由で実行され root 所有になっている
+# 可能性があるため、通常削除に失敗したら sudo にフォールバック）
+if [ -e "deps/$REPO_NAME" ] || [ -L "deps/$REPO_NAME" ]; then
+  if ! rm -rf "deps/$REPO_NAME" 2>/dev/null; then
+    echo "Removing root-owned deps/$REPO_NAME with sudo..."
+    sudo -n rm -rf "deps/$REPO_NAME" || {
+      echo "Failed to remove deps/$REPO_NAME (sudo not available)"
+      exit 1
+    }
+  fi
+fi
+
 echo "Cloning $REPO_URL into deps/$REPO_NAME..."
 if ! git clone "$REPO_URL" "deps/$REPO_NAME" --depth 1; then
   echo "Failed to clone repository"

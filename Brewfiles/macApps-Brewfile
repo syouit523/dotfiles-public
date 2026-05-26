@@ -1,6 +1,7 @@
 # ======================
 # リポジトリ追加
 # ======================
+# Note: homebrew/bundle は brew 本体に統合されたため tap 不要 (2024年以降)
 tap "robotsandpencils/made"  # xcodes用リポジトリ
 tap "harelba/q"  # qコマンド用リポジトリ
 

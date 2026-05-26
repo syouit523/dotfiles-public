@@ -58,7 +58,9 @@ mode_file() {
       ;;
     copy)
       mkdir -p "$target_dir"
-      [ -e "$target_file" ] || [ -L "$target_file" ] && backup_file "$target_file"
+      if [ -e "$target_file" ] || [ -L "$target_file" ]; then
+        backup_file "$target_file"
+      fi
       cp "$source_file" "$target_file"
       ;;
     delete)

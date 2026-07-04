@@ -9,15 +9,6 @@ cd "$ROOT_DIR" || exit
 ## Install TPM using git-clone.sh
 "$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tpm "$HOME"/.tmux/plugins/tpm
 
-# Fix TPM circular symlink issue
-TPM_DIR="$ROOT_DIR/deps/tpm"
-if [ -L "$TPM_DIR/tpm" ]; then
-    rm "$TPM_DIR/tpm"
-fi
-if [ -f "$TPM_DIR/.git/config" ]; then
-    (cd "$TPM_DIR" && git restore tpm 2>/dev/null)
-fi
-
 ## Install tmux plugins
 "$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tmux-resurrect "$HOME"/.tmux/plugins/tmux-resurrect
 "$SCRIPTS"/git-clone.sh https://github.com/tmux-plugins/tmux-continuum "$HOME"/.tmux/plugins/tmux-continuum
@@ -27,11 +18,6 @@ fi
 
 # Build tmux-mem-cpu-load plugin
 PLUGIN_DIR="$HOME/.tmux/plugins/tmux-mem-cpu-load"
-
-# Remove circular symlink if exists
-if [ -L "$PLUGIN_DIR/tmux-mem-cpu-load" ]; then
-    rm "$PLUGIN_DIR/tmux-mem-cpu-load"
-fi
 
 # Build the plugin
 if command -v cmake >/dev/null 2>&1 && command -v make >/dev/null 2>&1; then
@@ -56,24 +42,19 @@ if command -v tmux >/dev/null 2>&1; then
     echo ""
     echo "Installing tmux plugins via TPM..."
 
-    # Ensure clean tmux state
-    tmux kill-server 2>/dev/null || true
-    sleep 1
-
-    # Start tmux server and create session
-    tmux new-session -d -s tpm_auto_install 'sleep 10'
-    sleep 2
-
-    # Trigger TPM install (Ctrl+Space + I)
-    tmux send-keys -t tpm_auto_install C-Space
-    sleep 0.5
-    tmux send-keys -t tpm_auto_install I
-
-    echo "Waiting for plugin installation to complete..."
-    sleep 8
-
-    # Clean up
-    tmux kill-server 2>/dev/null || true
+    # ユーザーの既存 tmux サーバー/セッションには一切触れないよう、
+    # 一時ディレクトリのソケットで隔離サーバーを立てて TPM 公式の
+    # ヘッドレスインストーラー (bin/install_plugins) を同期実行する
+    (
+        unset TMUX
+        TMUX_TMPDIR=$(mktemp -d)
+        export TMUX_TMPDIR
+        tmux new-session -d -s tpm_install
+        "$HOME/.tmux/plugins/tpm/bin/install_plugins" || \
+            echo "Warning: TPM plugin installation reported errors"
+        tmux kill-server 2>/dev/null || true
+        rm -rf "$TMUX_TMPDIR"
+    )
 
     echo ""
     echo "=========================================="

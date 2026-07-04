@@ -28,7 +28,13 @@ if [ -f "$HOME/.config/zsh/fzf-git/fzf-git.sh" ]; then
 fi
 
 # ----- Bat (better cat) -----
-export BAT_THEME=tokyonight_night
+# テーマ未インストールの環境で bat を実行するたびに
+# "[bat warning]: Unknown theme 'tokyonight_night'" が出るのを防ぐため、
+# テーマファイルの存在を確認してから設定する
+# （テーマのインストールは install-zsh-extensions.sh が行う）
+if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/bat/themes/tokyonight_night.tmTheme" ]; then
+  export BAT_THEME=tokyonight_night
+fi
 
 # eza & bat
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"

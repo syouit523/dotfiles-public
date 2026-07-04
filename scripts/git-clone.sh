@@ -20,6 +20,13 @@ REPO_URL=$1
 REPO_NAME=$(basename "$REPO_URL" .git | sed 's/.*[:/]//')
 LINK_DIR=$2
 
+# 抽出に失敗した場合、後続の rm -rf "deps/$REPO_NAME" が deps/ 全体を
+# 削除してしまうため、空なら即エラー終了する
+if [ -z "$REPO_NAME" ]; then
+  echo "Error: could not extract repository name from URL: $REPO_URL" >&2
+  exit 1
+fi
+
 # depsディレクトリ作成
 mkdir -p deps
 chmod 755 deps

@@ -73,6 +73,15 @@ mode_file() {
       ;;
     copy)
       mkdir -p "$target_dir"
+      # link → copy の順に実行された場合、ターゲットが repo 内ソースを指す
+      # symlink のまま残る（backup_file は ROOT_DIR 向き symlink を待避しない）。
+      # そのまま cp すると symlink 越しにソースファイル自体へ書き込むため、
+      # 先に symlink を削除する。
+      if [ -L "$target_file" ]; then
+        case "$(readlink "$target_file" 2>/dev/null)" in
+          "$ROOT_DIR"/*) rm -f "$target_file" ;;
+        esac
+      fi
       if [ -e "$target_file" ] || [ -L "$target_file" ]; then
         backup_file "$target_file"
       fi

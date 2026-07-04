@@ -6,12 +6,14 @@ export EDITOR=nvim
 bindkey -e
 
 #----- LANG -----#
+# LC_ALL は全 LC_* カテゴリを最優先で上書きし、OS 別設定
+# (config-linux.zsh の LANG/LC_CTYPE) を無効化してしまうため設定しない
 export LANG=ja_JP.UTF-8
-export LC_ALL=ja_JP.UTF-8
 
 #----- setup prompt -----#
-prompt="starship"
-case $prompt in
+# 注意: zsh では `prompt` は PS1 の別名（特殊変数）のため使わない
+prompt_type="starship"
+case $prompt_type in
     oh-my-zsh)
         source $shoichi_dir/oh-my-zsh.zsh
         ;;
@@ -20,9 +22,10 @@ case $prompt in
         eval "$(starship init zsh)"
         ;;
     *)
-        echo "Unknown prompt: $prompt"
+        echo "Unknown prompt: $prompt_type"
         ;;
 esac
+unset prompt_type
 
 #----- setup zsh on each systems -----#
 os_type=$(uname)
@@ -40,6 +43,11 @@ case "$os_type" in
         ;;
 esac
 
+#----- completion -----#
+# starship 経路では oh-my-zsh が compinit を呼ばないため、ここで初期化する
+# （これがないと compdef ベースの補完や fzf の **<TAB> が機能しない）
+autoload -Uz compinit && compinit
+
 #----- import other settings -----#
 source $shoichi_dir/command-extensions.zsh
 source $shoichi_dir/alias.zsh
@@ -55,10 +63,14 @@ fi
 
 # Auto-rename tmux session and window to current directory name
 _tmux_rename() {
-  if [ -n "$TMUX" ]; then
-    tmux rename-session "$(basename "$PWD")"
-    tmux rename-window "$(basename "$PWD")"
-  fi
+  [ -n "$TMUX" ] || return 0
+  # ディレクトリが変わった時だけ実行する。毎プロンプト実行すると
+  # fork のオーバーヘッドに加え、手動リネームが即座に潰され、
+  # 同名ディレクトリの複数セッションで duplicate session name エラーが出続ける
+  [ "$PWD" = "${_tmux_rename_last_pwd-}" ] && return 0
+  _tmux_rename_last_pwd="$PWD"
+  tmux rename-session "$(basename "$PWD")" 2>/dev/null
+  tmux rename-window "$(basename "$PWD")"
 }
 precmd_functions+=(_tmux_rename)
 

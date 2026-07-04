@@ -150,16 +150,31 @@ teardown() {
   [ "$(git config --global user.email)" = "env@example.com" ]
 }
 
-@test "setup-gitconfig.sh: NONINTERACTIVE=1 uses defaults from git log without prompt" {
-  # stdin が空でもブロックせずデフォルト値で進む
+@test "setup-gitconfig.sh: NONINTERACTIVE=1 without existing identity skips (does not adopt repo author)" {
+  # リポジトリの git log の著者を無断で global identity にしないこと。
+  # global 設定が無い場合はスキップする。
   run bash -c "NONINTERACTIVE=1 source '$SOURCE_SCRIPT' </dev/null 2>&1"
 
   [ "$status" -eq 0 ]
-  [[ "$output" == *"NONINTERACTIVE: using defaults"* ]]
+  [[ "$output" == *"Skipping"* ]]
   [[ "$output" != *"Do you want to change"* ]]
 
-  [ "$(git config --global user.name)" = "Test User" ]
-  [ "$(git config --global user.email)" = "test@example.com" ]
+  # global 設定は書き込まれない
+  run git config --global user.name
+  [ -z "$output" ]
+}
+
+@test "setup-gitconfig.sh: NONINTERACTIVE=1 keeps existing global identity" {
+  git config --global user.name "Existing User"
+  git config --global user.email "existing@example.com"
+
+  run bash -c "NONINTERACTIVE=1 source '$SOURCE_SCRIPT' </dev/null 2>&1"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"keeping existing git identity"* ]]
+
+  [ "$(git config --global user.name)" = "Existing User" ]
+  [ "$(git config --global user.email)" = "existing@example.com" ]
 }
 
 @test "setup-gitconfig.sh: DOTFILES_GIT_USER_NAME takes precedence over NONINTERACTIVE" {

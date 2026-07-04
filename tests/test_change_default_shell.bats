@@ -96,3 +96,19 @@ teardown() {
   [[ "$output" == *"not found"* ]]
   [[ "$output" == *"Skipping"* ]]
 }
+
+@test "change-default-shell.sh: rejects non-numeric input without executing it" {
+  # 旧実装は選択番号を eval していたため、コマンド注入が可能だった
+  run bash -c "SHELLS_FILE='$SHELLS_FILE_SYSTEM_ONLY' '$SOURCE_SCRIPT' <<< '1; echo pwned' 2>&1"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Invalid selection"* ]]
+  [[ "$output" != *"pwned"* ]]
+}
+
+@test "change-default-shell.sh: rejects out-of-range selection" {
+  run bash -c "SHELLS_FILE='$SHELLS_FILE_SYSTEM_ONLY' '$SOURCE_SCRIPT' <<< '99' 2>&1"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"Invalid selection"* ]]
+}

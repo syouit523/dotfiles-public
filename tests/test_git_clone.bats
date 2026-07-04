@@ -189,3 +189,14 @@ teardown() {
   # Check permissions (755 = rwxr-xr-x)
   [ "$(stat -c %a "$TEST_TEMP_DIR/deps")" = "755" ] || [ "$(stat -f %A "$TEST_TEMP_DIR/deps" 2>/dev/null)" = "755" ]
 }
+
+@test "git-clone.sh: rejects URL with no extractable repository name" {
+  # "git@github.com:" のような URL は REPO_NAME が空になり、
+  # 検証なしだと rm -rf "deps/" で deps 全体を削除してしまう
+  run env GIT_CLONE_BASE_DIR="$TEST_TEMP_DIR" "$SOURCE_SCRIPT" "git@github.com:"
+
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"could not extract repository name"* ]]
+  # deps ディレクトリ自体が作られていないこと
+  [ ! -d "$TEST_TEMP_DIR/deps" ]
+}

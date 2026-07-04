@@ -290,10 +290,11 @@ link l:
 
 .PHONY: copy
 copy:
-	make check-sudo
 	@echo "Copy dot files\n"
-	sudo -n bash $(DEPLOY_CONFIGS) copy $(ROOT)
-	sudo -n bash $(SCRIPTS)/setup-gitconfig.sh
+	# sudo は不要（書き込み先はすべて $$HOME 配下）。root で実行すると
+	# 配置ファイルが root 所有になり、root の gitconfig を書き換えてしまう
+	bash $(DEPLOY_CONFIGS) copy $(ROOT)
+	bash $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: delete
 delete:
@@ -346,4 +347,4 @@ test t:
 test-install-bats:
 	@echo "Installing BATS test framework...\n"
 	@chmod +x $(ROOT)/tests/run-tests.sh
-	@cd $(ROOT)/tests && ./run-tests.sh --install-only || true
+	@cd $(ROOT)/tests && ./run-tests.sh --install-only

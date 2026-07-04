@@ -110,6 +110,12 @@ main() {
     install_bats
   fi
 
+  # --install-only: BATS のインストールだけ行い、テストは実行しない
+  if [ "${1:-}" = "--install-only" ]; then
+    echo -e "${GREEN}✓ Install-only mode: skipping test run${RESET}"
+    return 0
+  fi
+
   run_tests
 }
 

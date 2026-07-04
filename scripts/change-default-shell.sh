@@ -47,25 +47,34 @@ elif [ "$NONINTERACTIVE" = "1" ]; then
   echo "NONINTERACTIVE: DOTFILES_DEFAULT_SHELL not set, skipping shell change."
   exit 0
 else
-  tmpfile=$(mktemp /tmp/available_shells.XXXXXX)
-  cat "$SHELLS_FILE" > "$tmpfile"
-
   echo "Current shell: $SHELL"
   echo -e "\nAvailable shells:"
 
+  # eval は使わない: ユーザー入力や SHELLS_FILE の内容が
+  # シェルコードとして実行される危険があるため、配列 + 数値検証にする
+  shells=()
   counter=1
   while IFS= read -r shell; do
     echo "$shell" | grep -q '^#' && continue
     [ -z "$shell" ] && continue
     echo "$counter) $shell"
-    eval "shell_$counter=\"$shell\""
+    shells+=("$shell")
     counter=$((counter + 1))
-  done < "$tmpfile"
-  rm -f "$tmpfile"
+  done < "$SHELLS_FILE"
 
   echo -e "\nEnter the number of the shell you want to set as default:"
   read -r choice
-  eval "selected_shell=\"\$shell_$choice\""
+  case "$choice" in
+    ''|*[!0-9]*)
+      echo "Invalid selection: not a number" >&2
+      exit 1
+      ;;
+  esac
+  if [ "$choice" -lt 1 ] || [ "$choice" -gt "${#shells[@]}" ]; then
+    echo "Invalid selection: out of range" >&2
+    exit 1
+  fi
+  selected_shell="${shells[$((choice - 1))]}"
 fi
 
 if [ -n "$selected_shell" ]; then

@@ -1,9 +1,12 @@
 #!/bin/bash
 
-set -e
+set -eo pipefail
 
 # システム情報の取得
 OS="$(uname -s)"
+
+# Makefile 経由 (export ROOT) 以外で単体実行された場合のフォールバック
+ROOT="${ROOT:-$(cd "$(dirname "$0")/../.." && pwd)}"
 
 # brewパッケージからaptパッケージへのマッピング
 declare -A PKG_MAP=(
@@ -64,8 +67,14 @@ install_packages() {
 
                     if [[ -n "$apt_pkg" ]]; then
                         echo "$brew_pkg をインストール中 (aptパッケージ: $apt_pkg)..."
-                        # APT_ARGSで対話プロンプトを無効化
-                        sudo APT_ARGS="-o Dpkg::Options::='--force-confdef' -o Dpkg::Options::='--force-confold'" apt-get install -y "$apt_pkg"
+                        # 設定ファイル衝突時の対話プロンプトを無効化
+                        # (環境変数 APT_ARGS は apt に解釈されないため引数で直接渡す)
+                        # "tcl tk" のような複数パッケージのマッピングに対応するため配列に分割
+                        read -ra apt_pkgs <<< "$apt_pkg"
+                        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
+                            -o Dpkg::Options::=--force-confdef \
+                            -o Dpkg::Options::=--force-confold \
+                            "${apt_pkgs[@]}"
                     else
                         echo "警告: $brew_pkg のaptパッケージマッピングがありません"
                     fi
@@ -90,8 +99,14 @@ install_starship() {
 
 install_pyenv() {
     if [[ "$OS" == "Linux" ]]; then
+        # pyenv.run は ~/.pyenv が既存だと失敗して set -e で全体が中断するため、
+        # 既存ならスキップして冪等にする
+        if [ -d "$HOME/.pyenv" ]; then
+            echo "pyenvはすでにインストールされています。スキップします。"
+            return 0
+        fi
         echo "pyenvをインストール中..."
-        curl https://pyenv.run | bash
+        curl -fsSL https://pyenv.run | bash
     else
         echo "サポートされていないOSです: $OS"
         exit 1
@@ -99,11 +114,14 @@ install_pyenv() {
 }
 
 install_tfenv() {
-    git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+    if [ ! -d "$HOME/.tfenv" ]; then
+        git clone https://github.com/tfutils/tfenv.git "$HOME/.tfenv"
+    fi
     touch ~/.bash_profile
-    echo "export PATH=\"\$HOME/.tfenv/bin:\$PATH\"" >> ~/.bash_profile
-    # shellcheck disable=SC1090
-    source ~/.bash_profile
+    if ! grep -q '\.tfenv/bin' ~/.bash_profile; then
+        echo "export PATH=\"\$HOME/.tfenv/bin:\$PATH\"" >> ~/.bash_profile
+    fi
+    export PATH="$HOME/.tfenv/bin:$PATH"
 }
 
 install_tailscale() {
@@ -112,8 +130,12 @@ install_tailscale() {
 
 setup_bat() {
     # ref: https://github.com/sharkdp/bat?tab=readme-ov-file#on-ubuntu-using-apt
+    if [ ! -f /usr/bin/batcat ]; then
+        echo "batcatが見つかりません。batのリンク作成をスキップします。"
+        return 0
+    fi
     mkdir -p ~/.local/bin
-    ln -s /usr/bin/batcat ~/.local/bin/bat
+    ln -sfn /usr/bin/batcat ~/.local/bin/bat
 }
 
 install_packages

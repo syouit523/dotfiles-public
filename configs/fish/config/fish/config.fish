@@ -3,7 +3,9 @@ set SHOICHI_PATH $CURRENT_PATH/shoichi
 
 set fish_greeting ""
 
-set -gx TERM xterm-256color
+# NOTE: TERM はターミナルエミュレータが設定するものなので上書きしない
+# (tmux の tmux-256color や Ghostty の xterm-ghostty を壊し、
+#  undercurl など terminfo 由来の機能が失われる)
 
 # theme
 set -g theme_color_scheme terminal-dark

@@ -2,10 +2,8 @@
 .DS_Store
 **/.DS_Store
 *.log
-nerd-fonts/
-shared/Brewfile.lock.json
-mac/Brewfile.lock.json
-mac/mac-app/Brewfile.lock.json
+node_modules/
+Brewfiles/*.lock.json
 fzf-git.sh
 configs/nvim/lazy-lock.json
 deps/
@@ -15,3 +13,5 @@ tests/.bats/
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+# setup-zsh.sh の旧バグで作られる literal な ~ ディレクトリ（保険）
+~/

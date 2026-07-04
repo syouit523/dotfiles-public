@@ -50,9 +50,11 @@ switch_remote_to_ssh () {
 }
 
 # SSHキーが既に存在するか確認
-KEY_PATH_ED25519="$HOME/.ssh/id_ed25519"
-if [ -f "$KEY_PATH_ED25519" ]; then
-    echo "SSHキーは既に存在します。"
+# id_ed25519 固定だと RSA キーや別名キーのユーザーが毎回
+# 「キーがない」扱いになるため、~/.ssh/id_* の秘密鍵をすべて対象にする
+EXISTING_KEY=$(find "$HOME/.ssh" -maxdepth 1 -type f -name 'id_*' ! -name '*.pub' 2>/dev/null | head -n 1)
+if [ -n "$EXISTING_KEY" ]; then
+    echo "SSHキーは既に存在します。($EXISTING_KEY)"
     switch_remote_to_ssh
     connection_test_github || exit 0
 else

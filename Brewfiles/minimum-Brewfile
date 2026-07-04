@@ -1,6 +1,6 @@
 # Homebrewリポジトリの追加
 # Note: homebrew/bundle は brew 本体に統合されたため tap 不要 (2024年以降)
-tap "jesseduffield/lazygit"  # lazygitの非公式リポジトリ
+# Note: lazygit は homebrew-core 入りしたため jesseduffield/lazygit tap も不要
 
 # ファイル/テキスト操作
 brew "eza"  # lsコマンドの拡張版
@@ -33,7 +33,7 @@ brew "git"  # バージョン管理システム
 brew "git-lfs"  # 大容量ファイル管理
 brew "git-now"  # gitコミット簡易化
 brew "hub"  # GitHubコマンドライン拡張
-brew "jesseduffield/lazygit/lazygit"  # Git TUIクライアント
+brew "lazygit"  # Git TUIクライアント
 
 # プログラミング言語/環境
 brew "go"  # Go言語

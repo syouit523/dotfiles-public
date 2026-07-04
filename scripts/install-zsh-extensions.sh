@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
 

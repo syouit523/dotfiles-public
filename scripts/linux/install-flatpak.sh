@@ -1,8 +1,9 @@
 #!/bin/bash
 
+set -e
+
 # App Install Manager
-## Install flatpak
-sudo apt install flatpak -y
+## Install flatpak (PPA 追加後に1回だけインストールする)
 sudo add-apt-repository -y ppa:flatpak/stable
 sudo apt update
 sudo apt install flatpak -y

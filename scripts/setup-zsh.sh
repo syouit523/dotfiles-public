@@ -1,7 +1,13 @@
 #!/bin/bash
 
+set -e
+
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
+
+# 存在チェックとインストール先で同じパスを使う
+# (チェックだけ $HOME 固定だと ZSH_CUSTOM 設定時に毎回再インストールされる)
+ZSH_CUSTOM_DIR="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
 
 # Prefer Homebrew's zsh over the system /bin/zsh.
 # When invoked via sudo, PATH may be sanitized — check brew prefixes directly.
@@ -41,26 +47,22 @@ if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
         echo "Oh My Zsh installation completed."
     fi
 
-    if [ -n "$ZSH_VERSION" ]; then
-        # shellcheck disable=SC1090
-        source ~/.zshrc
-    fi
     # theme
-    if [ ! -d "$HOME/.oh-my-zsh/custom/themes/powerlevel10k" ]; then
-        "$SCRIPTS"/git-clone.sh https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/themes/powerlevel10k
+    if [ ! -d "$ZSH_CUSTOM_DIR/themes/powerlevel10k" ]; then
+        "$SCRIPTS"/git-clone.sh https://github.com/romkatv/powerlevel10k.git "$ZSH_CUSTOM_DIR"/themes/powerlevel10k
     fi
 
-    # theme
+    # plugins
     ## zsh-autosuggestions
-    if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ]; then
-        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions
+    if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-autosuggestions" ]; then
+        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM_DIR"/plugins/zsh-autosuggestions
     fi
     ## zsh-syntax-highlighting
-    if [ ! -d "$HOME/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
-        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting
+    if [ ! -d "$ZSH_CUSTOM_DIR/plugins/zsh-syntax-highlighting" ]; then
+        "$SCRIPTS"/git-clone.sh https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM_DIR"/plugins/zsh-syntax-highlighting
     fi
 
 else
-    echo "zsh is not installed."
-    exit
+    echo "zsh is not installed." >&2
+    exit 1
 fi

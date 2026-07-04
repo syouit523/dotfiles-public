@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # 引数チェック
 if [ $# -lt 1 ]; then
   echo "Usage: $0 <repository_url> [link_directory]"
@@ -18,7 +20,7 @@ cd "$BASE_DIR" || exit 1
 REPO_URL=$1
 # リポジトリ名をURLから抽出 (https://.../repo.git や git@...:repo.git からrepoを抽出)
 REPO_NAME=$(basename "$REPO_URL" .git | sed 's/.*[:/]//')
-LINK_DIR=$2
+LINK_DIR=${2:-}
 
 # 抽出に失敗した場合、後続の rm -rf "deps/$REPO_NAME" が deps/ 全体を
 # 削除してしまうため、空なら即エラー終了する

@@ -7,12 +7,9 @@ set fish_greeting ""
 # (tmux の tmux-256color や Ghostty の xterm-ghostty を壊し、
 #  undercurl など terminfo 由来の機能が失われる)
 
-# theme
-set -g theme_color_scheme terminal-dark
+# prompt
+# NOTE: theme_* 変数は bobthefish 用で tide 使用時は無意味なため削除した
 set -g fish_prompt_pwd_dir_length 1
-set -g theme_display_user yes
-set -g theme_hide_hostname no
-set -g theme_hostname always
 
 set -gx EDITOR nvim
 

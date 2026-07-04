@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# brew が無ければ何もすることがない
+if ! command -v brew >/dev/null 2>&1; then
+    echo "Homebrewはインストールされていません。スキップします。"
+    exit 0
+fi
+
 # Homebrewのサービスの停止
 read -r -p "Homebrewのサービスを停止しますか？(y/N): " answer
 if [[ $answer =~ ^[Yy]$ ]]; then
@@ -20,14 +26,25 @@ fi
 read -r -p "Homebrewのフォーミュラ（コマンドラインツール）をアンインストールしますか？(y/N): " answer
 if [[ $answer =~ ^[Yy]$ ]]; then
     echo "フォーミュラをアンインストール中..."
-    brew list --formula | xargs brew uninstall --force
+    # 空リストのとき xargs が引数なしで brew uninstall を実行しないようガード
+    formulas=$(brew list --formula)
+    if [ -n "$formulas" ]; then
+        echo "$formulas" | xargs brew uninstall --force
+    else
+        echo "アンインストール対象のフォーミュラはありません。"
+    fi
 fi
 
 # Casksのアンインストール
 read -r -p "Homebrewのcask（GUIアプリケーション）をアンインストールしますか？(y/N): " answer
 if [[ $answer =~ ^[Yy]$ ]]; then
     echo "Caskをアンインストール中..."
-    brew list --cask | xargs brew uninstall --force
+    casks=$(brew list --cask)
+    if [ -n "$casks" ]; then
+        echo "$casks" | xargs brew uninstall --force
+    else
+        echo "アンインストール対象のcaskはありません。"
+    fi
 fi
 
 # キャッシュの削除

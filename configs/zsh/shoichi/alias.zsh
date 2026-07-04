@@ -12,11 +12,7 @@ else
     alias lat="tree -a ."
 fi
 
-# ---- Zoxide (better cd) ----
-if command -v z > /dev/null 2>&1; then
-    alias cd="z"
-else
-    echo "z not found"
-fi
+# NOTE: cd の置き換えは zshrc 末尾の `zoxide init zsh --cmd cd` で行う
+# (alias cd="z" よりも公式推奨の方法で、補完も正しく効く)
 
 alias g="git"

@@ -1,7 +1,8 @@
 return {
-	"williamboman/mason.nvim",
+	-- williamboman/ から mason-org/ に移管済み（旧名はリダイレクト依存で脆い）
+	"mason-org/mason.nvim",
 	dependencies = {
-		"williamboman/mason-lspconfig.nvim",
+		"mason-org/mason-lspconfig.nvim",
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 	},
 	config = function()
@@ -52,7 +53,7 @@ return {
 				"taplo", -- TOML
 				"sqlls", -- SQL
 			},
-			automatic_installation = true,
+			-- NOTE: automatic_installation は mason-lspconfig v2.0 で削除済み
 		})
 
 		mason_tool_installer.setup({

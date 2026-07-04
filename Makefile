@@ -15,14 +15,12 @@ export DOTFILES_DEFAULT_SHELL
 export SCRIPTS := $(ROOT)/scripts
 export MAC := $(ROOT)/mac
 
-SUDO_KEEPALIVE_PID := /tmp/dotfiles-sudo-keepalive.pid
+# PID ファイルは UID 込みにして複数ユーザーでの衝突を防ぐ
+SUDO_KEEPALIVE_PID := /tmp/dotfiles-sudo-keepalive-$(shell id -u).pid
 
 ## ******************** Script Environment ********************
 UNAME_S := $(shell uname -s)
-SCRIPTS  := $(ROOT)/scripts
-MAC = $(ROOT)/mac
 XCODE_SELECT_INSTALL    = $(MAC)/scripts/xcode-select-install.sh
-MAKE_WORKSPACE   = $(SCRIPTS)/make-workspace.sh
 DEPLOY_CONFIGS = $(SCRIPTS)/deploy-configs.sh
 SETUP_FISH = $(SCRIPTS)/setup-fish.sh
 SETUP_ZSH = $(SCRIPTS)/setup-zsh.sh
@@ -130,17 +128,17 @@ bootstrap b: check-sudo
 ## ******************** Linux Setup ********************
 .PHONY: Linux_setup
 Linux_setup: check-sudo
-	@echo "\n=== Linux Setup ==="
+	@echo "" && echo "=== Linux Setup ==="
 	sudo -n apt update && sudo -n apt upgrade -y
-	make linux_support_japanese
-	make install_apt_packages_from_brew
-	make font
-	make link
-	make zsh
-	make zsh_extensions
-	make tmux
-	make change-default-shell
-	make reload_zshrc
+	$(MAKE) linux_support_japanese
+	$(MAKE) install_apt_packages_from_brew
+	$(MAKE) font
+	$(MAKE) link
+	$(MAKE) zsh
+	$(MAKE) zsh_extensions
+	$(MAKE) tmux
+	$(MAKE) change-default-shell
+	$(MAKE) reload_zshrc
 	@echo ""
 	@echo "===================================================="
 	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
@@ -149,23 +147,23 @@ Linux_setup: check-sudo
 
 .PHONY: linux_gui_setup
 linux_gui_setup:
-	@echo "\n=== Linux GUI Setup ==="
+	@echo "" && echo "=== Linux GUI Setup ==="
 	bash $(SCRIPTS)/linux/install-flatpak.sh
 	bash $(SCRIPTS)/linux/install-apps.sh
 
 ## ******************** macOS Setup ********************
 .PHONY: Darwin_setup
 Darwin_setup: check-sudo
-	@echo "\n=== macOS Setup ==="
+	@echo "" && echo "=== macOS Setup ==="
 	bash $(XCODE_SELECT_INSTALL)
-	make brew_install
-	make brew_setup
-	make link
-	make zsh
-	make zsh_extensions
-	make tmux
-	make change-default-shell
-	make reload_zshrc
+	$(MAKE) brew_install
+	$(MAKE) brew_setup
+	$(MAKE) link
+	$(MAKE) zsh
+	$(MAKE) zsh_extensions
+	$(MAKE) tmux
+	$(MAKE) change-default-shell
+	$(MAKE) reload_zshrc
 	@echo ""
 	@echo "===================================================="
 	@echo "Bootstrap finished. To set up SSH key + GitHub auth,"
@@ -210,7 +208,7 @@ brew_mac_app:
 
 .PHONY: brew_update_all
 brew_update_all:
-	@echo "Update Homebrew\n"
+	@echo "Update Homebrew"
 	brew update
 ifeq ($(UNAME_S), Linux)
 	brew upgrade
@@ -227,14 +225,14 @@ font f:
 # ******************** fish ********************
 .PHONY: fish
 fish:
-	@echo "Setup Fish\n"
+	@echo "Setup Fish"
 	bash $(SETUP_FISH)
 
 # ******************** zsh ********************
 .PHONY: zsh
 zsh:
-	@echo "Setup Zsh\n"
-	make check-sudo
+	@echo "Setup Zsh"
+	$(MAKE) check-sudo
 	# Run as the current user; setup-zsh.sh internally uses `sudo tee`
 	# only for /etc/shells. Running the whole script as root would make
 	# git-clone.sh create deps/* as root, causing later runs to hit
@@ -243,8 +241,8 @@ zsh:
 
 .PHONY: zsh_extensions
 zsh_extensions:
-	@echo "Install Zsh Extensions\n"
-	make check-sudo
+	@echo "Install Zsh Extensions"
+	$(MAKE) check-sudo
 	bash $(SCRIPTS)/install-zsh-extensions.sh
 
 # ******************** linux ********************
@@ -255,13 +253,13 @@ install_apt_packages_from_brew:
 
 .PHONY: linux_support_japanese
 linux_support_japanese:
-	@echo "Support Japanese\n"
+	@echo "Support Japanese"
 	sudo bash $(SCRIPTS)/linux/support-japanese.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen
 ssh-key-gen:
-	@echo "Generate SSH Key\n"
+	@echo "Generate SSH Key"
 	bash $(SCRIPTS)/ssh-key-gen.sh
 
 .PHONY: reload_zshrc
@@ -277,20 +275,20 @@ reload_zshrc:
 # ******************** tmux ********************
 .PHONY: tmux
 tmux:
-	@echo "Setup Tmux\n"
+	@echo "Setup Tmux"
 	bash $(SCRIPTS)/setup-tmux.sh
 
 # ******************** dot files ********************
 .PHONY: link l
 link l:
 #make check-sudo
-	@echo "Link dot files\n"
+	@echo "Link dot files"
 	bash $(DEPLOY_CONFIGS) link $(ROOT)
 	bash $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: copy
 copy:
-	@echo "Copy dot files\n"
+	@echo "Copy dot files"
 	# sudo は不要（書き込み先はすべて $$HOME 配下）。root で実行すると
 	# 配置ファイルが root 所有になり、root の gitconfig を書き換えてしまう
 	bash $(DEPLOY_CONFIGS) copy $(ROOT)
@@ -298,8 +296,8 @@ copy:
 
 .PHONY: delete
 delete:
-	make check-sudo
-	@echo "Delete dot files\n"
+	$(MAKE) check-sudo
+	@echo "Delete dot files"
 	bash $(DEPLOY_CONFIGS) delete $(ROOT)
 
 # ******************** clean ********************
@@ -312,39 +310,39 @@ clean c:
 		read -p "Continue? [y/N]: " ans; \
 		case "$$ans" in y|Y|yes) ;; *) echo "Aborted."; exit 1;; esac; \
 	fi
-	make check-sudo
-	make clean-deps
+	$(MAKE) check-sudo
+	$(MAKE) clean-deps
 	@if [ "$(UNAME_S)" = "Darwin" ]; then \
-		make uninstall-brew; \
+		$(MAKE) uninstall-brew; \
 	fi
-	make delete
-	make change-default-shell
+	$(MAKE) delete
+	$(MAKE) change-default-shell
 
 .PHONY: clean-deps
 clean-deps:
-	@echo "Clean dependencies\n"
+	@echo "Clean dependencies"
 	rm -rf deps
 
 .PHONY: uninstall-brew
 uninstall-brew:
-	@echo "Uninstall Homebrew\n"
+	@echo "Uninstall Homebrew"
 	bash $(SCRIPTS)/uninstall-brew.sh
 
 .PHONY: change-default-shell
 change-default-shell:
-	@echo "Change default shell\n"
-	make check-sudo
+	@echo "Change default shell"
+	$(MAKE) check-sudo
 	bash $(SCRIPTS)/change-default-shell.sh
 
 # ******************** tests ********************
 .PHONY: test t
 test t:
-	@echo "Running tests...\n"
+	@echo "Running tests..."
 	@chmod +x $(ROOT)/tests/run-tests.sh
 	@$(ROOT)/tests/run-tests.sh
 
 .PHONY: test-install-bats
 test-install-bats:
-	@echo "Installing BATS test framework...\n"
+	@echo "Installing BATS test framework..."
 	@chmod +x $(ROOT)/tests/run-tests.sh
 	@cd $(ROOT)/tests && ./run-tests.sh --install-only

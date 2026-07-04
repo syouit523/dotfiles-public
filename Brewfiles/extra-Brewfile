@@ -1,6 +1,5 @@
 # Homebrewリポジトリの追加
 # Note: homebrew/bundle は brew 本体に統合されたため tap 不要 (2024年以降)
-tap "jesseduffield/lazygit"  # lazygitの非公式リポジトリ
 
 # 基本コマンドラインツール
 # AWS/クラウド関連

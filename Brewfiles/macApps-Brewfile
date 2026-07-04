@@ -25,7 +25,7 @@ cask "cursor"  # AI支援エディタ
 cask "postman"  # API開発ツール
 cask "proxyman"  # ネットワークデバッグ
 cask "charles"  # HTTPプロキシ
-cask "docker"  # コンテナ管理
+cask "docker-desktop"  # コンテナ管理 ※旧名 docker (旧トークンは廃止済み)
 cask "tower"  # Gitクライアント
 cask "transmit" # FTPクライアント
 cask "rapidapi"  # API開発ツール

@@ -1,5 +1,18 @@
 #!/bin/bash
 
+set -euo pipefail
+
+# 全 tmux セッションの kill と tmux-resurrect 保存データの削除を行う。
+# 非可逆な操作のため、--force / -f 指定時以外は確認プロンプトを出す。
+if [ "${1:-}" != "--force" ] && [ "${1:-}" != "-f" ]; then
+    echo "This will kill ALL tmux sessions and delete saved sessions (tmux-resurrect)."
+    read -r -p "Continue? [y/N]: " answer
+    case "$answer" in
+        y|Y|yes) ;;
+        *) echo "Aborted."; exit 0 ;;
+    esac
+fi
+
 echo "Cleaning tmux sessions..."
 
 # Kill all tmux sessions

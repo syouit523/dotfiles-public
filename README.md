@@ -99,10 +99,8 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 
 ### Tmux
 - `make tmux`: tmuxとTPM（Tmux Plugin Manager）のセットアップ
-  - **初回のみ**: プラグインを有効化するため、以下の手順を実行してください
-    1. `tmux` でセッションを開始
-    2. `Ctrl+Space` + `I` (大文字のI) を押してプラグインをインストール
-    3. "TMUX environment reloaded" のメッセージが表示されたら完了
+  - プラグインは隔離された tmux サーバー上で自動インストールされます（稼働中のセッションには影響しません）
+  - 自動インストールに失敗した場合は、`tmux` セッション内で `Ctrl+Space` + `I`（大文字のI）を押して手動インストールしてください
   - **利用可能な機能**:
     - `Ctrl+H/J/K/L`: tmuxペイン間の移動（vim/neovimとシームレスに連携）
     - セッションの自動保存・復元（tmux-resurrect/continuum）
@@ -125,6 +123,20 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 - `make linux_gui_setup`: Linux用GUIアプリケーション（Flatpak）のセットアップ
 - `make clean` または `make c`: 環境をクリーンアップ（Homebrew、dotfiles、シェルの設定を削除）
 
+## ディレクトリ構成
+
+| パス | 内容 |
+|------|------|
+| `Makefile` | すべてのセットアップの入口（`make help` で一覧表示） |
+| `scripts/` | セットアップスクリプト本体（`scripts/linux/` は Linux 専用） |
+| `mac/scripts/` | macOS 専用スクリプト（Xcode CLT インストールなど） |
+| `configs/` | 各ツールの設定ファイル。`make link` で `$HOME` 配下へ symlink される |
+| `Brewfiles/` | Homebrew パッケージ定義（minimum / extra / macApps） |
+| `bin/` | `~/.local/bin` に配置されるユーティリティ（`clean-tmux` など） |
+| `tests/` | BATS テストスイート（`make test`） |
+| `iterm/` | iTerm2 カラーテーマ（手動インポート用、`iterm/README.md` 参照） |
+| `deps/` | セットアップ時に外部リポジトリが clone される場所（git 管理外、`make clean-deps` で削除可） |
+
 ## 開発
 
 ### テストの実行
@@ -146,6 +158,5 @@ make test
 `.github/workflows/test.yml` に GitHub Actions ワークフローが設定済みです。
 
 機能:
-- Ubuntu と macOS の両環境で BATS テストを実行
-- ShellCheck による静的解析
-- push / pull request / 手動トリガーで実行
+- ShellCheck による静的解析（pull request / 手動トリガーで実行）
+- BATS テストの CI は個人用リポジトリのため無効化中（ワークフロー内のコメントを外せば再有効化できます）。ローカルでは `make test` で実行してください

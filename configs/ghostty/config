@@ -33,7 +33,9 @@ palette = 3=#ffe073
 palette = 4=#0fc5ed
 palette = 5=#a277ff
 palette = 6=#24eaf7
-palette = 7=#24eaf7
+# color7 (white) は元テーマではシアンだったが、白系文字が
+# シアンで描画されてしまうため foreground と同じ明色にする
+palette = 7=#cbe0f0
 
 # Bright colors (8-15)
 palette = 8=#214969
@@ -43,7 +45,7 @@ palette = 11=#ffe073
 palette = 12=#a277ff
 palette = 13=#a277ff
 palette = 14=#24eaf7
-palette = 15=#24eaf7
+palette = 15=#ffffff
 
 # ============================================
 # Window Settings

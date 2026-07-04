@@ -6,3 +6,5 @@
 # Firebase CLI runtime logs & cache
 *-debug.log
 .firebase/
+
+**/.claude/settings.local.json

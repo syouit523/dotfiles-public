@@ -1,5 +1,7 @@
 # dotfiles-public
 
+> 📚 各ツールの操作方法・キーバインド・プラグインの使い方は **[docs/](docs/README.md)** を参照してください(tmux / zsh / fish / Neovim / git / ターミナル)。
+
 ## ⚠️ Breaking Changes
 
 - **`make bootstrap` から `make ssh-key-gen` を除外**しました。SSH キー生成と `gh auth login` は対話が必須なため、bootstrap 後に手動で `make ssh-key-gen` を実行してください。
@@ -127,6 +129,7 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 
 | パス | 内容 |
 |------|------|
+| `docs/` | 各ツールの操作方法・キーバインドのドキュメント |
 | `Makefile` | すべてのセットアップの入口（`make help` で一覧表示） |
 | `scripts/` | セットアップスクリプト本体（`scripts/linux/` は Linux 専用） |
 | `mac/scripts/` | macOS 専用スクリプト（Xcode CLT インストールなど） |

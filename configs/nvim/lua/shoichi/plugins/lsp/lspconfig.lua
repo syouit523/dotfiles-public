@@ -84,6 +84,7 @@ return {
       "emmet_ls",
       "prismals",
       "pyright",
+      "gopls",
       "terraformls",
       "kotlin_language_server",
       "sourcekit",

@@ -74,7 +74,10 @@ format = '[+$added]($added_style)/[-$deleted]($deleted_style) '
 
 [swift]
 symbol = '󰛥 '
-detect_extensions = ['.swift', '.xcworkspace', '.xcodeproj']
+# 拡張子はドット無しで指定する（'.swift' は一切マッチしない）
+detect_extensions = ['swift']
+# .xcworkspace / .xcodeproj はディレクトリなので detect_folders に置く
+detect_folders = ['.xcworkspace', '.xcodeproj']
 format = '[$symbol($version )]($style)'
 
 [terraform]
@@ -111,9 +114,9 @@ format = '[$symbol($profile )(\[$duration\] )]($style)'
 [docker_context]
 symbol = ' '
 style = 'fg:#06969A'
-format = '[$symbol]($style) $path'
+# docker_context の変数は $context（$path は存在しない）
+format = '[$symbol$context]($style) '
 detect_files = ['docker-compose.yml', 'docker-compose.yaml', 'Dockerfile']
-detect_extensions = ['Dockerfile']
 
 [jobs]
 symbol = ' '

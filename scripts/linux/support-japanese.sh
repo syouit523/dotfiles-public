@@ -32,17 +32,26 @@ update-locale LANG=ja_JP.UTF-8
 echo "ユーザー設定ファイルを更新しています..."
 
 # bash用設定
-BASHRC="/home/$SUDO_USER/.bashrc"
-if ! grep -q "export LANG=ja_JP.UTF-8" "$BASHRC"; then
+# sudo 経由なら実行ユーザーのホームを getent で解決する
+# （/home/$SUDO_USER 決め打ちだと root 直接実行時に /home//.bashrc になる）
+if [ -n "$SUDO_USER" ]; then
+  USER_HOME=$(getent passwd "$SUDO_USER" | cut -d: -f6)
+else
+  USER_HOME="$HOME"
+fi
+BASHRC="$USER_HOME/.bashrc"
+
+# 冪等性ガード: 実際に書き込む行 (LC_CTYPE) と同じパターンで判定する
+if [ -f "$BASHRC" ] && grep -q "export LC_CTYPE=ja_JP.UTF-8" "$BASHRC"; then
+  echo "環境変数の設定はすでに $BASHRC に存在します。"
+else
   {
     echo ""
     echo "# 日本語表示設定"
     echo "export LANG=en_US.UTF-8"
     echo "export LC_CTYPE=ja_JP.UTF-8"
   } >> "$BASHRC"
-  echo "環境変数の設定を .bashrc に追加しました。"
-else
-  echo "環境変数の設定はすでに .bashrc に存在します。"
+  echo "環境変数の設定を $BASHRC に追加しました。"
 fi
 
 # フォントのインストール（オプション）

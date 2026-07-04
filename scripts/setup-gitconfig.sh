@@ -22,9 +22,18 @@ setup_git_config() {
     AUTHOR_EMAIL="$DOTFILES_GIT_USER_EMAIL"
     printf "${GREEN}Using env vars: %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
   elif [ "$NONINTERACTIVE" = "1" ]; then
-    AUTHOR_NAME="$DEFAULT_AUTHOR_NAME"
-    AUTHOR_EMAIL="$DEFAULT_AUTHOR_EMAIL"
-    printf "${GREEN}NONINTERACTIVE: using defaults %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
+    # git log のデフォルト値（= この dotfiles リポジトリの最終コミット著者）を
+    # 無確認で global identity にしない。フォーク/クローンした第三者が
+    # リポジトリ作者名義でコミットしてしまう事故を防ぐため、
+    # 既存の global 設定があればそれを維持し、なければスキップする。
+    AUTHOR_NAME=$(git config --global user.name 2>/dev/null || true)
+    AUTHOR_EMAIL=$(git config --global user.email 2>/dev/null || true)
+    if [ -n "$AUTHOR_NAME" ] && [ -n "$AUTHOR_EMAIL" ]; then
+      printf "${GREEN}NONINTERACTIVE: keeping existing git identity %s <%s>${RESET}\n" "$AUTHOR_NAME" "$AUTHOR_EMAIL"
+    else
+      echo "NONINTERACTIVE: no existing git identity. Set DOTFILES_GIT_USER_NAME/EMAIL to configure. Skipping."
+      return 0
+    fi
   else
     echo "Configure Git settings:"
     printf "${BOLD}Do you want to change name and email?${RESET}\n"

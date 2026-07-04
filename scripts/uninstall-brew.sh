@@ -12,7 +12,7 @@ if command -v brew &> /dev/null && command -v mas &> /dev/null; then
     read -r -p "Mac App Storeアプリケーションをアンインストールしますか？(y/N): " answer
     if [[ $answer =~ ^[Yy]$ ]]; then
         echo "Mac App Storeアプリケーションをアンインストール中..."
-        brew mas list | cut -d' ' -f1 | xargs -I{} mas uninstall {}
+        mas list | awk '{print $1}' | xargs -I{} mas uninstall {}
     fi
 fi
 

@@ -1,15 +1,32 @@
-# CI を一時的に無効化
-# このリポジトリは個人用 dotfiles のため、push/PR 毎の CI 実行を行わない。
-# 再有効化したい場合は以下のコメントを外してください。
+# BATS テスト CI は個人用 dotfiles のため無効化中（下部のコメント参照）。
+# shellcheck のみ PR 時に実行する。Linux でしか発現しない構文エラー
+# （dash 非対応の bashism 等）をローカル macOS では検出できないため、
+# 最低限の安全網として残している。
 
-# name: Run Tests
-#
-# on:
-#   push:
-#     branches: [ main, claude/** ]
-#   pull_request:
-#     branches: [ main ]
-#   workflow_dispatch:
+name: Lint
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run shellcheck on all shell scripts
+        run: |
+          sudo apt-get update && sudo apt-get install -y shellcheck
+          shellcheck --severity=warning \
+            scripts/*.sh scripts/linux/*.sh mac/scripts/*.sh tests/run-tests.sh
+
+# ---- 以下、BATS テストの CI は一時的に無効化 ----
+# 再有効化したい場合は以下のコメントを外してください。
 #
 # jobs:
 #   test:
@@ -46,30 +63,3 @@
 #             tests/*.log
 #             tests/.bats/
 #           retention-days: 7
-#
-#   test-scripts-syntax:
-#     name: Validate Shell Scripts
-#     runs-on: ubuntu-latest
-#
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
-#
-#       - name: Install shellcheck
-#         run: sudo apt-get update && sudo apt-get install -y shellcheck
-#
-#       - name: Run shellcheck on all shell scripts
-#         run: |
-#           find scripts -name "*.sh" -type f -exec shellcheck {} +
-#
-#       - name: Check shell script permissions
-#         run: |
-#           echo "Checking that all .sh files are executable..."
-#           failed=0
-#           for script in scripts/*.sh scripts/*/*.sh; do
-#             if [ -f "$script" ] && [ ! -x "$script" ]; then
-#               echo "Warning: $script is not executable"
-#               failed=1
-#             fi
-#           done
-#           exit $failed

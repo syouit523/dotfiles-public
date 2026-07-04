@@ -17,10 +17,6 @@ return {
       },
       -- enable indentation
       indent = { enable = true },
-      -- enable autotagging (w/ nvim-ts-autotag plugin)
-      autotag = {
-        enable = true,
-      },
       -- ensure these language parsers are installed
       ensure_installed = {
         "json",
@@ -54,5 +50,9 @@ return {
         },
       },
     })
+
+    -- nvim-ts-autotag は treesitter モジュール統合 (autotag = { enable = true })
+    -- が廃止されたため、独立して setup する必要がある
+    require("nvim-ts-autotag").setup({})
   end,
 }

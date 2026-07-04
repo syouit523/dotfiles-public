@@ -150,14 +150,14 @@ Linux_setup: check-sudo
 .PHONY: linux_gui_setup
 linux_gui_setup:
 	@echo "\n=== Linux GUI Setup ==="
-	sh $(SCRIPTS)/linux/install-flatpak.sh
-	sh $(SCRIPTS)/linux/install-apps.sh
+	bash $(SCRIPTS)/linux/install-flatpak.sh
+	bash $(SCRIPTS)/linux/install-apps.sh
 
 ## ******************** macOS Setup ********************
 .PHONY: Darwin_setup
 Darwin_setup: check-sudo
 	@echo "\n=== macOS Setup ==="
-	sh $(XCODE_SELECT_INSTALL)
+	bash $(XCODE_SELECT_INSTALL)
 	make brew_install
 	make brew_setup
 	make link
@@ -222,13 +222,13 @@ endif
 # ******************** font ********************
 .PHONY: font f
 font f:
-	sh $(SCRIPTS)/install-fonts.sh
+	bash $(SCRIPTS)/install-fonts.sh
 
 # ******************** fish ********************
 .PHONY: fish
 fish:
 	@echo "Setup Fish\n"
-	sh $(SETUP_FISH)
+	bash $(SETUP_FISH)
 
 # ******************** zsh ********************
 .PHONY: zsh
@@ -239,13 +239,13 @@ zsh:
 	# only for /etc/shells. Running the whole script as root would make
 	# git-clone.sh create deps/* as root, causing later runs to hit
 	# Permission denied when removing them.
-	sh $(SETUP_ZSH)
+	bash $(SETUP_ZSH)
 
 .PHONY: zsh_extensions
 zsh_extensions:
 	@echo "Install Zsh Extensions\n"
 	make check-sudo
-	sh $(SCRIPTS)/install-zsh-extensions.sh
+	bash $(SCRIPTS)/install-zsh-extensions.sh
 
 # ******************** linux ********************
 .PHONY: install_apt_packages_from_brew
@@ -256,13 +256,13 @@ install_apt_packages_from_brew:
 .PHONY: linux_support_japanese
 linux_support_japanese:
 	@echo "Support Japanese\n"
-	sudo sh $(SCRIPTS)/linux/support-japanese.sh
+	sudo bash $(SCRIPTS)/linux/support-japanese.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen
 ssh-key-gen:
 	@echo "Generate SSH Key\n"
-	sh $(SCRIPTS)/ssh-key-gen.sh
+	bash $(SCRIPTS)/ssh-key-gen.sh
 
 .PHONY: reload_zshrc
 reload_zshrc:
@@ -278,28 +278,28 @@ reload_zshrc:
 .PHONY: tmux
 tmux:
 	@echo "Setup Tmux\n"
-	sh $(SCRIPTS)/setup-tmux.sh
+	bash $(SCRIPTS)/setup-tmux.sh
 
 # ******************** dot files ********************
 .PHONY: link l
 link l:
 #make check-sudo
 	@echo "Link dot files\n"
-	sh $(DEPLOY_CONFIGS) link $(ROOT)
-	sh $(SCRIPTS)/setup-gitconfig.sh
+	bash $(DEPLOY_CONFIGS) link $(ROOT)
+	bash $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: copy
 copy:
 	make check-sudo
 	@echo "Copy dot files\n"
-	sudo -n sh $(DEPLOY_CONFIGS) copy $(ROOT)
-	sudo -n sh $(SCRIPTS)/setup-gitconfig.sh
+	sudo -n bash $(DEPLOY_CONFIGS) copy $(ROOT)
+	sudo -n bash $(SCRIPTS)/setup-gitconfig.sh
 
 .PHONY: delete
 delete:
 	make check-sudo
 	@echo "Delete dot files\n"
-	sh $(DEPLOY_CONFIGS) delete $(ROOT)
+	bash $(DEPLOY_CONFIGS) delete $(ROOT)
 
 # ******************** clean ********************
 
@@ -327,13 +327,13 @@ clean-deps:
 .PHONY: uninstall-brew
 uninstall-brew:
 	@echo "Uninstall Homebrew\n"
-	sh $(SCRIPTS)/uninstall-brew.sh
+	bash $(SCRIPTS)/uninstall-brew.sh
 
 .PHONY: change-default-shell
 change-default-shell:
 	@echo "Change default shell\n"
 	make check-sudo
-	sh $(SCRIPTS)/change-default-shell.sh
+	bash $(SCRIPTS)/change-default-shell.sh
 
 # ******************** tests ********************
 .PHONY: test t

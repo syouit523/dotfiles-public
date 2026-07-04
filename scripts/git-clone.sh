@@ -43,10 +43,12 @@ if ! git clone "$REPO_URL" "deps/$REPO_NAME" --depth 1; then
 fi
 
 # シンボリックリンク作成
+# -n: LINK_DIR が既にディレクトリへの symlink の場合、リンク先の中に
+#     入れ子のリンクを作らず symlink 自体を置き換える（再実行時の循環リンク防止）
 if [ -n "$LINK_DIR" ]; then
   echo "Creating symbolic link from deps/$REPO_NAME to $LINK_DIR"
   mkdir -p "$(dirname "$LINK_DIR")"
-  if ln -sf "$(pwd)/deps/$REPO_NAME" "$LINK_DIR"; then
+  if ln -sfn "$(pwd)/deps/$REPO_NAME" "$LINK_DIR"; then
     echo "Successfully created symbolic link"
   else
     echo "Failed to create symbolic link"

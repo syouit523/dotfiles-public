@@ -15,8 +15,10 @@ config.colors = {
 	cursor_fg = "#011423",
 	selection_bg = "#033259",
 	selection_fg = "#CBE0F0",
-	ansi = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#0FC5ED", "#a277ff", "#24EAF7", "#24EAF7" },
-	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#24EAF7" },
+	-- color7/15 (white) は元テーマではシアン (#24EAF7) だったが、
+	-- 白系文字がシアンで描画されてしまうため foreground と同じ明色にする
+	ansi = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#0FC5ED", "#a277ff", "#24EAF7", "#CBE0F0" },
+	brights = { "#214969", "#E52E2E", "#44FFB1", "#FFE073", "#A277FF", "#a277ff", "#24EAF7", "#FFFFFF" },
 }
 
 config.font = wezterm.font("MesloLGS Nerd Font Mono")

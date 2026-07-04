@@ -1,10 +1,10 @@
 *~
 .DS_Store
-.claude/*
-!.claude/commands/
+# .claude はどの階層でも無視する（スラッシュを含むパターンは
+# ルートにアンカーされるため **/ を付けてネスト対応にする）
+**/.claude/*
+!**/.claude/commands/
 
 # Firebase CLI runtime logs & cache
 *-debug.log
 .firebase/
-
-**/.claude/settings.local.json

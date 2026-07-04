@@ -39,14 +39,10 @@ install_bats() {
   mkdir -p "$install_dir"
 
   # Clone BATS core
+  # NOTE: bats-support / bats-assert / bats-file はどのテストからも
+  # 使われていない (test_helper.bash が自前の assert を持つ) ため clone しない
   echo "Cloning BATS core..."
   git clone --depth 1 --branch "$BATS_VERSION" https://github.com/bats-core/bats-core.git "$install_dir/bats-core"
-
-  # Clone BATS support libraries
-  echo "Cloning BATS support libraries..."
-  git clone --depth 1 https://github.com/bats-core/bats-support.git "$install_dir/bats-support"
-  git clone --depth 1 https://github.com/bats-core/bats-assert.git "$install_dir/bats-assert"
-  git clone --depth 1 https://github.com/bats-core/bats-file.git "$install_dir/bats-file"
 
   echo -e "${GREEN}✓ BATS installed successfully${RESET}"
 }
@@ -70,7 +66,10 @@ run_tests() {
   echo ""
 
   # Run all .bats test files
+  # nullglob: マッチなしのときリテラル "*.bats" が残らないようにする
+  shopt -s nullglob
   local test_files=("$SCRIPT_DIR"/*.bats)
+  shopt -u nullglob
 
   if [ ${#test_files[@]} -eq 0 ]; then
     echo -e "${YELLOW}! No test files found${RESET}"

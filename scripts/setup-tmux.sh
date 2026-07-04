@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
 
@@ -54,7 +56,7 @@ if command -v tmux >/dev/null 2>&1; then
             echo "Warning: TPM plugin installation reported errors"
         tmux kill-server 2>/dev/null || true
         rm -rf "$TMUX_TMPDIR"
-    )
+    ) || echo "Warning: TPM auto-install could not run (install manually with prefix + I)"
 
     echo ""
     echo "=========================================="

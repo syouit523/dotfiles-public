@@ -56,11 +56,9 @@ if [[ "$(uname)" == "Darwin" ]] && command -v thefuck >/dev/null 2>&1; then
   eval "$(thefuck --alias fk)"
 fi
 
-# ---- Zoxide (better cd) ----
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-fi
-
+# NOTE: zoxide の初期化は zshrc の末尾で行う
+# (zoxide init は PATH 変更や alias 定義より後に実行しないと
+#  zoxide doctor が警告を出す)
 
 # zsh
 # zsh-autosuggestions

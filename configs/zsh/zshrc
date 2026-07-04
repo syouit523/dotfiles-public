@@ -78,3 +78,10 @@ if command -v direnv >/dev/null 2>&1; then
   eval "$(direnv hook zsh)"
 fi
 export PATH="$HOME/.local/bin:$PATH"
+
+# ---- Zoxide (better cd) ----
+# zoxide init は zshrc の一番最後に置く（PATH 変更や alias 定義より
+# 後でないと zoxide doctor が警告を出す）。--cmd cd で cd 自体を置き換える。
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh --cmd cd)"
+fi

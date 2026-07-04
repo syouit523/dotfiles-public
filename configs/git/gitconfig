@@ -13,6 +13,7 @@
   required = true
 [merge]
   tool = vimdiff
+  conflictstyle = diff3
 [alias]
   # GitHubで現在のリポジトリを開く
   open = "!gh browse"
@@ -27,8 +28,8 @@
   # 変更をコミットする
   cm = commit
   # 変更をリモートにプッシュする
-  push = "!git push -u origin HEAD"
-  ph = push
+  # 注意: ビルトインコマンドと同名のエイリアス (push = ...) は git に無視される
+  ph = "!git push -u origin HEAD"
   # リモートから変更をプルする
   pl = pull
   # リポジトリの状態を表示する
@@ -83,9 +84,6 @@
     # delta detects terminal colors automatically; set one of these to disable auto-detection
     # dark = true
     # light = true
-
-[merge]
-    conflictstyle = diff3
 
 [diff]
     colorMoved = default

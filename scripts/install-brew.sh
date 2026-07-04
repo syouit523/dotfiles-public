@@ -1,6 +1,8 @@
 #!/bin/bash
 # shellcheck disable=SC1071
 
+set -eo pipefail
+
 architecture=$(uname -m)
 
 if command -v brew >/dev/null 2>&1; then
@@ -10,19 +12,16 @@ else
     # sudoを使用せずに通常のユーザー権限で実行
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     if [ "$(uname)" = 'Darwin' ]; then
-        echo >> "$HOME"/.zprofile
         if [ "$architecture" = "arm64" ]; then
-            # Set the path for Apple Silicon
-            # shellcheck disable=SC2016
-            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> "$HOME"/.zprofile
-            eval "$(/opt/homebrew/bin/brew shellenv)"
+            BREW_PATH=/opt/homebrew/bin/brew  # Apple Silicon
         else
-            # Set the path for Intel Mac
-            # shellcheck disable=SC2016
-            echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
-            eval "$(/usr/local/bin/brew shellenv)"
+            BREW_PATH=/usr/local/bin/brew  # Intel Mac
         fi
-        # shellcheck disable=SC1091
-        source "$HOME"/.zprofile
+        # .zprofile への追記は冪等にする（再インストールのたびに重複しない）
+        if ! grep -q 'brew shellenv' "$HOME/.zprofile" 2>/dev/null; then
+            echo >> "$HOME"/.zprofile
+            echo "eval \"\$(${BREW_PATH} shellenv)\"" >> "$HOME"/.zprofile
+        fi
+        eval "$("$BREW_PATH" shellenv)"
     fi
 fi

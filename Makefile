@@ -129,9 +129,12 @@ bootstrap b: check-sudo
 .PHONY: Linux_setup
 Linux_setup: check-sudo
 	@echo "" && echo "=== Linux Setup ==="
-	sudo -n apt update && sudo -n apt upgrade -y
+	sudo -n apt-get update && sudo -n apt-get upgrade -y
+	# Homebrew on Linux の前提パッケージ (https://docs.brew.sh/Homebrew-on-Linux)
+	sudo -n apt-get install -y build-essential procps curl file git
 	$(MAKE) linux_support_japanese
-	$(MAKE) install_apt_packages_from_brew
+	$(MAKE) brew_install
+	$(MAKE) brew_setup
 	$(MAKE) font
 	$(MAKE) link
 	$(MAKE) zsh
@@ -246,11 +249,6 @@ zsh_extensions:
 	bash $(SCRIPTS)/install-zsh-extensions.sh
 
 # ******************** linux ********************
-.PHONY: install_apt_packages_from_brew
-install_apt_packages_from_brew:
-	chmod +x $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
-	$(SCRIPTS)/linux/install-apt-packages-from-brew.sh
-
 .PHONY: linux_support_japanese
 linux_support_japanese:
 	@echo "Support Japanese"

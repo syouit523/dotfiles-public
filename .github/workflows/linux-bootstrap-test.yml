@@ -1,0 +1,97 @@
+# Ubuntu 上で実際に NONINTERACTIVE bootstrap を実行し、
+# Linux セットアップが壊れていないことを検証する。
+# macOS ローカルでは気づけない Linux 固有の破損（バージョン不足・
+# PATH 問題・bashism 等）の安全網。
+#
+# セットアップ関連ファイルを変更した PR と手動トリガーで実行される。
+
+name: Linux Bootstrap Test
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'Makefile'
+      - 'scripts/**'
+      - 'Brewfiles/**'
+      - '.github/workflows/linux-bootstrap-test.yml'
+  workflow_dispatch:
+
+jobs:
+  linux-bootstrap:
+    name: Bootstrap on Ubuntu
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run bootstrap (non-interactive, minimum mode)
+        env:
+          NONINTERACTIVE: "1"
+          DOTFILES_BOOTSTRAP_MODE: minimum
+          DOTFILES_GIT_USER_NAME: CI User
+          DOTFILES_GIT_USER_EMAIL: ci@example.com
+          DOTFILES_DEFAULT_SHELL: zsh
+        run: make bootstrap
+
+      - name: Verify installed tool versions
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+          fail=0
+          check_min_version() {
+            # $1: name, $2: actual (x.y.z), $3: required (x.y)
+            if [ "$(printf '%s\n%s\n' "$3" "$2" | sort -V | head -n1)" = "$3" ]; then
+              echo "OK: $1 $2 (>= $3)"
+            else
+              echo "NG: $1 $2 (< $3 required)"
+              fail=1
+            fi
+          }
+
+          nvim_ver=$(nvim --version | head -n1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          check_min_version neovim "$nvim_ver" 0.11
+
+          fzf_ver=$(fzf --version | grep -oE '^[0-9]+\.[0-9]+')
+          check_min_version fzf "$fzf_ver" 0.48
+
+          tmux_ver=$(tmux -V | grep -oE '[0-9]+\.[0-9]+')
+          check_min_version tmux "$tmux_ver" 3.2
+
+          for cmd in zsh starship eza bat fd delta zoxide lazygit gh rg; do
+            if command -v "$cmd" >/dev/null 2>&1; then
+              echo "OK: $cmd found ($(command -v "$cmd"))"
+            else
+              echo "NG: $cmd not found"
+              fail=1
+            fi
+          done
+
+          exit $fail
+
+      - name: Verify deployed configs
+        run: |
+          fail=0
+          for f in ~/.zshrc ~/.tmux.conf ~/.gitconfig ~/.config/nvim/init.lua ~/.config/starship/starship.toml; do
+            if [ -e "$f" ]; then
+              echo "OK: $f deployed"
+            else
+              echo "NG: $f missing"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      - name: Verify zsh starts cleanly with deployed config
+        run: |
+          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+          # 対話モードで zshrc を読み込み、エラーなく終了できること
+          zsh -ic 'exit 0'
+          echo "OK: interactive zsh exited cleanly"
+
+      - name: Verify fonts installed
+        run: |
+          ls ~/.local/share/fonts | grep -i -E 'hack|meslo' | head -5
+          fc-list | grep -i -c 'nerd' >/dev/null && echo "OK: nerd fonts registered"

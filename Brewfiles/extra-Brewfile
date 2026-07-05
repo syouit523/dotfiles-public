@@ -12,10 +12,10 @@ brew "coreutils"  # GNUコアユーティリティ(cpなど)
 # マルチメディア/ユーティリティ
 brew "ffmpeg"  # 動画/音声処理
 
-# パスワード管理
-brew "1password-cli"  # 1Password CLI (op コマンド)
-
-# アプリケーション
-cask "ghostty"  # モダンなGPU加速ターミナル
-cask "google-chrome"  # Webブラウザ
-cask "1password"  # パスワードマネージャ
+# パスワード管理 / アプリケーション (macOSのみ)
+if OS.mac?
+  brew "1password-cli"  # 1Password CLI (op コマンド)
+  cask "ghostty"  # モダンなGPU加速ターミナル
+  cask "google-chrome"  # Webブラウザ
+  cask "1password"  # パスワードマネージャ
+end

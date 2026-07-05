@@ -129,12 +129,15 @@ bootstrap b: check-sudo
 .PHONY: Linux_setup
 Linux_setup: check-sudo
 	@echo "" && echo "=== Linux Setup ==="
-	sudo -n apt-get update && sudo -n apt-get upgrade -y
+	# NOTE: apt-get upgrade は行わない。bootstrap に不要な上、
+	# needrestart / conffile の対話ダイアログで非対話実行が停止し得るため
+	sudo -n apt-get update
 	# Homebrew on Linux の前提パッケージ (https://docs.brew.sh/Homebrew-on-Linux)
-	sudo -n apt-get install -y build-essential procps curl file git
+	sudo -n DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential procps curl file git
 	$(MAKE) linux_support_japanese
 	$(MAKE) brew_install
 	$(MAKE) brew_setup
+	$(MAKE) linux_tailscale
 	$(MAKE) font
 	$(MAKE) link
 	$(MAKE) zsh
@@ -252,7 +255,13 @@ zsh_extensions:
 .PHONY: linux_support_japanese
 linux_support_japanese:
 	@echo "Support Japanese"
-	sudo bash $(SCRIPTS)/linux/support-japanese.sh
+	# sudo は環境変数を剥がすため NONINTERACTIVE を明示的に渡す
+	sudo NONINTERACTIVE="$(NONINTERACTIVE)" bash $(SCRIPTS)/linux/support-japanese.sh
+
+.PHONY: linux_tailscale
+linux_tailscale:
+	@echo "Install Tailscale"
+	bash $(SCRIPTS)/linux/install-tailscale.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen

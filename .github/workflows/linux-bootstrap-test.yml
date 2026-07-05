@@ -14,6 +14,8 @@ on:
       - 'Makefile'
       - 'scripts/**'
       - 'Brewfiles/**'
+      # デプロイ後の設定(zsh起動等)も検証しているため configs も対象
+      - 'configs/**'
       - '.github/workflows/linux-bootstrap-test.yml'
   workflow_dispatch:
 
@@ -86,12 +88,30 @@ jobs:
 
       - name: Verify zsh starts cleanly with deployed config
         run: |
-          eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-          # 対話モードで zshrc を読み込み、エラーなく終了できること
-          zsh -ic 'exit 0'
-          echo "OK: interactive zsh exited cleanly"
+          # 意図的に brew shellenv を通さず、非ログイン対話シェル相当
+          # (PATH に brew なし + .zshrc のみ読み込み) で起動を検証する。
+          # config-linux.zsh が brew PATH を確立し、starship が見つかる
+          # ことのリグレッションテスト。
+          # 注意: `zsh -ic 'exit 0'` は rc 内のエラーを検出できない
+          # (明示的な exit 0 で必ず成功する) ため、starship の解決と
+          # エラー出力の有無を明示的にアサートする。
+          output=$(/home/linuxbrew/.linuxbrew/bin/zsh -ic 'command -v starship || exit 1' 2>&1) || {
+            echo "$output"
+            echo "NG: starship not reachable from a non-login interactive zsh"
+            exit 1
+          }
+          echo "$output"
+          if echo "$output" | grep -E 'command not found|not found'; then
+            echo "NG: zshrc emitted errors during startup"
+            exit 1
+          fi
+          echo "OK: non-login interactive zsh starts cleanly with brew PATH"
 
       - name: Verify fonts installed
         run: |
-          ls ~/.local/share/fonts | grep -i -E 'hack|meslo' | head -5
-          fc-list | grep -i -c 'nerd' >/dev/null && echo "OK: nerd fonts registered"
+          # nerd-fonts は ~/.local/share/fonts/NerdFonts/ 配下に入るため
+          # fc-list でフォント名を個別に検証する
+          fail=0
+          fc-list | grep -qi 'hack nerd' && echo "OK: Hack Nerd Font registered" || { echo "NG: Hack Nerd Font missing"; fail=1; }
+          fc-list | grep -qi 'meslo' && echo "OK: Meslo Nerd Font registered" || { echo "NG: Meslo Nerd Font missing"; fail=1; }
+          exit $fail

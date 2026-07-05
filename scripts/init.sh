@@ -12,10 +12,18 @@ if [ "$(uname -s)" = "Linux" ]; then
     for cmd in git make curl; do
         command -v "$cmd" >/dev/null 2>&1 || missing="$missing $cmd"
     done
-    if [ -n "$missing" ]; then
+    if [ "$(id -u)" -eq 0 ]; then
+        # root (素のコンテナ等) では sudo 自体が無いことがある。
+        # 後続の Makefile が sudo を使うため、sudo も併せて導入する
+        if [ -n "$missing" ] || ! command -v sudo >/dev/null 2>&1; then
+            echo "Installing prerequisites (as root):$missing sudo"
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install -y git make curl sudo
+        fi
+    elif [ -n "$missing" ]; then
         echo "Installing prerequisites:$missing"
         sudo apt-get update
-        sudo apt-get install -y git make curl
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y git make curl
     fi
 fi
 

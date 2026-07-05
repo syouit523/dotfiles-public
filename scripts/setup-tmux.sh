@@ -5,6 +5,17 @@ set -e
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 SCRIPTS="$ROOT_DIR/scripts"
 
+# bootstrap 中(brew が PATH に入る前)でも tmux / cmake を見つけられる
+# よう、brew の場所を直接 PATH に通す
+if ! command -v tmux >/dev/null 2>&1; then
+    for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+        if [ -x "$brew_bin" ]; then
+            eval "$("$brew_bin" shellenv)"
+            break
+        fi
+    done
+fi
+
 # Change to dotfiles-public directory so deps are created there
 cd "$ROOT_DIR" || exit
 

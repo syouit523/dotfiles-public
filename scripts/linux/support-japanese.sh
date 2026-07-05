@@ -15,10 +15,15 @@ fi
 
 echo "日本語環境のセットアップを開始します..."
 
+# 非対話実行時は dpkg の conffile プロンプト等も抑止する
+if [ "$NONINTERACTIVE" = "1" ]; then
+  export DEBIAN_FRONTEND=noninteractive
+fi
+
 # 1. 必要なパッケージのインストール
 echo "日本語言語パックをインストールしています..."
-apt update
-apt install -y language-pack-ja
+apt-get update
+apt-get install -y language-pack-ja
 
 # 2. 日本語ロケールの生成
 echo "日本語ロケールを生成しています..."
@@ -55,13 +60,21 @@ else
 fi
 
 # フォントのインストール（オプション）
-echo "Do you want to install fonts of japanese？ [y/n]"
-read -n 1 -r INSTALL_FONTS
-echo
+# NONINTERACTIVE 時は read で入力待ちにならないようスキップする
+# (Makefile から sudo 経由で呼ばれるため、NONINTERACTIVE は
+#  呼び出し側で明示的に env 渡しされる)
+if [ "$NONINTERACTIVE" = "1" ]; then
+  INSTALL_FONTS="n"
+  echo "NONINTERACTIVE: skipping Japanese font installation prompt."
+else
+  echo "Do you want to install fonts of japanese？ [y/n]"
+  read -n 1 -r INSTALL_FONTS
+  echo
+fi
 
 if [[ $INSTALL_FONTS =~ ^[Yy]$ ]]; then
   echo "日本語フォントをインストールしています..."
-  apt install -y fonts-noto-cjk fonts-ipafont fonts-vlgothic
+  apt-get install -y fonts-noto-cjk fonts-ipafont fonts-vlgothic
   echo "日本語フォントのインストールが完了しました。"
 fi
 

@@ -4,7 +4,11 @@
 # 基本コマンドラインツール
 # AWS/クラウド関連
 brew "awscli"  # AWSコマンドラインインターフェース
-brew "tailscale"  # VPNサービス
+if OS.mac?
+  # Linux では brew 版だと systemd サービスが登録されないため、
+  # 公式インストーラを使う (make linux_tailscale / Linux_setup に組み込み済み)
+  brew "tailscale"  # VPNサービス
+end
 
 # シェル/ターミナル強化
 brew "coreutils"  # GNUコアユーティリティ(cpなど)
@@ -12,10 +16,10 @@ brew "coreutils"  # GNUコアユーティリティ(cpなど)
 # マルチメディア/ユーティリティ
 brew "ffmpeg"  # 動画/音声処理
 
-# パスワード管理
-brew "1password-cli"  # 1Password CLI (op コマンド)
-
-# アプリケーション
-cask "ghostty"  # モダンなGPU加速ターミナル
-cask "google-chrome"  # Webブラウザ
-cask "1password"  # パスワードマネージャ
+# パスワード管理 / アプリケーション (macOSのみ)
+if OS.mac?
+  brew "1password-cli"  # 1Password CLI (op コマンド)
+  cask "ghostty"  # モダンなGPU加速ターミナル
+  cask "google-chrome"  # Webブラウザ
+  cask "1password"  # パスワードマネージャ
+end

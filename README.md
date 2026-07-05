@@ -62,6 +62,23 @@ mint install realm/SwiftLint
 
 `configs/ghostty/config` は `Hack Nerd Font Mono` を使用します。bootstrap で `font-hack-nerd-font` cask が自動インストールされますが、**プロンプトアイコンが `?` に化ける場合** は Ghostty を完全に再起動してください（fontキャッシュの再読み込み）。
 
+### Linux / Ubuntu（ワンライナー、対話なし）
+
+```bash
+NONINTERACTIVE=1 \
+DOTFILES_BOOTSTRAP_MODE=minimum \
+DOTFILES_GIT_USER_NAME="Your Name" \
+DOTFILES_GIT_USER_EMAIL="you@example.com" \
+DOTFILES_DEFAULT_SHELL=zsh \
+bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main/scripts/init.sh)
+```
+
+- 対応ディストリビューション: **Ubuntu**（apt ベース。日本語ロケール設定は Ubuntu 専用）
+- `git` / `make` / `curl` が無い素の環境でも、`init.sh` が最初に apt でインストールします
+- CLI ツールは **Homebrew on Linux** で導入します。apt 版では古すぎるツール（neovim 0.11+、fzf 0.48+ が必要）を macOS と同じ Brewfile で最新に揃えるためです。macOS 専用の cask / iOS 系ツールは Brewfile 内の `OS.mac?` 分岐で自動スキップされます
+- GUI アプリ（Flatpak 経由の WezTerm など）は含まれません。必要なら別途 `make linux_gui_setup` を実行してください
+- 動作は GitHub Actions（Linux Bootstrap Test）で Ubuntu 実機相当を使って検証しています
+
 ### 対話モード（従来）
 
 環境変数を渡さない場合は対話モードで実行されます:
@@ -78,8 +95,8 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 
 ### 基本セットアップ
 - `make bootstrap` または `make b`: 環境に応じた基本セットアップを実行
-  - macOS: Homebrew、Zsh、dotfilesのセットアップ
-  - Linux: Homebrew、Zsh、フォント、dotfiles、Flatpakのセットアップ
+  - macOS: Xcode CLT、Homebrew、パッケージ、dotfiles、Zsh、tmux のセットアップ
+  - Linux (Ubuntu): 日本語ロケール、Homebrew on Linux、パッケージ、フォント、dotfiles、Zsh、tmux のセットアップ（GUI アプリは `make linux_gui_setup` で別途）
   - Windows: 未対応
 
 ### Homebrew関連
@@ -162,4 +179,5 @@ make test
 
 機能:
 - ShellCheck による静的解析（pull request / 手動トリガーで実行）
+- **Linux Bootstrap Test**（`.github/workflows/linux-bootstrap-test.yml`）: Ubuntu ランナー上で `NONINTERACTIVE=1 make bootstrap` を実際に実行し、ツールのバージョン要件（neovim 0.11+ / fzf 0.48+ / tmux 3.2+）と設定の配置を検証。セットアップ関連ファイルを変更した PR と手動トリガーで実行
 - BATS テストの CI は個人用リポジトリのため無効化中（ワークフロー内のコメントを外せば再有効化できます）。ローカルでは `make test` で実行してください

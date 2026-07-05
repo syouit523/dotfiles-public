@@ -64,7 +64,21 @@ install_brew_packages() {
     for brewfile in "${BREWFILES[@]}"; do
       if [[ -f "$brewfile" ]]; then
         echo "Installing from $brewfile..."
-        brew bundle --file="$brewfile" || true
+        # brew bundle の並列インストールはロック競合で稀に一部 formula が
+        # 失敗する (例: "process has already locked .../Cellar/<dep>")。
+        # 失敗時は一度だけリトライする。
+        if ! brew bundle --file="$brewfile"; then
+          echo "brew bundle failed for $brewfile; retrying once..."
+          brew bundle --file="$brewfile" || true
+        fi
+        # リトライ後も未充足なら失敗として扱う。
+        # 警告だけで exit 0 するとパッケージ欠落のまま bootstrap が
+        # 「成功」扱いになり、CI でも検出できないため fail-fast にする。
+        if ! brew bundle check --file="$brewfile"; then
+          echo "Error: some packages in $brewfile are still missing after retry:" >&2
+          brew bundle check --verbose --file="$brewfile" >&2 || true
+          exit 1
+        fi
       else
         echo "Brewfile not found: $brewfile"
         exit 1

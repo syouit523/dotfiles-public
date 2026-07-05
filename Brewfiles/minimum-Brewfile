@@ -46,20 +46,24 @@ brew "tfenv"  # Terraformバージョン管理
 brew "deno"  # TypeScript/JavaScriptランタイム
 brew "pnpm"  # 高速なNode.jsパッケージマネージャ
 
-# iOS / Swift 開発
+# iOS / Swift 開発 (macOSのみ)
 # Note: swiftlint は完全な Xcode.app が必要なため、bootstrap 後に
 # Xcode をApp Storeで入れてから `brew install swiftlint` するか、
 # `mint install realm/SwiftLint` で導入。
-brew "swiftformat"  # Swiftコードの自動フォーマッタ
-brew "xcbeautify"  # xcodebuild出力の整形ツール
-brew "fastlane"  # iOS/Androidアプリ配信自動化
-brew "mint"  # Swift製CLIツールのパッケージマネージャ
-brew "xcode-build-server"  # Swift LSPバックエンド（nvim等で使用）
-brew "periphery"  # Swift未使用コード検出
+if OS.mac?
+  brew "swiftformat"  # Swiftコードの自動フォーマッタ
+  brew "xcbeautify"  # xcodebuild出力の整形ツール
+  brew "fastlane"  # iOS/Androidアプリ配信自動化
+  brew "mint"  # Swift製CLIツールのパッケージマネージャ
+  brew "xcode-build-server"  # Swift LSPバックエンド（nvim等で使用）
+  brew "periphery"  # Swift未使用コード検出
+end
 
 # クラウド
 brew "firebase-cli"  # Firebase CLI
-cask "gcloud-cli"  # GCP CLI (gcloud, gsutil, bq) ※旧名 google-cloud-sdk
+if OS.mac?
+  cask "gcloud-cli"  # GCP CLI (gcloud, gsutil, bq) ※旧名 google-cloud-sdk
+end
 
 # 開発支援
 brew "shellcheck"  # シェルスクリプトlinter
@@ -84,12 +88,14 @@ brew "tree"  # ディレクトリツリー表示
 # Neovim関連
 brew "ripgrep"  # 高速grepツール(Neovim用)
 
-# Apps
-cask "font-hack-nerd-font"  # プログラミング用フォント
-cask "font-meslo-lg-nerd-font"  # ターミナル用フォント
-cask "visual-studio-code"  # コードエディタ
-cask "charles"  # HTTPプロキシ
-cask "alfred"  # ランチャー
-cask "wezterm"  # ターミナル
-cask "iterm2"  # ターミナル
-cask "karabiner-elements"  # キーボードカスタマイズ
+# Apps (macOSのみ。Linux の GUI アプリは make linux_gui_setup / フォントは make font)
+if OS.mac?
+  cask "font-hack-nerd-font"  # プログラミング用フォント
+  cask "font-meslo-lg-nerd-font"  # ターミナル用フォント
+  cask "visual-studio-code"  # コードエディタ
+  cask "charles"  # HTTPプロキシ
+  cask "alfred"  # ランチャー
+  cask "wezterm"  # ターミナル
+  cask "iterm2"  # ターミナル
+  cask "karabiner-elements"  # キーボードカスタマイズ
+end

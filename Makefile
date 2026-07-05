@@ -129,9 +129,15 @@ bootstrap b: check-sudo
 .PHONY: Linux_setup
 Linux_setup: check-sudo
 	@echo "" && echo "=== Linux Setup ==="
-	sudo -n apt update && sudo -n apt upgrade -y
+	# NOTE: apt-get upgrade は行わない。bootstrap に不要な上、
+	# needrestart / conffile の対話ダイアログで非対話実行が停止し得るため
+	sudo -n apt-get update
+	# Homebrew on Linux の前提パッケージ (https://docs.brew.sh/Homebrew-on-Linux)
+	sudo -n DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential procps curl file git
 	$(MAKE) linux_support_japanese
-	$(MAKE) install_apt_packages_from_brew
+	$(MAKE) brew_install
+	$(MAKE) brew_setup
+	$(MAKE) linux_tailscale
 	$(MAKE) font
 	$(MAKE) link
 	$(MAKE) zsh
@@ -246,15 +252,16 @@ zsh_extensions:
 	bash $(SCRIPTS)/install-zsh-extensions.sh
 
 # ******************** linux ********************
-.PHONY: install_apt_packages_from_brew
-install_apt_packages_from_brew:
-	chmod +x $(SCRIPTS)/linux/install-apt-packages-from-brew.sh
-	$(SCRIPTS)/linux/install-apt-packages-from-brew.sh
-
 .PHONY: linux_support_japanese
 linux_support_japanese:
 	@echo "Support Japanese"
-	sudo bash $(SCRIPTS)/linux/support-japanese.sh
+	# sudo は環境変数を剥がすため NONINTERACTIVE を明示的に渡す
+	sudo NONINTERACTIVE="$(NONINTERACTIVE)" bash $(SCRIPTS)/linux/support-japanese.sh
+
+.PHONY: linux_tailscale
+linux_tailscale:
+	@echo "Install Tailscale"
+	bash $(SCRIPTS)/linux/install-tailscale.sh
 
 # ******************** ssh ********************
 .PHONY: ssh-key-gen
@@ -263,11 +270,19 @@ ssh-key-gen:
 	bash $(SCRIPTS)/ssh-key-gen.sh
 
 .PHONY: reload_zshrc
+# bootstrap 中の make は brew インストール前の PATH で動いているため、
+# `which zsh` はシステムの /bin/zsh を拾い、さらに非ログインの `zsh -c`
+# では brew の PATH が通らず zshrc 内の starship 等が not found になる。
+# brew prefix の zsh を優先し、ログインシェル (-l) で .zshrc を読み込む。
 reload_zshrc:
-	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
-		ZSH_SHELL=$(shell which zsh); \
+	@ZSH_SHELL=""; \
+	for candidate in /opt/homebrew/bin/zsh /usr/local/bin/zsh /home/linuxbrew/.linuxbrew/bin/zsh; do \
+		if [ -x "$$candidate" ]; then ZSH_SHELL="$$candidate"; break; fi; \
+	done; \
+	if [ -z "$$ZSH_SHELL" ]; then ZSH_SHELL="$$(command -v zsh 2>/dev/null || true)"; fi; \
+	if [ -n "$$ZSH_SHELL" ]; then \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
-		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+		"$$ZSH_SHELL" -l -c "source $(HOME)/.zshrc"; \
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi

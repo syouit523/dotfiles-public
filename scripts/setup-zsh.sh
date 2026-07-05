@@ -25,6 +25,14 @@ ZSH_PATH=$(find_zsh)
 
 if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
     echo "Using zsh at: $ZSH_PATH"
+
+    # oh-my-zsh のインストーラは「PATH 上に zsh があること」を要求する。
+    # brew の zsh が PATH 外にある bootstrap 中(ログインシェル確立前)でも
+    # 通るよう、見つけた zsh のディレクトリを PATH に追加する
+    if ! command -v zsh >/dev/null 2>&1; then
+        PATH="$(dirname "$ZSH_PATH"):$PATH"
+        export PATH
+    fi
     # Register zsh in /etc/shells if not already there (requires sudo).
     # Without this, `chsh` refuses to set a non-standard shell.
     if ! grep -qx "$ZSH_PATH" /etc/shells; then

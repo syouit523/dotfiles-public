@@ -64,7 +64,15 @@ install_brew_packages() {
     for brewfile in "${BREWFILES[@]}"; do
       if [[ -f "$brewfile" ]]; then
         echo "Installing from $brewfile..."
-        brew bundle --file="$brewfile" || true
+        # brew bundle の並列インストールはロック競合で稀に一部 formula が
+        # 失敗する (例: "process has already locked .../Cellar/<dep>")。
+        # 失敗時は一度だけリトライし、それでも失敗したら bootstrap 全体は
+        # 止めずに警告して続行する。
+        if ! brew bundle --file="$brewfile"; then
+          echo "brew bundle failed for $brewfile; retrying once..."
+          brew bundle --file="$brewfile" || \
+            echo "Warning: brew bundle still failed for $brewfile (continuing)"
+        fi
       else
         echo "Brewfile not found: $brewfile"
         exit 1

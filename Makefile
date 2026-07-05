@@ -261,11 +261,19 @@ ssh-key-gen:
 	bash $(SCRIPTS)/ssh-key-gen.sh
 
 .PHONY: reload_zshrc
+# bootstrap 中の make は brew インストール前の PATH で動いているため、
+# `which zsh` はシステムの /bin/zsh を拾い、さらに非ログインの `zsh -c`
+# では brew の PATH が通らず zshrc 内の starship 等が not found になる。
+# brew prefix の zsh を優先し、ログインシェル (-l) で .zshrc を読み込む。
 reload_zshrc:
-	@if [ -x "$(shell which zsh 2>/dev/null)" ]; then \
-		ZSH_SHELL=$(shell which zsh); \
+	@ZSH_SHELL=""; \
+	for candidate in /opt/homebrew/bin/zsh /usr/local/bin/zsh /home/linuxbrew/.linuxbrew/bin/zsh; do \
+		if [ -x "$$candidate" ]; then ZSH_SHELL="$$candidate"; break; fi; \
+	done; \
+	if [ -z "$$ZSH_SHELL" ]; then ZSH_SHELL="$$(command -v zsh 2>/dev/null || true)"; fi; \
+	if [ -n "$$ZSH_SHELL" ]; then \
 		echo "Reloading .zshrc using $$ZSH_SHELL"; \
-		$$ZSH_SHELL -c "source $(HOME)/.zshrc"; \
+		"$$ZSH_SHELL" -l -c "source $(HOME)/.zshrc"; \
 	else \
 		echo "Zsh is not installed. Skipping .zshrc reload."; \
 	fi

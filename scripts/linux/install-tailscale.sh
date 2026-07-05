@@ -11,4 +11,13 @@ if command -v tailscale >/dev/null 2>&1; then
     exit 0
 fi
 
+# Fedora Atomic (Bazzite 等) では公式インストーラが使えない。
+# Bazzite は tailscale 同梱のため通常ここには到達しないが、
+# 他の ostree 系ディストリのための安全ガード。
+if [ -f /run/ostree-booted ]; then
+    echo "ostree-based OS detected. The official installer does not support it."
+    echo "Install tailscale via rpm-ostree or your distro's mechanism, then re-run."
+    exit 0
+fi
+
 curl -fsSL https://tailscale.com/install.sh | sh

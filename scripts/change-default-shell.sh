@@ -4,6 +4,10 @@
 # 通常実行時は /etc/shells を見る。
 SHELLS_FILE="${SHELLS_FILE:-/etc/shells}"
 
+# ostree ベース (Fedora Atomic / Bazzite 等) の判定マーカー。
+# テストから差し替えられるよう環境変数化している。
+OSTREE_BOOTED_FILE="${OSTREE_BOOTED_FILE:-/run/ostree-booted}"
+
 select_shell_noninteractive() {
   local target="$1"
   # フルパス指定にも対応（/bin/zsh → zsh に正規化してから検索）
@@ -77,16 +81,40 @@ else
   selected_shell="${shells[$((choice - 1))]}"
 fi
 
-if [ -n "$selected_shell" ]; then
-  if sudo -n chsh -s "$selected_shell" "$USER"; then
-    echo "Default shell changed to $selected_shell"
-    echo "You need to log out and log back in for changes to take effect"
-  else
-    echo "Failed to change shell to $selected_shell" >&2
-    echo "Hint: ensure sudo cache is active (run 'make check-sudo' first)" >&2
-    exit 1
-  fi
-else
+if [ -z "$selected_shell" ]; then
   echo "Invalid selection" >&2
+  exit 1
+fi
+
+# Fedora Atomic (Bazzite 等、ostree ベース) では brew 導入シェルを
+# login shell にすることが公式に非推奨とされている
+# (システムが起動不能になる報告あり: ublue-os/bazzite#4159)。
+# 自動変更はせず、ターミナルエミュレータ側での設定を案内する。
+if [ -f "$OSTREE_BOOTED_FILE" ]; then
+  case "$selected_shell" in
+    /home/linuxbrew/*|/var/home/linuxbrew/*)
+      echo "Detected ostree-based OS (Fedora Atomic / Bazzite)."
+      echo "Changing the login shell to a Homebrew shell is not recommended here."
+      echo "Instead, configure your terminal emulator to launch it, e.g. Ptyxis:"
+      echo "  Settings > Profiles > Custom Command: $selected_shell"
+      echo "Skipping login shell change."
+      exit 0
+      ;;
+  esac
+fi
+
+# chsh は Fedora 系に同梱されないため usermod にフォールバックする
+if command -v chsh >/dev/null 2>&1; then
+  change_cmd=(sudo -n chsh -s "$selected_shell" "$USER")
+else
+  change_cmd=(sudo -n usermod --shell "$selected_shell" "$USER")
+fi
+
+if "${change_cmd[@]}"; then
+  echo "Default shell changed to $selected_shell"
+  echo "You need to log out and log back in for changes to take effect"
+else
+  echo "Failed to change shell to $selected_shell" >&2
+  echo "Hint: ensure sudo cache is active (run 'make check-sudo' first)" >&2
   exit 1
 fi

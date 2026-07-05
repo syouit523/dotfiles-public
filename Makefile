@@ -129,11 +129,17 @@ bootstrap b: check-sudo
 .PHONY: Linux_setup
 Linux_setup: check-sudo
 	@echo "" && echo "=== Linux Setup ==="
+	# apt 系ディストリのみ: Homebrew on Linux の前提パッケージを導入
+	# (https://docs.brew.sh/Homebrew-on-Linux)
+	# Fedora Atomic 系 (Bazzite 等) は brew 同梱・前提不要のためスキップ。
 	# NOTE: apt-get upgrade は行わない。bootstrap に不要な上、
 	# needrestart / conffile の対話ダイアログで非対話実行が停止し得るため
-	sudo -n apt-get update
-	# Homebrew on Linux の前提パッケージ (https://docs.brew.sh/Homebrew-on-Linux)
-	sudo -n DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential procps curl file git
+	@if command -v apt-get >/dev/null 2>&1; then \
+		sudo -n apt-get update; \
+		sudo -n DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential procps curl file git; \
+	else \
+		echo "apt-get not found (Fedora Atomic / Bazzite?); skipping apt prerequisites."; \
+	fi
 	$(MAKE) linux_support_japanese
 	$(MAKE) brew_install
 	$(MAKE) brew_setup

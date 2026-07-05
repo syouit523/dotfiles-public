@@ -112,3 +112,51 @@ teardown() {
   [ "$status" -eq 1 ]
   [[ "$output" == *"Invalid selection"* ]]
 }
+
+@test "change-default-shell.sh: skips brew shell change on ostree-based OS (Bazzite)" {
+  # Fedora Atomic では brew シェルへの login shell 変更が公式非推奨のため、
+  # 案内を表示してスキップ (exit 0) する
+  SHELLS_FILE_WITH_BREW="$TEST_TEMP_DIR/shells_brew"
+  cat > "$SHELLS_FILE_WITH_BREW" <<'SHELLS'
+/bin/bash
+/home/linuxbrew/.linuxbrew/bin/zsh
+SHELLS
+  OSTREE_MARKER="$TEST_TEMP_DIR/ostree-booted"
+  touch "$OSTREE_MARKER"
+
+  run bash -c "
+    DOTFILES_DEFAULT_SHELL=zsh \
+    SHELLS_FILE='$SHELLS_FILE_WITH_BREW' \
+    OSTREE_BOOTED_FILE='$OSTREE_MARKER' \
+    '$SOURCE_SCRIPT' </dev/null 2>&1
+  "
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Skipping login shell change"* ]]
+}
+
+@test "change-default-shell.sh: ostree marker absent proceeds to the change command" {
+  # 非 ostree 環境では従来どおり chsh/usermod の実行パスに進む。
+  # 実際の sudo/chsh を呼ばないよう sudo をスタブして検証する
+  SHELLS_FILE_WITH_BREW="$TEST_TEMP_DIR/shells_brew2"
+  cat > "$SHELLS_FILE_WITH_BREW" <<'SHELLS'
+/home/linuxbrew/.linuxbrew/bin/zsh
+SHELLS
+  STUB_DIR="$TEST_TEMP_DIR/stub"
+  mkdir -p "$STUB_DIR"
+  printf '#!/bin/bash\necho "SUDO_STUB: $*"\nexit 1\n' > "$STUB_DIR/sudo"
+  chmod +x "$STUB_DIR/sudo"
+
+  run bash -c "
+    PATH='$STUB_DIR':\"\$PATH\" \
+    DOTFILES_DEFAULT_SHELL=zsh \
+    SHELLS_FILE='$SHELLS_FILE_WITH_BREW' \
+    OSTREE_BOOTED_FILE='$TEST_TEMP_DIR/no-such-marker' \
+    '$SOURCE_SCRIPT' </dev/null 2>&1
+  "
+
+  # スキップされず、変更コマンド (スタブ sudo) に到達している
+  [ "$status" -eq 1 ]
+  [[ "$output" == *"SUDO_STUB:"* ]]
+  [[ "$output" != *"Skipping login shell change"* ]]
+}

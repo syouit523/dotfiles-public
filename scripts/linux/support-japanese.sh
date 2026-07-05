@@ -15,6 +15,24 @@ fi
 
 echo "日本語環境のセットアップを開始します..."
 
+# ---- apt が無いディストリ (Fedora Atomic / Bazzite 等) ----
+# Bazzite は glibc-all-langpacks (ja_JP ロケール)・Noto CJK フォント・
+# mozc (fcitx5/ibus) をイメージに同梱しているため、
+# 必要なのはシステムロケールの設定のみ。
+if ! command -v apt-get >/dev/null 2>&1; then
+  echo "apt 系ディストリではありません (Fedora Atomic / Bazzite?)。"
+  if command -v localectl >/dev/null 2>&1; then
+    echo "システムロケールを ja_JP.UTF-8 に設定します..."
+    localectl set-locale LANG=ja_JP.UTF-8
+    echo "設定しました。再ログインで反映されます。"
+  else
+    echo "localectl が見つかりません。手動でロケールを設定してください。"
+  fi
+  echo "(日本語フォント・mozc はイメージ同梱のためインストール不要です)"
+  exit 0
+fi
+
+# ---- 以下、apt 系 (Ubuntu) ----
 # 非対話実行時は dpkg の conffile プロンプト等も抑止する
 if [ "$NONINTERACTIVE" = "1" ]; then
   export DEBIAN_FRONTEND=noninteractive

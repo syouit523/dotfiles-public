@@ -79,6 +79,16 @@ bash <(curl -sL https://raw.githubusercontent.com/syouit523/dotfiles-public/main
 - GUI アプリ（Flatpak 経由の WezTerm など）は含まれません。必要なら別途 `make linux_gui_setup` を実行してください
 - 動作は GitHub Actions（Linux Bootstrap Test）で Ubuntu 実機相当を使って検証しています
 
+#### Bazzite（Fedora Atomic 系）での利用
+
+Bazzite / Fedora Atomic 系（ostree ベース）でも同じワンライナーが使えます。apt の代わりに以下の挙動になります:
+
+- **Homebrew はイメージ同梱**のためインストールをスキップ。前提として不足する `make` だけ brew で自動調達します（`gmake` として導入され、init.sh がフォールバックします）
+- **日本語設定**はシステムロケールの設定のみ（`glibc-all-langpacks`・Noto CJK フォント・mozc はイメージ同梱）
+- **tailscale はイメージ同梱**のためインストールをスキップ。有効化は `ujust enable-tailscale`
+- **login shell は変更されません**。Fedora Atomic では brew のシェルを login shell にすることが公式に非推奨のため、代わりにターミナル（Ptyxis）のプロファイルで起動シェルを設定してください: Settings > Profiles > Custom Command に `/home/linuxbrew/.linuxbrew/bin/zsh`
+- CI での自動検証は Ubuntu のみです。Bazzite 側の検証は実機 / VM で行ってください
+
 ### 対話モード（従来）
 
 環境変数を渡さない場合は対話モードで実行されます:

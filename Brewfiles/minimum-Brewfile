@@ -87,6 +87,7 @@ brew "tree"  # ディレクトリツリー表示
 
 # Neovim関連
 brew "ripgrep"  # 高速grepツール(Neovim用)
+brew "tree-sitter-cli"  # tree-sitterパーサービルド用CLI(nvim-treesitter main用)
 
 # Apps (macOSのみ。Linux の GUI アプリは make linux_gui_setup / フォントは make font)
 if OS.mac?

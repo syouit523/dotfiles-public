@@ -82,6 +82,11 @@ if command -v direnv >/dev/null 2>&1; then
 fi
 export PATH="$HOME/.local/bin:$PATH"
 
+# nodenv (Node.js version manager)
+if command -v nodenv >/dev/null 2>&1; then
+  eval "$(nodenv init - zsh)"
+fi
+
 # ---- Zoxide (better cd) ----
 # zoxide init は zshrc の一番最後に置く（PATH 変更や alias 定義より
 # 後でないと zoxide doctor が警告を出す）。--cmd cd で cd 自体を置き換える。

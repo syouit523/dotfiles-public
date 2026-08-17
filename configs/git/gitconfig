@@ -62,6 +62,8 @@
   today = "log --since='midnight' --author='Shoichi' --oneline"
   # ブランチ間の差分コミット一覧（例: git branch-diff main）
   branch-diff = "!f() { git log --oneline $1..HEAD; }; f"
+  # git log をfzfで選択しながら右にdiffプレビュー
+  lgp = "!git log --oneline --graph --decorate --all --color=always | fzf --ansi --preview 'echo {} | grep -o \"[a-f0-9]\\{7,\\}\" | head -1 | xargs git show --color=always | delta' --preview-window=right:60%"
   # ステージングされた変更を取り消す
   unstage = "reset HEAD --"
   # 最後のコミットメッセージを修正する

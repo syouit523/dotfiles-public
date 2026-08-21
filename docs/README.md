@@ -4,7 +4,7 @@
 
 | ドキュメント | 内容 |
 |---|---|
-| [tmux.md](tmux.md) | tmux のキーバインド、プラグイン(resurrect / continuum / vim-tmux-navigator 等)の使い方 |
+| [tmux.md](tmux.md) | tmux のキーバインド、プラグイン(resurrect / continuum / vim-tmux-navigator 等)の使い方、AI エージェントの状態表示 |
 | [zsh.md](zsh.md) | zsh の構成、エイリアス、fzf / zoxide / fzf-git などのコマンド拡張 |
 | [fish.md](fish.md) | fish の構成、tide / fzf.fish プラグインの使い方 |
 | [nvim.md](nvim.md) | Neovim のキーマップ一覧、プラグインの使い方、LSP の構成 |

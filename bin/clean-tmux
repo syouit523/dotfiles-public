@@ -23,12 +23,24 @@ else
     echo "No active tmux sessions."
 fi
 
-# Remove tmux-resurrect saved sessions
-RESURRECT_DIR="$HOME/.tmux/resurrect"
-if [ -d "$RESURRECT_DIR" ]; then
-    rm -rf "$RESURRECT_DIR"
-    echo "Removed saved sessions: $RESURRECT_DIR"
-else
+# Remove tmux-resurrect saved sessions.
+# tmux-resurrect は ~/.tmux/resurrect が存在すればそこを、存在しなければ XDG の
+# パス($XDG_DATA_HOME/tmux/resurrect、既定は ~/.local/share/tmux/resurrect)を
+# 保存先にする(tmux-resurrect の scripts/helpers.sh)。新規に構築した環境では
+# 後者になるため、どちらのレイアウトでも掃除できるよう両方を対象にする。
+# なお @resurrect-dir で保存先を明示している場合は対象外。
+removed=0
+for resurrect_dir in \
+    "$HOME/.tmux/resurrect" \
+    "${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect"; do
+    if [ -d "$resurrect_dir" ]; then
+        rm -rf "$resurrect_dir"
+        echo "Removed saved sessions: $resurrect_dir"
+        removed=1
+    fi
+done
+
+if [ "$removed" -eq 0 ]; then
     echo "No saved sessions found."
 fi
 

@@ -153,7 +153,7 @@ Codex CLI / Devin CLI にも対応しています。設定方法は[プラグイ
 
 ## ユーティリティ: clean-tmux
 
-`bin/clean-tmux`(`make link` で `~/.local/bin/clean-tmux` に配置)は、全セッションの kill と resurrect の保存データ(`~/.tmux/resurrect/`)の削除を行います。
+`bin/clean-tmux`(`make link` で `~/.local/bin/clean-tmux` に配置)は、全セッションの kill と resurrect の保存データの削除を行います。
 
 ```bash
 clean-tmux          # 確認プロンプトあり
@@ -161,3 +161,13 @@ clean-tmux --force  # 確認なしで実行
 ```
 
 保存済みセッションが壊れて復元がおかしくなった場合のリセットに使います。**非可逆な操作**なので注意してください。
+
+### resurrect の保存先
+
+tmux-resurrect の保存先は次の順で決まります(tmux-resurrect の `scripts/helpers.sh`)。
+
+1. `@resurrect-dir` が設定されていればそのパス(このリポジトリでは未設定)
+2. `~/.tmux/resurrect/` が**既に存在すれば**そこ(古いレイアウトとの後方互換)
+3. どちらでもなければ `${XDG_DATA_HOME:-~/.local/share}/tmux/resurrect/`
+
+新規に構築した環境では 2 のディレクトリが作られないため、実際の保存先は通常 **`~/.local/share/tmux/resurrect/`** になります。`clean-tmux` は 2 と 3 の両方を削除対象にします(`@resurrect-dir` で別の場所を指定している場合は対象外)。

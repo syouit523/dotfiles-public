@@ -28,7 +28,7 @@ cd "$ROOT_DIR" || exit
 "$SCRIPTS"/git-clone.sh https://github.com/christoomey/vim-tmux-navigator "$HOME"/.tmux/plugins/vim-tmux-navigator
 "$SCRIPTS"/git-clone.sh https://github.com/jimeh/tmux-themepack "$HOME"/.tmux/plugins/tmux-themepack
 "$SCRIPTS"/git-clone.sh https://github.com/thewtex/tmux-mem-cpu-load "$HOME"/.tmux/plugins/tmux-mem-cpu-load
-"$SCRIPTS"/git-clone.sh https://github.com/samleeney/tmux-agent-status "$HOME"/.tmux/plugins/tmux-agent-status
+"$SCRIPTS"/git-clone.sh https://github.com/accessd/tmux-agent-indicator "$HOME"/.tmux/plugins/tmux-agent-indicator
 
 # Build tmux-mem-cpu-load plugin
 PLUGIN_DIR="$HOME/.tmux/plugins/tmux-mem-cpu-load"

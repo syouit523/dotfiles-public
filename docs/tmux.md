@@ -57,7 +57,7 @@ TPM(Tmux Plugin Manager)で管理。`make tmux` 実行時に隔離サーバー�
 | [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) | セッション(ペイン構成・作業ディレクトリ・ペイン内容)の保存と復元 |
 | [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) | resurrect の**15分ごとの自動保存**と、tmux 起動時の**自動復元**(`@continuum-restore 'on'`) |
 | [tmux-mem-cpu-load](https://github.com/thewtex/tmux-mem-cpu-load) | ステータスバー左側に CPU / メモリ使用率を表示(2秒間隔) |
-| [tmux-agent-status](https://github.com/samleeney/tmux-agent-status) | AI エージェント(Claude Code 等)の状態をサイドバーとステータスバーに表示(後述) |
+| [tmux-agent-indicator](https://github.com/accessd/tmux-agent-indicator) | AI エージェント(Claude Code 等)の状態をペインボーダー・ウィンドウタイトル・ステータスバーに表示(後述) |
 
 ### TPM の操作
 
@@ -76,80 +76,73 @@ TPM(Tmux Plugin Manager)で管理。`make tmux` 実行時に隔離サーバー�
 
 通常は continuum が自動保存・自動復元するため手動操作は不要です。
 
-## AI エージェントの状態表示(tmux-agent-status)
+## AI エージェントの状態表示(tmux-agent-indicator)
 
-tmux ペイン内で動く AI コーディングエージェント(Claude Code 等)の状態を、各セッションの常設サイドバーとステータスバーに表示します。複数のプロジェクトでエージェントを並行して走らせたときに、どれが作業中でどれが応答待ちなのかを一目で把握するためのものです。
+tmux ペイン内で動く AI コーディングエージェント(Claude Code 等)の状態を、ペインボーダー色・ウィンドウタイトル・ステータスバーのアイコンで表示します。複数のプロジェクトでエージェントを並行して走らせたときに、どれが作業中でどれが応答待ちなのかをペインを切り替えずに把握するためのものです。
 
-状態はプロセスの監視ではなく**エージェントのライフサイクルフックから供給**されるため、`working` / `done` の遷移が正確に反映されます。
+状態はプロセスの監視ではなく**エージェントのライフサイクルフックから供給**されるため、遷移が正確に反映されます。ペイン単位で `running` / `needs-input` / `done` の3状態を追跡します。
 
-### キーバインド
+### 表示
 
-| キー | 動作 |
+| 状態 | 表示 |
 |---|---|
-| `prefix` `S` | fzf の階層スイッチャーをポップアップ表示(`Ctrl+f` で tree ↔ agents 表示切替) |
-| `prefix` `o` | サイドバーにフォーカス / 現在のウィンドウに作成 |
-| `prefix` `N` | 次の INBOX 項目(完了 / 要応答)へジャンプ |
-| `prefix` `W` | 現在のセッション / ペインを時限 wait モードにする |
-| `prefix` `P` | 現在のセッション / ペインを park(後回し)する |
+| `running` | ステータスバーにエージェントのアイコン(既定 `🤖`)が表示される |
+| `needs-input` | ペインボーダーとウィンドウタイトルが黄色になる |
+| `done` | ペインボーダーが緑、ウィンドウタイトルが赤になる |
 
-`prefix` `P` はプラグイン既定の `prefix` `p` から変更しています(`@agent-park-key`)。既定のままでは tmux 標準の `previous-window` を潰すためです。
+状態は対象ペインにフォーカスすると解除されます(`@agent-indicator-reset-on-focus 'on'`)。needs-input / done への遷移時には tmux の `display-message` 通知も表示されます(プラグイン既定で有効)。
 
-サイドバーのペイン内では `x` = 閉じる、`p` = park、`w` = wait、`m` = 表示モード切替。スイッチャーのポップアップ内では `Enter` = 移動、`Tab` = 展開 / 折りたたみ、`Ctrl+x` = 閉じる、`Ctrl+p` = park、`Ctrl+w` = wait、`Ctrl+r` = 状態リセット。
-
-### ステータスバーの表示
-
-エージェント1つにつきグリフ1つが表示されます。グリフが種類、色が状態を表します。
-
-| グリフ | エージェント |
-|---|---|
-| `✳` | Claude Code |
-| `⬢` | Codex CLI |
-| `◆` | Devin CLI |
-| `●` | その他 |
-
-| 色 | 状態 |
-|---|---|
-| 黄(点滅) | working(作業中) |
-| シアン | waiting(wait モード) |
-| マゼンタ | ask(応答待ち) |
-| 緑 | done(完了) |
-
-park したセッションはサイドバーとスイッチャーには残りますが、ステータスバーの集計からは除外されます。
+依存: tmux 3.1+ / bash 4+ / Python 3。macOS 標準の bash は 3.2 なので Homebrew の bash が必要です。
 
 ### Claude Code 側の設定
 
-状態の供給元として `~/.claude/settings.json` への hook 登録が必要です(このリポジトリの管理対象外)。
+状態の供給元として `~/.claude/settings.json` への hook 登録が必要です(このリポジトリの管理対象外)。プラグイン同梱のテンプレート `hooks/claude-hooks.json` と同じ内容を登録します。
 
 ```json
 {
   "hooks": {
     "UserPromptSubmit": [
-      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-status/hooks/better-hook.sh UserPromptSubmit" }] }
+      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-indicator/scripts/agent-state.sh --agent claude --state off" }] },
+      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-indicator/scripts/agent-state.sh --agent claude --state running" }] }
     ],
-    "PreToolUse": [
-      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-status/hooks/better-hook.sh PreToolUse" }] }
+    "PermissionRequest": [
+      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-indicator/scripts/agent-state.sh --agent claude --state needs-input" }] }
     ],
     "Stop": [
-      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-status/hooks/better-hook.sh Stop" }] }
-    ],
-    "Notification": [
-      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-status/hooks/better-hook.sh Notification" }] }
+      { "hooks": [{ "type": "command", "command": "~/.tmux/plugins/tmux-agent-indicator/scripts/agent-state.sh --agent claude --state done" }] }
     ]
   }
 }
 ```
 
-同じイベントに既に別の hook(デスクトップ通知など)を登録している場合は、その配列に追記すれば両方が発火します。上書きは不要です。
+同じイベントに既に別の hook(デスクトップ通知など)を登録している場合は、その配列に追記すれば両方が発火します。上書きは不要です。hooks の変更は起動中の Claude Code セッションには自動反映されないため、`/hooks` で確認するか再起動してください。
 
-Codex CLI / Devin CLI にも対応しています。設定方法は[プラグインの README](https://github.com/samleeney/tmux-agent-status#codex-cli-setup)を参照してください。
+Codex CLI / OpenCode にも対応しています。設定方法は[プラグインの README](https://github.com/accessd/tmux-agent-indicator#installation)を参照してください。それ以外のエージェントも `scripts/agent-state.sh --agent <name> --state <state>` を直接呼べば統合できます。
 
-### 既知の制約
+なお、プラグイン付属の `install.sh`(curl ワンライナー)は `~/.claude/settings.json` を自動書き換えするため使いません。このリポジトリでは上記の hook を手動管理します。
 
-- tmux 3.7 では `after-kill-window` と `after-switch-client` が無効なオプションのため、tmux 起動時に `invalid option` の警告が2行出ます。サイドバーの再描画は他のフック(`window-layout-changed`、`pane-exited`、`client-attached` 等)でカバーされるので、動作への影響はありません。
-- detach 状態のセッションではサイドバーの自動作成が走りません(対象ウィンドウが確定できないため)。attach 後に `prefix` `o` で作成できます。
-- サイドバーは bash 4 以降を必要とします。macOS 標準の bash 3.2 では動かないため、Homebrew の bash(`/opt/homebrew/bin/bash`)が自動検出されます。別の場所に入れている場合は環境変数 `TMUX_AGENT_STATUS_BASH` でパスを指定してください。
+### 主な設定(tmux.conf)
 
-なお、新規セッション作成時の自動縦分割(`session-created` フック)とは競合しません。プラグイン側が `set-hook -ga` で追記する実装のため、両方のフックが動作します。
+```tmux
+set -g @agent-indicator-border-enabled 'on'     # ペインボーダー色の変更
+set -g @agent-indicator-indicator-enabled 'on'  # ステータスバーのアイコン表示
+set -g @agent-indicator-reset-on-focus 'on'     # フォーカスするまで色を維持
+```
+
+ステータスバーへの表示は `status-right` 内の `#{agent_indicator}` プレースホルダで行います。このほか、状態別の色(`@agent-indicator-needs-input-border` 等)、エージェント別アイコン(`@agent-indicator-icons`)、トークン使用率表示(`#{agent_limits}`)、セッションドット(`#{agent_session_dots}`)などのオプションがあります。詳細は[プラグインの README](https://github.com/accessd/tmux-agent-indicator#configuration)を参照してください。
+
+なお、新規セッション作成時の自動縦分割(`session-created` フック)とは競合しません。
+
+### 稼働中サーバーでプラグインを置き換える場合の注意
+
+tmux プラグインが `set-hook -g` / `bind-key` で登録した hook やキーバインドは**サーバーのメモリに残る**ため、tmux.conf からプラグインを外して `source-file` してもサーバーを再起動するまで消えません。プラグインのスクリプトを先に削除すると、残った hook が発火するたびに `'...' returned 127` エラーが表示されます。
+
+サーバーを再起動せずに置き換える場合は、以下をすべて掃除する必要があります(tmux-agent-status → tmux-agent-indicator 置き換え時の実例)。
+
+1. **セッションテーブルの hook**: `tmux show-hooks -g` で確認し、`tmux set-hook -gu '<hook名>[<index>]'` で削除
+2. **ウィンドウテーブルの hook**: `tmux show-hooks -gw` で確認して同様に削除。`window-pane-changed` / `pane-exited` / `pane-focus-in` などペイン・ウィンドウ系の hook はこちらのテーブルに入り、**`show-hooks -g` には表示されない**ので見落としやすい
+3. **キーバインド**: `tmux list-keys | grep <plugin名>` で確認し、`unbind-key` で削除(プラグインが標準キーを上書きしていた場合は `bind-key` で標準動作に戻す)
+4. **常駐プロセスとプラグインが作ったペイン**: `pgrep -fl <plugin名>` で確認して停止
 
 ## ユーティリティ: clean-tmux
 

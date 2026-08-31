@@ -133,6 +133,17 @@ set -g @agent-indicator-reset-on-focus 'on'     # フォーカスするまで色
 
 なお、新規セッション作成時の自動縦分割(`session-created` フック)とは競合しません。
 
+### 稼働中サーバーでプラグインを置き換える場合の注意
+
+tmux プラグインが `set-hook -g` / `bind-key` で登録した hook やキーバインドは**サーバーのメモリに残る**ため、tmux.conf からプラグインを外して `source-file` してもサーバーを再起動するまで消えません。プラグインのスクリプトを先に削除すると、残った hook が発火するたびに `'...' returned 127` エラーが表示されます。
+
+サーバーを再起動せずに置き換える場合は、以下をすべて掃除する必要があります(tmux-agent-status → tmux-agent-indicator 置き換え時の実例)。
+
+1. **セッションテーブルの hook**: `tmux show-hooks -g` で確認し、`tmux set-hook -gu '<hook名>[<index>]'` で削除
+2. **ウィンドウテーブルの hook**: `tmux show-hooks -gw` で確認して同様に削除。`window-pane-changed` / `pane-exited` / `pane-focus-in` などペイン・ウィンドウ系の hook はこちらのテーブルに入り、**`show-hooks -g` には表示されない**ので見落としやすい
+3. **キーバインド**: `tmux list-keys | grep <plugin名>` で確認し、`unbind-key` で削除(プラグインが標準キーを上書きしていた場合は `bind-key` で標準動作に戻す)
+4. **常駐プロセスとプラグインが作ったペイン**: `pgrep -fl <plugin名>` で確認して停止
+
 ## ユーティリティ: clean-tmux
 
 `bin/clean-tmux`(`make link` で `~/.local/bin/clean-tmux` に配置)は、全セッションの kill と resurrect の保存データの削除を行います。
